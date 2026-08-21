@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug React Hydration Errors - react</title>
+    <meta name="description" content="React hydration errors occur when the pre-rendered HTML from the server does not match the initial HTML rendered by React on the client. This article provides a straightforward guide on how to identify the causes of these mismatch errors, utilize browser">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-react-hydration-errors">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug React Hydration Errors - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-react-hydration-errors" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React hydration errors occur when the pre-rendered HTML from the server does not match the initial HTML rendered by React on the client. This article provides a straightforward guide on how to identify the causes of these mismatch errors, utilize browser" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-react-hydration-errors">How to Debug React
+Hydration Errors</h1>
+<p>React hydration errors occur when the pre-rendered HTML from the
+server does not match the initial HTML rendered by React on the client.
+This article provides a straightforward guide on how to identify the
+causes of these mismatch errors, utilize browser developer tools to
+isolate the discrepancies, and implement effective coding patterns to
+resolve hydration issues in your React applications.</p>
+<h2 id="understand-the-cause-of-hydration-mismatches">Understand the
+Cause of Hydration Mismatches</h2>
+<p>Hydration is the process where React attaches event listeners to the
+static HTML sent by the server, turning it into a fully interactive
+single-page application. A hydration mismatch happens when the DOM
+structure or text content generated on the server differs from what the
+client-side React code expects on the initial render.</p>
+<p>Common causes include:</p>
+<ul>
+<li>Using non-deterministic data like <code>new Date()</code>,
+<code>Math.random()</code>, or localized strings that vary between the
+server and client environments.</li>
+<li>Invalid HTML nesting, such as placing a <code>&lt;div&gt;</code>
+inside a <code>&lt;p&gt;</code> tag, which causes browsers to
+automatically correct the DOM structure before React can hydrate
+it.</li>
+<li>Accessing client-only globals like <code>window</code> or
+<code>localStorage</code> during the initial render.</li>
+<li>Browser extensions injecting HTML or modifying the DOM before React
+loads.</li>
+</ul>
+<h2 id="step-1-analyze-the-console-errors">Step 1: Analyze the Console
+Errors</h2>
+<p>Modern versions of React (React 18+) provide descriptive error
+messages in the browser console. When a hydration failure occurs, look
+closely at the console output.</p>
+<ul>
+<li><strong>Locate the Diff:</strong> React will log the expected
+server-rendered HTML alongside the actual client-rendered HTML. Look for
+key phrases like <em>"Text content did not match"</em> or <em>"Prop
+<code>%s</code> did not match"</em>.</li>
+<li><strong>Trace the Component:</strong> The error trace will usually
+point to the specific component where the mismatch occurred. Use this to
+narrow down your search to a single file.</li>
+</ul>
+<h2 id="step-2-compare-server-and-client-html">Step 2: Compare Server
+and Client HTML</h2>
+<p>If the console error is ambiguous, you can manually inspect the
+differences between what the server sent and what the client
+rendered.</p>
+<ol type="1">
+<li><strong>View Source:</strong> Right-click on the page and select
+<strong>View Page Source</strong> (or press
+<code>Ctrl+U</code>/<code>Cmd+Option+U</code>). This shows the raw HTML
+sent by the server.</li>
+<li><strong>Inspect DOM:</strong> Open the browser's developer tools and
+look at the <strong>Elements</strong> tab. This shows the DOM after
+client-side hydration.</li>
+<li><strong>Disable JavaScript:</strong> Alternatively, disable
+JavaScript in your browser settings and reload the page. This allows you
+to see exactly what the server-rendered page looks like without any
+client-side modifications.</li>
+</ol>
+<h2 id="step-3-check-for-invalid-html-nesting">Step 3: Check for Invalid
+HTML Nesting</h2>
+<p>Browsers are highly opinionated about HTML specs. If you write
+invalid markup, the browser will silently fix it in the DOM
+<em>before</em> React runs, leading to a mismatch.</p>
+<p>Common invalid nesting patterns to look for:</p>
+<ul>
+<li><code>&lt;p&gt;</code> containing block-level elements like
+<code>&lt;div&gt;</code>, <code>&lt;ul&gt;</code>, or
+<code>&lt;h1-h6&gt;</code>.</li>
+<li><code>&lt;a&gt;</code> tags nested inside other
+<code>&lt;a&gt;</code> tags.</li>
+<li>Table elements (like <code>&lt;tr&gt;</code> or
+<code>&lt;td&gt;</code>) placed directly inside a
+<code>&lt;table&gt;</code> without a <code>&lt;tbody&gt;</code>.</li>
+</ul>
+<p>Ensure your JSX adheres strictly to valid HTML specifications.</p>
+<h2 id="step-4-resolve-client-server-discrepancies">Step 4: Resolve
+Client-Server Discrepancies</h2>
+<p>Once you find the offending component, apply one of the following
+strategies to fix it:</p>
+<h3 id="use-the-useeffect-hook-for-client-only-logic">Use the
+<code>useEffect</code> Hook for Client-Only Logic</h3>
+<p>To prevent React from rendering client-only data on the server, delay
+that rendering until the component has mounted on the client.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">HydratedComponent</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [isMounted<span class="op">,</span> setIsMounted] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setIsMounted</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>isMounted) {</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Render a loading state or placeholder that matches the server HTML</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;</span>Loading<span class="op">...&lt;/</span>div<span class="op">&gt;;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Safe to render client-only API data or window properties here</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;</span>{<span class="bu">window</span><span class="op">.</span><span class="at">innerWidth</span>}px wide<span class="op">&lt;/</span>div<span class="op">&gt;;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="suppress-warnings-safely">Suppress Warnings Safely</h3>
+<p>If a mismatch is unavoidable (for example, displaying a timestamp
+that must render immediately but will inevitably differ by
+milliseconds), you can suppress the warning using the
+<code>suppressHydrationWarning</code> attribute.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>span suppressHydrationWarning<span class="op">&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  {<span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">toLocaleTimeString</span>()}</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>span<span class="op">&gt;</span></span></code></pre></div>
+<p><em>Note: This only works one level deep and should be used
+sparingly, as it does not fix the underlying performance cost of the
+mismatch.</em></p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

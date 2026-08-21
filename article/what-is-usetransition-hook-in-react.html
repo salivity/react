@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is useTransition Hook in React? - react</title>
+    <meta name="description" content="This article provides a clear guide on the useTransition hook in React, explaining its core purpose, how it works, and how to implement it to keep your application's user interface responsive during intensive state updates. Introduced in React 18, useTra">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-usetransition-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is useTransition Hook in React? - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-usetransition-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a clear guide on the useTransition hook in React, explaining its core purpose, how it works, and how to implement it to keep your application's user interface responsive during intensive state updates. Introduced in React 18, useTra" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-usetransition-hook-in-react">What is useTransition Hook
+in React?</h1>
+<p>This article provides a clear guide on the <code>useTransition</code>
+hook in React, explaining its core purpose, how it works, and how to
+implement it to keep your application's user interface responsive during
+intensive state updates.</p>
+<h2 id="understanding-usetransition">Understanding useTransition</h2>
+<p>Introduced in React 18, <code>useTransition</code> is a built-in
+React Hook that lets you update the state without blocking the user
+interface. It allows you to mark certain state updates as "transitions"
+(non-urgent), which tells React they can be interrupted if a more urgent
+user interaction occurs, such as typing or clicking.</p>
+<p>By default, all state updates in React are treated as urgent. This
+means if a state update causes a slow, heavy component to re-render, the
+entire UI can freeze and become unresponsive until the render is
+complete. <code>useTransition</code> solves this bottleneck.</p>
+<h2 id="syntax">Syntax</h2>
+<p>The <code>useTransition</code> hook does not take any arguments and
+returns an array with exactly two elements:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [isPending<span class="op">,</span> startTransition] <span class="op">=</span> <span class="fu">useTransition</span>()<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong><code>isPending</code></strong>: A boolean flag. It is
+<code>true</code> while the transition is actively running in the
+background, allowing you to display a loading spinner or visual
+feedback.</li>
+<li><strong><code>startTransition</code></strong>: A function that lets
+you wrap a state update to mark it as a transition.</li>
+</ul>
+<h2 id="how-to-use-usetransition">How to Use useTransition</h2>
+<p>Here is a practical example of how to implement
+<code>useTransition</code>. Imagine a search input that filters a
+massive list of items. Typing in the input should be instantaneous
+(urgent), but rendering the filtered list can take time (non-urgent
+transition).</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState<span class="op">,</span> useTransition } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">FilterList</span>({ items }) {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [query<span class="op">,</span> setQuery] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [filteredItems<span class="op">,</span> setFilteredItems] <span class="op">=</span> <span class="fu">useState</span>(items)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [isPending<span class="op">,</span> startTransition] <span class="op">=</span> <span class="fu">useTransition</span>()<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleChange <span class="op">=</span> (e) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> value <span class="op">=</span> e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span><span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 1. Update the input field immediately (Urgent)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setQuery</span>(value)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 2. Defer the heavy list filtering (Non-Urgent)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">startTransition</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> filtered <span class="op">=</span> items<span class="op">.</span><span class="fu">filter</span>(item <span class="kw">=&gt;</span> </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        item<span class="op">.</span><span class="fu">toLowerCase</span>()<span class="op">.</span><span class="fu">includes</span>(value<span class="op">.</span><span class="fu">toLowerCase</span>())</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      )<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setFilteredItems</span>(filtered)<span class="op">;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>input type<span class="op">=</span><span class="st">&quot;text&quot;</span> value<span class="op">=</span>{query} onChange<span class="op">=</span>{handleChange} <span class="op">/&gt;</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      {isPending <span class="op">&amp;&amp;</span> <span class="op">&lt;</span>p<span class="op">&gt;</span>Updating list<span class="op">...&lt;/</span>p<span class="op">&gt;</span>}</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>ul style<span class="op">=</span>{{ <span class="dt">opacity</span><span class="op">:</span> isPending <span class="op">?</span> <span class="fl">0.5</span> <span class="op">:</span> <span class="dv">1</span> }}<span class="op">&gt;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        {filteredItems<span class="op">.</span><span class="fu">map</span>((item<span class="op">,</span> index) <span class="kw">=&gt;</span> (</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span>li key<span class="op">=</span>{index}<span class="op">&gt;</span>{item}<span class="op">&lt;/</span>li<span class="op">&gt;</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        ))}</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>ul<span class="op">&gt;</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>In this example, if the user continues to type while the list is
+still filtering, React will abandon the outdated filter process and
+prioritize the new keystrokes. The <code>isPending</code> state is used
+to lower the opacity of the list, indicating to the user that the
+content is updating.</p>
+<h2 id="when-to-use-usetransition">When to Use useTransition</h2>
+<ul>
+<li><strong>CPU-heavy rendering:</strong> When a state update requires
+React to render a massive amount of DOM elements or perform complex
+calculations.</li>
+<li><strong>Slow network responses:</strong> When navigating between
+tabs or pages where data is being fetched and you want to keep the
+current UI active instead of showing a blank screen.</li>
+</ul>
+<h2 id="when-not-to-use-it">When Not to Use It</h2>
+<ul>
+<li><strong>Controlled Inputs:</strong> Do not wrap the value of a text
+input directly inside <code>startTransition</code>. TextInput states
+must update synchronously to reflect keystrokes immediately.</li>
+<li><strong>Fast Operations:</strong> If your state update is fast and
+does not cause lag, using <code>useTransition</code> adds unnecessary
+overhead.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

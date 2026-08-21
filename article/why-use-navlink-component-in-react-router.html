@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use NavLink Component in React Router - react</title>
+    <meta name="description" content="In modern web development, creating a seamless and intuitive navigation experience is essential for user engagement. This article explores why developers should utilize the NavLink component in React Router instead of standard HTML anchor tags or the bas">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-navlink-component-in-react-router">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use NavLink Component in React Router - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-navlink-component-in-react-router" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In modern web development, creating a seamless and intuitive navigation experience is essential for user engagement. This article explores why developers should utilize the NavLink component in React Router instead of standard HTML anchor tags or the bas" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-navlink-component-in-react-router">Why Use NavLink
+Component in React Router</h1>
+<p>In modern web development, creating a seamless and intuitive
+navigation experience is essential for user engagement. This article
+explores why developers should utilize the <code>NavLink</code>
+component in React Router instead of standard HTML anchor tags or the
+basic <code>Link</code> component. We will examine its primary
+advantages, including automatic active state styling, dynamic styling
+capabilities, improved accessibility features, and how it simplifies the
+creation of responsive navigation menus.</p>
+<h2 id="automatic-active-class-application">Automatic Active Class
+Application</h2>
+<p>The primary reason to use <code>NavLink</code> over the standard
+<code>Link</code> component is its ability to automatically detect if
+the current URL matches the component's <code>to</code> prop. When a
+match occurs, <code>NavLink</code> automatically applies an
+<code>active</code> class to the rendered HTML element.</p>
+<p>With a standard <code>Link</code> component, developers must manually
+write conditional logic, matching the current window location to the
+link destination to apply an "active" class. <code>NavLink</code>
+eliminates this boilerplate code, allowing you to style the active link
+out-of-the-box using standard CSS:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode css"><code class="sourceCode css"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">/* Active link styling applied automatically */</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>a<span class="fu">.active</span> {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">color</span><span class="ch">:</span> <span class="cn">#3b82f6</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">font-weight</span><span class="ch">:</span> <span class="dv">bold</span><span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="dynamic-styling-and-class-customization">Dynamic Styling and
+Class Customization</h2>
+<p><code>NavLink</code> provides highly flexible styling options by
+allowing developers to pass a function to the <code>className</code> or
+<code>style</code> props. This function receives an object containing an
+<code>isActive</code> boolean, enabling dynamic inline styling or
+conditional CSS classes.</p>
+<p>This is particularly useful when using utility-first CSS frameworks
+like Tailwind CSS:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;NavLink</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">to</span><span class="op">=</span><span class="st">&quot;/dashboard&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">className</span><span class="op">=</span><span class="va">{</span>({ isActive }) <span class="kw">=&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    isActive <span class="op">?</span> <span class="st">&#39;bg-blue-500 text-white p-2 rounded&#39;</span> <span class="op">:</span> <span class="st">&#39;text-gray-700 p-2&#39;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="va">}</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  Dashboard</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;/NavLink&gt;</span></span></code></pre></div>
+<p>This functional approach gives developers precise control over the
+component's appearance based on the active routing state without needing
+to manage state manually.</p>
+<h2 id="enhanced-accessibility-a11y">Enhanced Accessibility (a11y)</h2>
+<p>Web accessibility is a critical aspect of modern frontend
+development. When a <code>NavLink</code> is active, it automatically
+appends the <code>aria-current="page"</code> attribute to the rendered
+anchor tag.</p>
+<p>Screen readers and other assistive technologies utilize this
+attribute to inform visually impaired users which page they are
+currently viewing. Utilizing <code>NavLink</code> ensures your
+application meets modern accessibility standards (WCAG) with zero extra
+configuration.</p>
+<h2 id="support-for-end-of-path-matching">Support for End-of-Path
+Matching</h2>
+<p>By default, React Router matches routes hierarchically. To prevent a
+parent route (like <code>/</code>) from showing as active when a child
+route (like <code>/about</code>) is active, <code>NavLink</code>
+supports the <code>end</code> prop.</p>
+<p>Adding the <code>end</code> prop ensures that the active class or
+style is only applied when the URL matches the specified path
+exactly:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This will only be active when the URL is exactly &quot;/&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;NavLink</span> <span class="ot">to</span><span class="op">=</span><span class="st">&quot;/&quot;</span> <span class="ot">end</span><span class="fu">&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  Home</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;/NavLink&gt;</span></span></code></pre></div>
+<h2 id="client-side-routing-performance">Client-Side Routing
+Performance</h2>
+<p>Like the standard <code>Link</code> component, <code>NavLink</code>
+intercepts the default browser navigation behavior. Instead of
+requesting a new HTML document from the server and reloading the entire
+page, it updates the browser history and renders the target component in
+place. This preserves application state, eliminates screen flickers, and
+ensures a fast, single-page application (SPA) user experience.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

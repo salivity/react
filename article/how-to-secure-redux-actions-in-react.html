@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Secure Redux Actions in React - react</title>
+    <meta name="description" content="Securing Redux actions in a React application is crucial for maintaining data integrity, protecting sensitive user information, and preventing unauthorized state manipulation. This article explores practical strategies to secure your Redux actions, inclu">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-secure-redux-actions-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Secure Redux Actions in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-secure-redux-actions-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Securing Redux actions in a React application is crucial for maintaining data integrity, protecting sensitive user information, and preventing unauthorized state manipulation. This article explores practical strategies to secure your Redux actions, inclu" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-secure-redux-actions-in-react">How to Secure Redux
+Actions in React</h1>
+<p>Securing Redux actions in a React application is crucial for
+maintaining data integrity, protecting sensitive user information, and
+preventing unauthorized state manipulation. This article explores
+practical strategies to secure your Redux actions, including disabling
+DevTools in production, validating payloads with custom middleware,
+sanitizing sensitive data, and enforcing backend-driven
+authorization.</p>
+<h2 id="disable-redux-devtools-in-production">Disable Redux DevTools in
+Production</h2>
+<p>Redux DevTools is an invaluable tool during development, but leaving
+it enabled in production exposes your entire state tree and action
+history to anyone using the browser. To secure your state, configure
+your store to only enable DevTools in development environments.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { configureStore } <span class="im">from</span> <span class="st">&#39;@reduxjs/toolkit&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> rootReducer <span class="im">from</span> <span class="st">&#39;./reducers&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> store <span class="op">=</span> <span class="fu">configureStore</span>({</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> rootReducer<span class="op">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">devTools</span><span class="op">:</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NODE_ENV</span> <span class="op">!==</span> <span class="st">&#39;production&#39;</span><span class="op">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>By setting <code>devTools</code> to false in production, you prevent
+users from inspecting, exporting, or dispatching malicious actions
+directly through the browser extension.</p>
+<h2 id="validate-action-payloads-with-middleware">Validate Action
+Payloads with Middleware</h2>
+<p>Client-side state can be manipulated if an attacker finds a way to
+dispatch actions directly. You can write custom Redux middleware to
+intercept actions and validate their payloads before they reach the
+reducers.</p>
+<p>Using a validation library like Zod or Yup, you can enforce strict
+schemas for your action payloads:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { z } <span class="im">from</span> <span class="st">&#39;zod&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> transferFundsSchema <span class="op">=</span> z<span class="op">.</span><span class="fu">object</span>({</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">amount</span><span class="op">:</span> z<span class="op">.</span><span class="fu">number</span>()<span class="op">.</span><span class="fu">positive</span>()<span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">recipientId</span><span class="op">:</span> z<span class="op">.</span><span class="fu">string</span>()<span class="op">.</span><span class="fu">uuid</span>()<span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> validationMiddleware <span class="op">=</span> store <span class="kw">=&gt;</span> next <span class="kw">=&gt;</span> action <span class="kw">=&gt;</span> {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (action<span class="op">.</span><span class="at">type</span> <span class="op">===</span> <span class="st">&#39;funds/transfer&#39;</span>) {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> result <span class="op">=</span> transferFundsSchema<span class="op">.</span><span class="fu">safeParse</span>(action<span class="op">.</span><span class="at">payload</span>)<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span>result<span class="op">.</span><span class="at">success</span>) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">&#39;Invalid action payload rejected:&#39;</span><span class="op">,</span> result<span class="op">.</span><span class="at">error</span>)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span><span class="op">;</span> <span class="co">// Block the action from reaching the reducer</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">next</span>(action)<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h2 id="sanitize-and-encrypt-sensitive-data">Sanitize and Encrypt
+Sensitive Data</h2>
+<p>Never store highly sensitive information, such as plain-text
+passwords, full credit card numbers, or personally identifiable
+information (PII), directly in your Redux actions or state.</p>
+<p>If your application must handle sensitive data temporarily:</p>
+<ul>
+<li><strong>Encrypt payloads:</strong> Encrypt sensitive payload data
+before dispatching, and decrypt it only when absolutely necessary.</li>
+<li><strong>Sanitize logs:</strong> If you use logging middleware like
+<code>redux-logger</code>, ensure you sanitize actions to prevent
+sensitive data from being printed to the console or sent to external
+monitoring services.</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> logger <span class="op">=</span> <span class="fu">createLogger</span>({</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">predicate</span><span class="op">:</span> () <span class="kw">=&gt;</span> <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NODE_ENV</span> <span class="op">!==</span> <span class="st">&#39;production&#39;</span><span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">actionTransformer</span><span class="op">:</span> (action) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (action<span class="op">.</span><span class="at">type</span> <span class="op">===</span> <span class="st">&#39;auth/login&#39;</span>) {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> { <span class="op">...</span>action<span class="op">,</span> <span class="dt">payload</span><span class="op">:</span> { <span class="op">...</span>action<span class="op">.</span><span class="at">payload</span><span class="op">,</span> <span class="dt">password</span><span class="op">:</span> <span class="st">&#39;REDACTED&#39;</span> } }<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> action<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h2 id="implement-strict-type-checking">Implement Strict Type
+Checking</h2>
+<p>Using TypeScript with Redux Toolkit ensures that developers cannot
+accidentally dispatch actions with incorrect or malicious data
+structures. Strongly typed action creators and reducers catch
+integration issues at compile-time, reducing the attack surface for
+runtime state injection.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> UpdateUserPayload {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  userId<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  email<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Redux Toolkit slice action type safety</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> userSlice <span class="op">=</span> <span class="fu">createSlice</span>({</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  name<span class="op">:</span> <span class="st">&#39;user&#39;</span><span class="op">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  initialState<span class="op">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  reducers<span class="op">:</span> {</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    updateUser<span class="op">:</span> (state<span class="op">,</span> action<span class="op">:</span> PayloadAction<span class="op">&lt;</span>UpdateUserPayload<span class="op">&gt;</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      state<span class="op">.</span><span class="at">userId</span> <span class="op">=</span> action<span class="op">.</span><span class="at">payload</span><span class="op">.</span><span class="at">userId</span><span class="op">;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      state<span class="op">.</span><span class="at">email</span> <span class="op">=</span> action<span class="op">.</span><span class="at">payload</span><span class="op">.</span><span class="at">email</span><span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h2 id="shift-critical-authorization-to-the-backend">Shift Critical
+Authorization to the Backend</h2>
+<p>Redux is entirely client-side, meaning any security measure
+implemented in React can theoretically be bypassed by a determined
+attacker modifying the runtime environment. Therefore, Redux actions
+should never be the final authority on security decisions.</p>
+<ul>
+<li><strong>Treat the frontend as untrusted:</strong> Treat Redux
+actions as "requests" to change state, rather than final state
+changes.</li>
+<li><strong>Validate on the server:</strong> Any action that performs a
+sensitive operation (like purchasing an item, modifying a user profile,
+or accessing private data) must trigger an API call. The backend server
+must independently verify the user's JSON Web Token (JWT) or session
+cookie to authorize the request before sending back a success response
+to update the Redux store.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

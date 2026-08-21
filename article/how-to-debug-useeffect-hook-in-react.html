@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug useEffect Hook in React - react</title>
+    <meta name="description" content="Debugging the useEffect hook in React can be challenging due to its asynchronous nature, cleanup cycles, and dependency-driven execution. This article provides a straightforward guide on how to effectively diagnose and fix issues within your effects. You">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-useeffect-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug useEffect Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-useeffect-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Debugging the useEffect hook in React can be challenging due to its asynchronous nature, cleanup cycles, and dependency-driven execution. This article provides a straightforward guide on how to effectively diagnose and fix issues within your effects. You" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-useeffect-hook-in-react">How to Debug useEffect
+Hook in React</h1>
+<p>Debugging the <code>useEffect</code> hook in React can be challenging
+due to its asynchronous nature, cleanup cycles, and dependency-driven
+execution. This article provides a straightforward guide on how to
+effectively diagnose and fix issues within your effects. You will learn
+how to track dependency changes, analyze execution order with console
+logs, utilize React Developer Tools, and build custom hooks to trace
+what triggers your effects.</p>
+<h2 id="1-monitor-the-dependency-array">1. Monitor the Dependency
+Array</h2>
+<p>Most <code>useEffect</code> bugs stem from incorrect dependency
+arrays, leading to infinite loops or stale data. To identify which
+dependency is triggering the effect, you can log the current and
+previous values of your dependencies using a <code>useRef</code>
+hook.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> useTraceUpdate <span class="op">=</span> (props) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> prev <span class="op">=</span> <span class="fu">useRef</span>(props)<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> changedProps <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">entries</span>(props)<span class="op">.</span><span class="fu">reduce</span>((ps<span class="op">,</span> [k<span class="op">,</span> v]) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (prev<span class="op">.</span><span class="at">current</span>[k] <span class="op">!==</span> v) {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        ps[k] <span class="op">=</span> [prev<span class="op">.</span><span class="at">current</span>[k]<span class="op">,</span> v]<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> ps<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span> {})<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="bu">Object</span><span class="op">.</span><span class="fu">keys</span>(changedProps)<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;Changed props:&#39;</span><span class="op">,</span> changedProps)<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    prev<span class="op">.</span><span class="at">current</span> <span class="op">=</span> props<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p>By tracking these changes, you can quickly spot variables that change
+reference on every render, such as unmemoized objects or functions.</p>
+<h2 id="2-utilize-strategic-console-logs">2. Utilize Strategic Console
+Logs</h2>
+<p>Adding simple logs to both the main body of the effect and its
+cleanup function helps you visualize the lifecycle of the component.
+Always label your logs to understand the exact sequence of mounting,
+unmounting, and updating.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Effect triggered&quot;</span><span class="op">,</span> { dependencyVar })<span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Cleanup executed&quot;</span><span class="op">,</span> { dependencyVar })<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [dependencyVar])<span class="op">;</span></span></code></pre></div>
+<p>If you see "Cleanup executed" immediately followed by "Effect
+triggered" repeatedly, your dependency is changing too frequently, or
+you have created an infinite render loop.</p>
+<h2 id="3-leverage-react-developer-tools">3. Leverage React Developer
+Tools</h2>
+<p>React Developer Tools is a browser extension that simplifies hook
+inspection.</p>
+<ol type="1">
+<li>Open your browser's inspect tool and navigate to the
+<strong>Components</strong> tab.</li>
+<li>Select the component containing the <code>useEffect</code>
+hook.</li>
+<li>In the right-hand panel, expand the <strong>hooks</strong>
+section.</li>
+<li>You will see a list of hooks used by the component. Although
+<code>useEffect</code> is not explicitly named, you can inspect the
+values of the hooks state and trace how state changes impact your
+component's rendering cycle.</li>
+</ol>
+<h2 id="4-handle-stale-closures-with-refs">4. Handle Stale Closures with
+refs</h2>
+<p>When a <code>useEffect</code> captures a variable from a previous
+render, it is known as a stale closure. If you need to access the latest
+state inside an asynchronous operation within <code>useEffect</code>
+without adding it to the dependency array, use a ref to store the latest
+value.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [count<span class="op">,</span> setCount] <span class="op">=</span> <span class="fu">useState</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> countRef <span class="op">=</span> <span class="fu">useRef</span>(count)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  countRef<span class="op">.</span><span class="at">current</span> <span class="op">=</span> count<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [count])<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> timer <span class="op">=</span> <span class="pp">setInterval</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Accesses the absolute latest count without triggering the effect again</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Latest count:&quot;</span><span class="op">,</span> countRef<span class="op">.</span><span class="at">current</span>)<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> <span class="dv">2000</span>)<span class="op">;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> () <span class="kw">=&gt;</span> <span class="pp">clearInterval</span>(timer)<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [])<span class="op">;</span> <span class="co">// Empty dependency array</span></span></code></pre></div>
+<h2 id="5-enable-strict-mode-in-development">5. Enable Strict Mode in
+Development</h2>
+<p>Ensure your application is wrapped in
+<code>&lt;React.StrictMode&gt;</code> in your entry file (e.g.,
+<code>index.js</code> or <code>main.js</code>). React Strict Mode
+intentionally double-invokes effects (mounts, unmounts, and mounts
+again) in development. This aggressive behavior is highly effective at
+exposing missing cleanup functions, memory leaks, and unintended side
+effects before they reach production.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

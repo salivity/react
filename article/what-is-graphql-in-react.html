@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is GraphQL in React - react</title>
+    <meta name="description" content="This article provides a clear overview of GraphQL and how it is used within React applications to fetch, update, and manage data. You will learn the core differences between GraphQL and REST APIs, why they pair so well with React's component-based archit">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-graphql-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is GraphQL in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-graphql-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a clear overview of GraphQL and how it is used within React applications to fetch, update, and manage data. You will learn the core differences between GraphQL and REST APIs, why they pair so well with React's component-based archit" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-graphql-in-react">What is GraphQL in React</h1>
+<p>This article provides a clear overview of GraphQL and how it is used
+within React applications to fetch, update, and manage data. You will
+learn the core differences between GraphQL and REST APIs, why they pair
+so well with React's component-based architecture, and how libraries
+like Apollo Client make integration seamless.</p>
+<h2 id="understanding-graphql">Understanding GraphQL</h2>
+<p>GraphQL is an open-source query language and runtime for APIs
+developed by Facebook. Unlike traditional REST APIs, which require
+fetching data from multiple URL endpoints, GraphQL allows you to request
+all the data you need from a single endpoint.</p>
+<p>In a React application, this means you can write a single query that
+specifies the exact structure of the data you want, and the server will
+return a JSON response matching that exact shape.</p>
+<h2 id="why-use-graphql-with-react">Why Use GraphQL with React?</h2>
+<p>React is built around the concept of reusable components. GraphQL
+aligns perfectly with this component-driven architecture because of
+several key benefits:</p>
+<ul>
+<li><strong>No Over-fetching or Under-fetching:</strong> A React
+component often needs specific pieces of data. With GraphQL, the
+component requests only the fields it needs to render, reducing network
+payload sizes and improving performance.</li>
+<li><strong>Declarative Data Fetching:</strong> Instead of writing
+complex fetch requests and managing loading states manually, you can
+declare the data requirements right next to the React component that
+uses them.</li>
+<li><strong>Single Endpoint:</strong> Instead of managing endpoints like
+<code>/users</code>, <code>/posts</code>, and <code>/comments</code>,
+React communicates with a single <code>/graphql</code> gateway.</li>
+</ul>
+<h2 id="how-graphql-integrates-with-react">How GraphQL Integrates with
+React</h2>
+<p>To connect a React application to a GraphQL API, developers use
+client-side libraries. The most popular choice is <strong>Apollo
+Client</strong>, though <strong>Relay</strong> (built by Meta) and
+<strong>urql</strong> are also widely used.</p>
+<p>These libraries provide React hooks that manage the lifecycle of
+network requests, caching, and state synchronization automatically.</p>
+<h3 id="key-concepts-in-react-graphql-integration">Key Concepts in
+React-GraphQL Integration</h3>
+<ol type="1">
+<li><strong>Queries (Reading Data):</strong> React components use
+queries to request data. Using Apollo Client, this is done via the
+<code>useQuery</code> hook.</li>
+<li><strong>Mutations (Writing Data):</strong> To create, update, or
+delete data on the server, React components use mutations via the
+<code>useMutation</code> hook.</li>
+<li><strong>Subscriptions (Real-time Data):</strong> For real-time
+updates (like chat apps), subscriptions allow the React client to listen
+to data changes over WebSockets.</li>
+</ol>
+<h2 id="a-basic-example">A Basic Example</h2>
+<p>Here is a conceptual example of how a React component fetches data
+using Apollo Client:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useQuery<span class="op">,</span> gql } <span class="im">from</span> <span class="st">&#39;@apollo/client&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Define the GraphQL query</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> GET_USER_PROFILE <span class="op">=</span> <span class="fu">gql</span><span class="vs">`</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="vs">  query GetUserProfile {</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="vs">    user(id: &quot;1&quot;) {</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="vs">      name</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="vs">      email</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="vs">    }</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="vs">  }</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">UserProfile</span>() {</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { loading<span class="op">,</span> error<span class="op">,</span> data } <span class="op">=</span> <span class="fu">useQuery</span>(GET_USER_PROFILE)<span class="op">;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (loading) <span class="cf">return </span><span class="kw">&lt;p&gt;</span>Loading...<span class="kw">&lt;/p&gt;</span><span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (error) <span class="cf">return </span><span class="kw">&lt;p&gt;</span>Error: <span class="va">{</span>error<span class="op">.</span><span class="at">message</span><span class="va">}</span><span class="kw">&lt;/p&gt;</span><span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;h1&gt;</span><span class="va">{</span>data<span class="op">.</span><span class="at">user</span><span class="op">.</span><span class="at">name</span><span class="va">}</span><span class="kw">&lt;/h1&gt;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;p&gt;</span>Email: <span class="va">{</span>data<span class="op">.</span><span class="at">user</span><span class="op">.</span><span class="at">email</span><span class="va">}</span><span class="kw">&lt;/p&gt;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> UserProfile<span class="op">;</span></span></code></pre></div>
+<p>In this example, the <code>UserProfile</code> component defines
+exactly what data it needs (the user's name and email). The
+<code>useQuery</code> hook automatically handles the loading and error
+states, making the UI highly predictable and easy to maintain.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Test useLayoutEffect Hook in React - react</title>
+    <meta name="description" content="Testing the useLayoutEffect hook in React can be challenging because it fires synchronously after all DOM mutations but before the browser paints. This article provides a clear, step-by-step guide on how to test components using useLayoutEffect using Rea">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-test-uselayouteffect-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Test useLayoutEffect Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-test-uselayouteffect-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Testing the useLayoutEffect hook in React can be challenging because it fires synchronously after all DOM mutations but before the browser paints. This article provides a clear, step-by-step guide on how to test components using useLayoutEffect using Rea" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-test-uselayouteffect-hook-in-react">How to Test
+useLayoutEffect Hook in React</h1>
+<p>Testing the <code>useLayoutEffect</code> hook in React can be
+challenging because it fires synchronously after all DOM mutations but
+before the browser paints. This article provides a clear, step-by-step
+guide on how to test components using <code>useLayoutEffect</code> using
+React Testing Library and Jest, including how to mock DOM measurements
+and avoid common environment pitfalls.</p>
+<h2 id="understanding-the-testing-challenge">Understanding the Testing
+Challenge</h2>
+<p>Unlike <code>useEffect</code>, which runs asynchronously,
+<code>useLayoutEffect</code> runs synchronously. It is typically used to
+read layout from the DOM and synchronously re-render.</p>
+<p>Because test runners like Jest use <code>jsdom</code> as a simulated
+browser environment, layout engines are not fully implemented. This
+means DOM elements do not have actual dimensions (e.g.,
+<code>offsetWidth</code> or <code>getBoundingClientRect()</code> will
+return <code>0</code>). To test <code>useLayoutEffect</code> behavior
+that relies on DOM measurements, you must mock these DOM APIs in your
+tests.</p>
+<h2 id="step-by-step-testing-guide">Step-by-Step Testing Guide</h2>
+<h3 id="1-create-the-component">1. Create the Component</h3>
+<p>Consider a component that measures its own width using
+<code>useLayoutEffect</code> and displays it:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useLayoutEffect<span class="op">,</span> useRef<span class="op">,</span> useState } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">StandardBox</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> boxRef <span class="op">=</span> <span class="fu">useRef</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [width<span class="op">,</span> setWidth] <span class="op">=</span> <span class="fu">useState</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useLayoutEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (boxRef<span class="op">.</span><span class="at">current</span>) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> rect <span class="op">=</span> boxRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">getBoundingClientRect</span>()<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setWidth</span>(rect<span class="op">.</span><span class="at">width</span>)<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div</span> <span class="ot">ref</span><span class="op">=</span><span class="va">{</span>boxRef<span class="va">}</span> <span class="ot">data-testid</span><span class="op">=</span><span class="st">&quot;box-element&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      Width is <span class="va">{</span>width<span class="va">}</span>px</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="2-write-the-test-and-mock-the-dom-api">2. Write the Test and
+Mock the DOM API</h3>
+<p>To test this component, you need to mock
+<code>getBoundingClientRect</code> on the <code>HTMLElement</code>
+prototype before rendering the component.</p>
+<p>Here is the complete test file using Jest and React Testing
+Library:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="st">&#39;@testing-library/jest-dom&#39;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { StandardBox } <span class="im">from</span> <span class="st">&#39;./StandardBox&#39;</span><span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="st">&#39;StandardBox Component&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> originalGetBoundingClientRect<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">beforeAll</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Keep a reference to the original method</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    originalGetBoundingClientRect <span class="op">=</span> <span class="bu">HTMLElement</span><span class="op">.</span><span class="at">prototype</span><span class="op">.</span><span class="at">getBoundingClientRect</span><span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">afterAll</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Restore the original method after all tests run</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">HTMLElement</span><span class="op">.</span><span class="at">prototype</span><span class="op">.</span><span class="at">getBoundingClientRect</span> <span class="op">=</span> originalGetBoundingClientRect<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">it</span>(<span class="st">&#39;should measure and display the correct element width&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Mock the getBoundingClientRect method to return custom dimensions</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">HTMLElement</span><span class="op">.</span><span class="at">prototype</span><span class="op">.</span><span class="at">getBoundingClientRect</span> <span class="op">=</span> jest<span class="op">.</span><span class="fu">fn</span>(() <span class="kw">=&gt;</span> ({</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">width</span><span class="op">:</span> <span class="dv">250</span><span class="op">,</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      <span class="dt">height</span><span class="op">:</span> <span class="dv">100</span><span class="op">,</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      <span class="dt">top</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      <span class="dt">left</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      <span class="dt">bottom</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="dt">right</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    }))<span class="op">;</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">render</span>(<span class="fu">&lt;StandardBox</span> <span class="fu">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Assert that the width updated via useLayoutEffect is rendered</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> boxElement <span class="op">=</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">getByTestId</span>(<span class="st">&#39;box-element&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(boxElement)<span class="op">.</span><span class="fu">toHaveTextContent</span>(<span class="st">&#39;Width is 250px&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="3-handling-server-side-rendering-ssr-warnings">3. Handling
+Server-Side Rendering (SSR) Warnings</h3>
+<p>If you run tests in an environment where <code>window</code> is not
+defined (such as Node.js without <code>jsdom</code>), React will output
+a warning: <em>"useLayoutEffect does nothing on the server..."</em>.</p>
+<p>React Testing Library configures <code>jsdom</code> by default, so
+this warning rarely appears. However, if you encounter this warning in
+your test suite, you can temporarily suppress it by mocking the console
+or running your tests in a proper <code>jsdom</code> environment by
+adding the following comment at the top of your test file:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">/**</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"> * </span><span class="an">@jest-environment</span><span class="co"> jsdom</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"> */</span></span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

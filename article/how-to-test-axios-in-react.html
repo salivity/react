@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Test Axios in React - react</title>
+    <meta name="description" content="Testing Axios in React applications ensures that your components correctly handle API requests and render data without making actual network calls. This article provides a straightforward guide on how to mock the Axios library using Jest and React Testin">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-test-axios-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Test Axios in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-test-axios-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Testing Axios in React applications ensures that your components correctly handle API requests and render data without making actual network calls. This article provides a straightforward guide on how to mock the Axios library using Jest and React Testin" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-test-axios-in-react">How to Test Axios in React</h1>
+<p>Testing Axios in React applications ensures that your components
+correctly handle API requests and render data without making actual
+network calls. This article provides a straightforward guide on how to
+mock the Axios library using Jest and React Testing Library, allowing
+you to simulate both successful API responses and network errors in your
+test environment.</p>
+<h3 id="why-mock-axios">Why Mock Axios?</h3>
+<p>When writing unit tests for React components, you should avoid making
+real HTTP requests. Real network requests make tests slow, fragile, and
+dependent on external server availability. By mocking Axios, you control
+the API's response data and status codes, allowing you to test how your
+UI behaves under various conditions.</p>
+<h3 id="setting-up-the-react-component">Setting Up the React
+Component</h3>
+<p>Consider a simple <code>UserList</code> component that fetches users
+from an API when it mounts and displays them in a list.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> axios <span class="im">from</span> <span class="st">&#39;axios&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">UserList</span>() {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [users<span class="op">,</span> setUsers] <span class="op">=</span> <span class="fu">useState</span>([])<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [error<span class="op">,</span> setError] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    axios<span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;https://jsonplaceholder.typicode.com/users&#39;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">then</span>(response <span class="kw">=&gt;</span> <span class="fu">setUsers</span>(response<span class="op">.</span><span class="at">data</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">catch</span>(err <span class="kw">=&gt;</span> <span class="fu">setError</span>(<span class="st">&#39;Failed to fetch users&#39;</span>))<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (error) <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;</span>{error}<span class="op">&lt;/</span>div<span class="op">&gt;;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>ul<span class="op">&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      {users<span class="op">.</span><span class="fu">map</span>(user <span class="kw">=&gt;</span> (</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>li key<span class="op">=</span>{user<span class="op">.</span><span class="at">id</span>} data<span class="op">-</span>testid<span class="op">=</span><span class="st">&quot;user-item&quot;</span><span class="op">&gt;</span>{user<span class="op">.</span><span class="at">name</span>}<span class="op">&lt;/</span>li<span class="op">&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      ))}</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>ul<span class="op">&gt;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> UserList<span class="op">;</span></span></code></pre></div>
+<h3 id="testing-axios-with-jest-mocking">Testing Axios with Jest
+Mocking</h3>
+<p>The most common way to test Axios in React is by using
+<code>jest.mock('axios')</code>. This replaces the actual Axios module
+with a mock version that you can configure to return specific data.</p>
+<p>Here is the test file using Jest and React Testing Library:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span><span class="op">,</span> waitFor } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> axios <span class="im">from</span> <span class="st">&#39;axios&#39;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> UserList <span class="im">from</span> <span class="st">&#39;./UserList&#39;</span><span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Mock the axios module</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>jest<span class="op">.</span><span class="fu">mock</span>(<span class="st">&#39;axios&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="st">&#39;UserList Component&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">afterEach</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    jest<span class="op">.</span><span class="fu">clearAllMocks</span>()<span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test</span>(<span class="st">&#39;renders user list on successful API call&#39;</span><span class="op">,</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> dummyUsers <span class="op">=</span> [</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      { <span class="dt">id</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;John Doe&#39;</span> }<span class="op">,</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      { <span class="dt">id</span><span class="op">:</span> <span class="dv">2</span><span class="op">,</span> <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;Jane Doe&#39;</span> }<span class="op">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    ]<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Mock axios.get to resolve with fake data</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    axios<span class="op">.</span><span class="at">get</span><span class="op">.</span><span class="fu">mockResolvedValueOnce</span>({ <span class="dt">data</span><span class="op">:</span> dummyUsers })<span class="op">;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">render</span>(<span class="op">&lt;</span>UserList <span class="op">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Assert that the items eventually render in the document</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> userItems <span class="op">=</span> <span class="cf">await</span> <span class="fu">waitFor</span>(() <span class="kw">=&gt;</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">getAllByTestId</span>(<span class="st">&#39;user-item&#39;</span>))<span class="op">;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(userItems)<span class="op">.</span><span class="fu">toHaveLength</span>(<span class="dv">2</span>)<span class="op">;</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(userItems[<span class="dv">0</span>])<span class="op">.</span><span class="fu">toHaveTextContent</span>(<span class="st">&#39;John Doe&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(userItems[<span class="dv">1</span>])<span class="op">.</span><span class="fu">toHaveTextContent</span>(<span class="st">&#39;Jane Doe&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Verify the correct API URL was called</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(axios<span class="op">.</span><span class="at">get</span>)<span class="op">.</span><span class="fu">toHaveBeenCalledWith</span>(<span class="st">&#39;https://jsonplaceholder.typicode.com/users&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test</span>(<span class="st">&#39;renders error message on API failure&#39;</span><span class="op">,</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Mock axios.get to reject with an error</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    axios<span class="op">.</span><span class="at">get</span><span class="op">.</span><span class="fu">mockRejectedValueOnce</span>(<span class="kw">new</span> <span class="bu">Error</span>(<span class="st">&#39;Network Error&#39;</span>))<span class="op">;</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">render</span>(<span class="op">&lt;</span>UserList <span class="op">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> errorMessage <span class="op">=</span> <span class="cf">await</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">findByText</span>(<span class="st">&#39;Failed to fetch users&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(errorMessage)<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="key-takeaways-for-testing-axios">Key Takeaways for Testing
+Axios</h3>
+<ol type="1">
+<li><strong><code>jest.mock('axios')</code></strong>: Place this at the
+top of your test file to automatically mock all Axios methods.</li>
+<li><strong><code>axios.get.mockResolvedValueOnce()</code></strong>: Use
+this to simulate a successful API response. You must match the structure
+of the Axios response object (e.g., nesting your mock data inside a
+<code>data</code> property).</li>
+<li><strong><code>axios.get.mockRejectedValueOnce()</code></strong>: Use
+this to simulate network or server errors to test your error-handling
+UI.</li>
+<li><strong><code>waitFor</code> or <code>findBy</code></strong>:
+Because API calls are asynchronous, use async query utilities from React
+Testing Library to wait for the UI to update.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

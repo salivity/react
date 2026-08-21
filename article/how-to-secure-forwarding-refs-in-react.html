@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Secure Forwarding Refs in React - react</title>
+    <meta name="description" content="React's forwardRef API allows components to pass refs down to their children, enabling direct interaction with DOM nodes. However, exposing raw DOM elements can introduce security risks and break component encapsulation. This article explains how to secu">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-secure-forwarding-refs-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Secure Forwarding Refs in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-secure-forwarding-refs-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's forwardRef API allows components to pass refs down to their children, enabling direct interaction with DOM nodes. However, exposing raw DOM elements can introduce security risks and break component encapsulation. This article explains how to secu" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-secure-forwarding-refs-in-react">How to Secure Forwarding
+Refs in React</h1>
+<p>React's <code>forwardRef</code> API allows components to pass refs
+down to their children, enabling direct interaction with DOM nodes.
+However, exposing raw DOM elements can introduce security risks and
+break component encapsulation. This article explains how to secure
+forwarded refs in React by limiting parent access, using the
+<code>useImperativeHandle</code> hook, and enforcing strict
+encapsulation boundaries.</p>
+<h3 id="the-security-risk-of-forwarding-refs">The Security Risk of
+Forwarding Refs</h3>
+<p>When you use <code>React.forwardRef</code>, you typically pass a
+reference to an underlying DOM node (such as an
+<code>&lt;input&gt;</code> or <code>&lt;div&gt;</code>) directly to a
+parent component. This gives the parent component unrestricted access to
+the entire DOM node.</p>
+<p>With full DOM access, a parent component can bypass React’s virtual
+DOM, modify styles maliciously, trigger unintended side effects, or
+access sensitive internal properties. If a parent component is
+compromised or contains vulnerability-prone third-party scripts, this
+unrestricted access can be exploited to read sensitive input data or
+manipulate the UI in unauthorized ways.</p>
+<h3 id="securing-refs-with-useimperativehandle">Securing Refs with
+<code>useImperativeHandle</code></h3>
+<p>The most effective way to secure a forwarded ref is to restrict what
+the parent component can access. Instead of exposing the entire DOM
+node, you can use the <code>useImperativeHandle</code> hook to define a
+custom, limited interface.</p>
+<p>Here is an example of how to restrict access:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useRef<span class="op">,</span> useImperativeHandle<span class="op">,</span> forwardRef } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> SecureInput <span class="op">=</span> <span class="fu">forwardRef</span>((props<span class="op">,</span> ref) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span>()<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Only expose specific, safe methods to the parent</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">focus</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">clear</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="at">value</span> <span class="op">=</span> <span class="st">&#39;&#39;</span><span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>input ref<span class="op">=</span>{inputRef} type<span class="op">=</span><span class="st">&quot;text&quot;</span> {<span class="op">...</span>props} <span class="op">/&gt;;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>By utilizing <code>useImperativeHandle</code>, the parent component
+only receives an object containing the <code>focus</code> and
+<code>clear</code> functions. It cannot access the underlying
+<code>&lt;input&gt;</code> element's value directly, nor can it
+manipulate other properties, styles, or parent nodes.</p>
+<h3 id="best-practices-for-secure-ref-forwarding">Best Practices for
+Secure Ref Forwarding</h3>
+<p>To maintain a secure React application when using ref forwarding,
+implement the following practices:</p>
+<ul>
+<li><strong>Avoid Exposing Raw DOM Nodes:</strong> Never pass raw DOM
+elements up the component tree unless it is absolutely necessary.
+Default to exposing custom, restricted objects.</li>
+<li><strong>Validate and Sanitize:</strong> If a forwarded ref is used
+to read values from an input, ensure the extracted data is sanitized and
+validated to prevent Cross-Site Scripting (XSS) and injection
+attacks.</li>
+<li><strong>Audit External Dependencies:</strong> Be cautious when
+passing refs to components imported from third-party libraries. Ensure
+these libraries do not perform unsafe DOM manipulations.</li>
+<li><strong>Use Strong Typing:</strong> If you are using TypeScript,
+explicitly type the ref handle to ensure only the specified methods and
+properties are accessible, preventing accidental leaks of internal
+component APIs.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

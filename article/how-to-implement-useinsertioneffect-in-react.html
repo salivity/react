@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Implement useInsertionEffect in React - react</title>
+    <meta name="description" content="In this article, you will learn how to implement the useInsertionEffect hook in React. We will cover its specific use case—injecting dynamic CSS-in-JS styles into the DOM before layout effects trigger—explain why it is crucial for performance, and pr">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-implement-useinsertioneffect-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Implement useInsertionEffect in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-implement-useinsertioneffect-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In this article, you will learn how to implement the useInsertionEffect hook in React. We will cover its specific use case—injecting dynamic CSS-in-JS styles into the DOM before layout effects trigger—explain why it is crucial for performance, and pr" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-implement-useinsertioneffect-in-react">How to Implement
+useInsertionEffect in React</h1>
+<p>In this article, you will learn how to implement the
+<code>useInsertionEffect</code> hook in React. We will cover its
+specific use case—injecting dynamic CSS-in-JS styles into the DOM before
+layout effects trigger—explain why it is crucial for performance, and
+provide a practical code example demonstrating its usage.</p>
+<h3 id="what-is-useinsertioneffect">What is useInsertionEffect?</h3>
+<p><code>useInsertionEffect</code> is a React hook introduced in React
+18. It is designed exclusively for authors of CSS-in-JS libraries. The
+hook fires synchronously <em>before</em> any layout effects
+(<code>useLayoutEffect</code>) run and before the browser paints the
+screen. This timing allows you to inject <code>&lt;style&gt;</code>
+elements into the document head before React calculates the layout of
+the DOM.</p>
+<h3 id="why-use-it-instead-of-uselayouteffect">Why Use It Instead of
+useLayoutEffect?</h3>
+<p>Using <code>useLayoutEffect</code> or <code>useEffect</code> to
+inject styles dynamically causes performance issues. If you insert
+<code>&lt;style&gt;</code> tags during those phases, the browser is
+forced to recalculate the layout (a process known as "style recalc" or
+"reflow") multiple times. By using <code>useInsertionEffect</code>, you
+ensure that styles are injected before React does any layout passes,
+preventing expensive layout recalculations.</p>
+<h3 id="how-to-implement-useinsertioneffect">How to Implement
+useInsertionEffect</h3>
+<p>To implement <code>useInsertionEffect</code>, import it from React
+and use it to insert your style rules. Note that you do not have access
+to refs inside this hook, and it should not be used for general side
+effects like fetching data or updating state.</p>
+<p>Here is a practical implementation example:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useInsertionEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Helper function to insert styles into the document head</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">insertStyleRule</span>(rule) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> style <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">&#39;style&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  style<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> rule<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="bu">document</span><span class="op">.</span><span class="at">head</span><span class="op">.</span><span class="fu">appendChild</span>(style)<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">MyStyledComponent</span>() {</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useInsertionEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> rule <span class="op">=</span> <span class="vs">`.dynamic-btn { background-color: #0070f3; color: white; padding: 10px; border: none; }`</span><span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">insertStyleRule</span>(rule)<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span> <span class="co">// Empty dependency array ensures this runs once when the component mounts</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>button className<span class="op">=</span><span class="st">&quot;dynamic-btn&quot;</span><span class="op">&gt;</span>Click Me<span class="op">&lt;/</span>button<span class="op">&gt;;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> MyStyledComponent<span class="op">;</span></span></code></pre></div>
+<h3 id="hook-execution-order">Hook Execution Order</h3>
+<p>To understand exactly when this hook runs, here is the chronological
+order of React's effect hooks:</p>
+<ol type="1">
+<li><strong><code>useInsertionEffect</code></strong>: Runs before DOM
+mutations and layout calculations. Best for dynamic style
+injection.</li>
+<li><strong><code>useLayoutEffect</code></strong>: Runs after DOM
+mutations but before the browser paints. Best for reading DOM layout
+(like measuring element size).</li>
+<li><strong><code>useEffect</code></strong>: Runs after the browser has
+painted the screen. Best for general side effects like data fetching and
+event listeners.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

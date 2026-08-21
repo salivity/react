@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is React Hooks in React? - react</title>
+    <meta name="description" content="This article provides a clear and concise guide to React Hooks, explaining what they are, why they were introduced, and how they function in modern web development. You will learn about core hooks like useState and useEffect, the key benefits they offer">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-react-hooks-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is React Hooks in React? - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-react-hooks-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a clear and concise guide to React Hooks, explaining what they are, why they were introduced, and how they function in modern web development. You will learn about core hooks like useState and useEffect, the key benefits they offer" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-react-hooks-in-react">What is React Hooks in React?</h1>
+<p>This article provides a clear and concise guide to React Hooks,
+explaining what they are, why they were introduced, and how they
+function in modern web development. You will learn about core hooks like
+<code>useState</code> and <code>useEffect</code>, the key benefits they
+offer over traditional class components, and the essential rules you
+must follow when implementing them in your React projects.</p>
+<h2 id="understanding-react-hooks">Understanding React Hooks</h2>
+<p>React Hooks are built-in functions introduced in React 16.8 that
+allow developers to use state and other React features in functional
+components. Before hooks, managing state or handling lifecycle events
+required writing class components. Hooks allow you to write your entire
+application using functional components, which simplifies the codebase
+and makes it more readable.</p>
+<h2 id="why-react-hooks-were-introduced">Why React Hooks Were
+Introduced</h2>
+<p>Prior to React 16.8, class components were the standard for managing
+stateful logic. However, class components came with several
+challenges:</p>
+<ul>
+<li><strong>Complex Code:</strong> Managing the <code>this</code>
+keyword in JavaScript can be confusing and error-prone.</li>
+<li><strong>Component Verbosity:</strong> Class components require a lot
+of boilerplate code, making them harder to write and maintain.</li>
+<li><strong>Difficult Logic Reuse:</strong> Sharing stateful logic
+between class components often required complex patterns like
+Higher-Order Components (HOCs) or render props.</li>
+</ul>
+<p>Hooks solve these problems by allowing you to extract and reuse
+stateful logic without changing your component hierarchy, resulting in
+cleaner, more modular code.</p>
+<h2 id="core-react-hooks">Core React Hooks</h2>
+<p>While React offers several built-in hooks, two are used in almost
+every functional component:</p>
+<h3 id="1-the-usestate-hook">1. The <code>useState</code> Hook</h3>
+<p>The <code>useState</code> hook allows you to add state to a
+functional component. It accepts the initial state as an argument and
+returns an array with two elements: the current state value and a
+function to update it.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Counter</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [count<span class="op">,</span> setCount] <span class="op">=</span> <span class="fu">useState</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>p<span class="op">&gt;</span>You clicked {count} times<span class="op">&lt;/</span>p<span class="op">&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">setCount</span>(count <span class="op">+</span> <span class="dv">1</span>)}<span class="op">&gt;</span>Click me<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="2-the-useeffect-hook">2. The <code>useEffect</code> Hook</h3>
+<p>The <code>useEffect</code> hook lets you perform side effects in
+functional components. Side effects include data fetching, manual DOM
+manipulations, and setting up subscriptions. It serves a similar purpose
+to the lifecycle methods <code>componentDidMount</code>,
+<code>componentDidUpdate</code>, and <code>componentWillUnmount</code>
+in class components.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Timer</span>() {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [seconds<span class="op">,</span> setSeconds] <span class="op">=</span> <span class="fu">useState</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> interval <span class="op">=</span> <span class="pp">setInterval</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setSeconds</span>(prev <span class="kw">=&gt;</span> prev <span class="op">+</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span> <span class="dv">1000</span>)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Cleanup the interval on component unmount</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> () <span class="kw">=&gt;</span> <span class="pp">clearInterval</span>(interval)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span> <span class="co">// Empty array means this effect runs once on mount</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>p<span class="op">&gt;</span>Time <span class="dt">elapsed</span><span class="op">:</span> {seconds} seconds<span class="op">&lt;/</span>p<span class="op">&gt;;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="essential-rules-of-hooks">Essential Rules of Hooks</h2>
+<p>To ensure hooks work correctly, React enforces two strict rules:</p>
+<ol type="1">
+<li><strong>Only Call Hooks at the Top Level:</strong> Do not call hooks
+inside loops, conditions, or nested functions. Always use them at the
+top level of your React function to ensure they execute in the same
+order on every render.</li>
+<li><strong>Only Call Hooks from React Functions:</strong> You should
+only call hooks from React functional components or from custom hooks.
+Do not call them from regular JavaScript functions.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

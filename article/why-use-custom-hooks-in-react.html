@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use Custom Hooks in React - react</title>
+    <meta name="description" content="React Custom Hooks are a powerful feature that allows developers to extract component logic into reusable functions. This article explains why you should integrate custom hooks into your React workflow, highlighting how they promote code reusability, imp">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-custom-hooks-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use Custom Hooks in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-custom-hooks-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React Custom Hooks are a powerful feature that allows developers to extract component logic into reusable functions. This article explains why you should integrate custom hooks into your React workflow, highlighting how they promote code reusability, imp" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-custom-hooks-in-react">Why Use Custom Hooks in
+React</h1>
+<p>React Custom Hooks are a powerful feature that allows developers to
+extract component logic into reusable functions. This article explains
+why you should integrate custom hooks into your React workflow,
+highlighting how they promote code reusability, improve readability,
+simplify testing, and help maintain a clean separation of concerns
+within your codebase.</p>
+<h2 id="reusability-of-stateful-logic">Reusability of Stateful
+Logic</h2>
+<p>Before the introduction of React Hooks, sharing stateful logic
+between components required complex patterns like Higher-Order
+Components (HOCs) or Render Props. These patterns often led to deeply
+nested component trees, commonly referred to as "wrapper hell."</p>
+<p>Custom hooks solve this problem by allowing you to package stateful
+logic—such as fetching data, managing form states, or tracking window
+dimensions—into a single, isolated function. Once created, this hook can
+be imported and used across any number of components without altering
+their hierarchy.</p>
+<h2 id="cleaner-and-more-readable-components">Cleaner and More Readable
+Components</h2>
+<p>When components grow in complexity, they often become cluttered with
+multiple <code>useState</code> and <code>useEffect</code> declarations.
+This clutter makes the UI rendering logic difficult to read and
+maintain.</p>
+<p>By offloading complex state management and side effects to a custom
+hook, your main component remains focused solely on rendering the user
+interface. This separation of concerns makes your components
+significantly shorter, easier to read, and simpler to debug.</p>
+<h2 id="better-organization-of-related-code">Better Organization of
+Related Code</h2>
+<p>Standard React components often group unrelated logic inside a single
+lifecycle method or <code>useEffect</code> hook. For example, a single
+component might handle both data fetching and event listeners in the
+same file.</p>
+<p>Custom hooks allow you to group related code together based on what
+it does, rather than when it runs in the component lifecycle. You can
+create one custom hook for handling authentication status and another
+for handling a dark mode toggle. This modular structure makes the
+overall codebase far more organized.</p>
+<h2 id="simplified-unit-testing">Simplified Unit Testing</h2>
+<p>Testing stateful logic inside a complex UI component can be
+challenging because you have to render the entire interface to assert
+changes.</p>
+<p>When you extract logic into a custom hook, you can test that logic
+independently of any UI representation. Utilizing testing libraries like
+React Testing Library’s <code>renderHook</code> utility allows you to
+write isolated unit tests for your hooks, ensuring your business logic
+functions correctly under various conditions before it ever touches a
+component.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

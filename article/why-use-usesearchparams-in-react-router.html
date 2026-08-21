@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use useSearchParams in React Router - react</title>
+    <meta name="description" content="Managing application state through the URL is a best practice for building modern, user-friendly web applications. This article explains why developers should use the useSearchParams hook provided by React Router to read and manipulate query parameters.">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-usesearchparams-in-react-router">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use useSearchParams in React Router - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-usesearchparams-in-react-router" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Managing application state through the URL is a best practice for building modern, user-friendly web applications. This article explains why developers should use the useSearchParams hook provided by React Router to read and manipulate query parameters." />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-usesearchparams-in-react-router">Why Use useSearchParams
+in React Router</h1>
+<p>Managing application state through the URL is a best practice for
+building modern, user-friendly web applications. This article explains
+why developers should use the <code>useSearchParams</code> hook provided
+by React Router to read and manipulate query parameters. We will cover
+how this hook simplifies state management, enables shareable application
+states, utilizes standard web APIs, and ensures automatic UI
+synchronization.</p>
+<h2 id="what-is-usesearchparams">What is useSearchParams?</h2>
+<p>The <code>useSearchParams</code> hook is a custom hook provided by
+React Router (version 6 and above) that allows components to read and
+modify the query string in the current URL. It returns an array
+containing two values: the current <code>URLSearchParams</code> object
+and a function to update the search parameters. This behavior closely
+mirrors React's native <code>useState</code> hook.</p>
+<h2 id="key-benefits-of-using-usesearchparams">Key Benefits of Using
+useSearchParams</h2>
+<h3 id="1-simplified-url-state-management">1. Simplified URL State
+Management</h3>
+<p>Historically, parsing query parameters in React required importing
+third-party libraries (like <code>query-string</code>) or writing custom
+parsing logic using <code>window.location.search</code>. The
+<code>useSearchParams</code> hook eliminates this boilerplate code. It
+allows you to read and write to the URL query string using a familiar,
+state-like syntax:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [searchParams<span class="op">,</span> setSearchParams] <span class="op">=</span> <span class="fu">useSearchParams</span>()<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> query <span class="op">=</span> searchParams<span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;query&#39;</span>)<span class="op">;</span></span></code></pre></div>
+<h3 id="2-shareable-and-bookmarkable-app-states">2. Shareable and
+Bookmarkable App States</h3>
+<p>When users interact with an application—such as filtering a product
+list, searching for items, or navigating through paginated data—they
+expect to be able to bookmark the page or share the link with others. By
+storing these interactive states in the URL parameters instead of local
+component state, the application becomes inherently shareable. Anyone
+opening the shared link will see the exact same filtered or paginated
+view.</p>
+<h3 id="3-synchronization-with-react-lifecycle">3. Synchronization with
+React Lifecycle</h3>
+<p>Unlike manual window history manipulation,
+<code>useSearchParams</code> is deeply integrated with React Router.
+When the query parameters in the URL change, React Router triggers a
+re-render of the component. This ensures that your UI always stays in
+perfect sync with the URL without requiring manual event listeners or
+<code>useEffect</code> setups.</p>
+<h3 id="4-familiar-web-standard-api">4. Familiar Web-Standard API</h3>
+<p>The first element returned by the hook is an instance of the native
+browser <code>URLSearchParams</code> interface. This means developers do
+not have to learn a proprietary React Router API to read values. You can
+use standard JavaScript methods such as:</p>
+<ul>
+<li><code>searchParams.get(key)</code> to retrieve a value.</li>
+<li><code>searchParams.has(key)</code> to check if a parameter
+exists.</li>
+<li><code>searchParams.getAll(key)</code> to retrieve multiple values
+for the same key.</li>
+</ul>
+<p>To update the parameters, you pass a new object or a new
+<code>URLSearchParams</code> instance to the setter function:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Updates the URL to include ?search=react</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setSearchParams</span>({ <span class="dt">search</span><span class="op">:</span> <span class="st">&#39;react&#39;</span> })<span class="op">;</span></span></code></pre></div>
+<h3 id="5-seamless-navigation-integration">5. Seamless Navigation
+Integration</h3>
+<p>The setter function returned by <code>useSearchParams</code> works in
+harmony with React Router's navigation stack. By default, updating
+search parameters pushes a new entry onto the browser history stack,
+allowing users to use the browser's "Back" button to return to the
+previous search state. If preferred, you can pass
+<code>{ replace: true }</code> as an option to replace the current
+history entry instead.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

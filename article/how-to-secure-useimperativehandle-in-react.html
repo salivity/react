@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Secure useImperativeHandle in React - react</title>
+    <meta name="description" content="The useImperativeHandle hook in React allows child components to expose specific custom methods and properties to parent components using a ref. While powerful, exposing too much internal logic can break encapsulation, violate the "least privilege" princ">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-secure-useimperativehandle-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Secure useImperativeHandle in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-secure-useimperativehandle-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The useImperativeHandle hook in React allows child components to expose specific custom methods and properties to parent components using a ref. While powerful, exposing too much internal logic can break encapsulation, violate the "least privilege" princ" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-secure-useimperativehandle-in-react">How to Secure
+useImperativeHandle in React</h1>
+<p>The <code>useImperativeHandle</code> hook in React allows child
+components to expose specific custom methods and properties to parent
+components using a <code>ref</code>. While powerful, exposing too much
+internal logic can break encapsulation, violate the "least privilege"
+principle, and introduce security or stability bugs into your
+application. This article explains how to secure your
+<code>useImperativeHandle</code> implementations by restricting exposed
+API surface areas, leveraging TypeScript for strict type boundaries, and
+validating inputs to prevent unintended state manipulation.</p>
+<h2 id="understand-the-security-and-architecture-risks">Understand the
+Security and Architecture Risks</h2>
+<p>In React, data flows downward via props, and events flow upward.
+Using <code>useImperativeHandle</code> bypasses this declarative flow,
+creating a direct imperative link from parent to child.</p>
+<p>If you expose internal component states, raw DOM elements, or
+critical state-setter functions directly through a ref, you risk:</p>
+<ul>
+<li><strong>Breaking Encapsulation:</strong> Parent components can
+manipulate the child's internal state in ways the child component does
+not expect.</li>
+<li><strong>Unintended Side Effects:</strong> Third-party libraries or
+parent components can trigger operations out of order, leading to race
+conditions or crashes.</li>
+<li><strong>Security Vulnerabilities:</strong> Exposing raw input
+elements directly can bypass React's built-in XSS protections if the
+parent directly manipulates the DOM.</li>
+</ul>
+<h2 id="1-apply-the-principle-of-least-privilege">1. Apply the Principle
+of Least Privilege</h2>
+<p>Only expose the absolute minimum set of functions required by the
+parent. Never return the entire DOM node or internal state objects.</p>
+<h3 id="vulnerablebad-practice">Vulnerable/Bad Practice</h3>
+<p>Exposing the raw DOM element allows the parent to manipulate style,
+attributes, and inner HTML directly, bypassing React's virtual DOM.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// BAD: Exposing the raw DOM element</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">inputElement</span><span class="op">:</span> inputRef<span class="op">.</span><span class="at">current</span> <span class="co">// Allows parent to do inputRef.current.inputElement.remove()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}))<span class="op">;</span></span></code></pre></div>
+<h3 id="secured-practice">Secured Practice</h3>
+<p>Expose specific, highly-controlled wrapper functions instead of the
+node itself.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// GOOD: Exposing only highly specific methods</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">focus</span>() {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clear</span>() {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="at">value</span> <span class="op">=</span> <span class="st">&#39;&#39;</span><span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}))<span class="op">;</span></span></code></pre></div>
+<h2 id="2-enforce-strict-type-boundaries-with-typescript">2. Enforce
+Strict Type Boundaries with TypeScript</h2>
+<p>Using TypeScript is one of the most effective ways to secure your
+components. By explicitly defining the handle's interface, you prevent
+parent components from accessing unauthorized or internal-only
+properties.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { forwardRef<span class="op">,</span> useImperativeHandle<span class="op">,</span> useRef } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// 1. Define the strict interface for the exposed methods</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">interface</span> SecureInputHandle {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  focus<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  reset<span class="op">:</span> () <span class="kw">=&gt;</span> <span class="dt">void</span><span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="kw">interface</span> Props {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  placeholder<span class="op">:</span> <span class="dt">string</span><span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> SecureInput <span class="op">=</span> <span class="fu">forwardRef</span><span class="op">&lt;</span>SecureInputHandle<span class="op">,</span> Props<span class="op">&gt;</span>(({ placeholder }<span class="op">,</span> ref) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span><span class="op">&lt;</span><span class="bu">HTMLInputElement</span><span class="op">&gt;</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 2. Bind the hook to the defined interface</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">focus</span>() {</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">?.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">reset</span>() {</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (inputRef<span class="op">.</span><span class="at">current</span>) {</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="at">value</span> <span class="op">=</span> <span class="st">&#39;&#39;</span><span class="op">;</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>input ref<span class="op">=</span>{inputRef} placeholder<span class="op">=</span>{placeholder} <span class="op">/&gt;;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>SecureInput<span class="op">.</span><span class="at">displayName</span> <span class="op">=</span> <span class="st">&#39;SecureInput&#39;</span><span class="op">;</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> SecureInput<span class="op">;</span></span></code></pre></div>
+<p>With this setup, any parent attempting to access non-defined
+properties on the ref will trigger a compile-time error.</p>
+<h2 id="3-validate-inputs-in-exposed-methods">3. Validate Inputs in
+Exposed Methods</h2>
+<p>Treat any method exposed through <code>useImperativeHandle</code> as
+a public API. Since parent components (or external hooks) can pass
+arguments to these methods, you must validate the inputs before acting
+on them.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Secure method with input validation</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setValue</span>(newValue) {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">typeof</span> newValue <span class="op">!==</span> <span class="st">&#39;string&#39;</span>) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">warn</span>(<span class="st">&#39;Invalid type passed to setValue&#39;</span>)<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Sanitize or restrict length if necessary</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> sanitizedValue <span class="op">=</span> newValue<span class="op">.</span><span class="fu">trim</span>()<span class="op">.</span><span class="fu">substring</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">100</span>)<span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (inputRef<span class="op">.</span><span class="at">current</span>) {</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="at">value</span> <span class="op">=</span> sanitizedValue<span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>}))<span class="op">;</span></span></code></pre></div>
+<h2 id="4-prevent-unauthorized-state-manipulation">4. Prevent
+Unauthorized State Manipulation</h2>
+<p>If an exposed method modifies state, ensure that it complies with the
+internal business logic of the child component. Do not allow the parent
+to force the component into an invalid state.</p>
+<p>For example, if you have a multi-step form child component, do not
+expose a <code>setCurrentStep(step)</code> method that allows skipping
+validation steps. Instead, expose <code>goToNextStep()</code>, which
+internally validates the current step before proceeding.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Secure approach: The child maintains control of the state transitions</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nextStep</span>() {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">validateCurrentStep</span>()) {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setCurrentStep</span>((prev) <span class="kw">=&gt;</span> prev <span class="op">+</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setError</span>(<span class="st">&#39;Please complete the current step first.&#39;</span>)<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>}))<span class="op">;</span></span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

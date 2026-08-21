@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is CSR in React? Client-Side Rendering Explained - react</title>
+    <meta name="description" content="This article provides a comprehensive overview of Client-Side Rendering (CSR) in React. You will learn what CSR is, how it works under the hood, its primary advantages and disadvantages, and how it compares to Server-Side Rendering (SSR) so you can make">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-csr-in-react-client-side-rendering-explained">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is CSR in React? Client-Side Rendering Explained - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-csr-in-react-client-side-rendering-explained" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a comprehensive overview of Client-Side Rendering (CSR) in React. You will learn what CSR is, how it works under the hood, its primary advantages and disadvantages, and how it compares to Server-Side Rendering (SSR) so you can make" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-csr-in-react-client-side-rendering-explained">What is
+CSR in React? Client-Side Rendering Explained</h1>
+<p>This article provides a comprehensive overview of Client-Side
+Rendering (CSR) in React. You will learn what CSR is, how it works under
+the hood, its primary advantages and disadvantages, and how it compares
+to Server-Side Rendering (SSR) so you can make informed decisions for
+your next web development project.</p>
+<h2 id="understanding-client-side-rendering-csr">Understanding
+Client-Side Rendering (CSR)</h2>
+<p>Client-Side Rendering (CSR) is a web development method where the
+browser downloads a minimal HTML document, fetches the required
+JavaScript files, and compiles and renders the website's user interface
+directly in the user's browser.</p>
+<p>In a standard React application created with tools like Vite or
+Create React App, CSR is the default rendering method. Instead of
+receiving a fully rendered website from a server, the browser receives a
+nearly empty HTML file and a JavaScript bundle containing the React
+library and your application code.</p>
+<h2 id="how-csr-works-in-react">How CSR Works in React</h2>
+<p>When a user visits a React website using CSR, the following sequence
+occurs:</p>
+<ol type="1">
+<li><strong>The Request:</strong> The browser requests a webpage from
+the server.</li>
+<li><strong>The Response:</strong> The server sends back a basic, blank
+HTML file. This file typically contains a single <code>div</code>
+element (usually with <code>id="root"</code>) and a script tag linking
+to the JavaScript bundle.</li>
+<li><strong>Downloading Assets:</strong> The browser downloads the
+referenced JavaScript and CSS files.</li>
+<li><strong>Execution and Rendering:</strong> The browser executes the
+React code. React generates the virtual DOM, mounts it to the empty
+<code>div</code> in the real DOM, and the user finally sees the fully
+rendered webpage.</li>
+<li><strong>Dynamic Updates:</strong> As the user interacts with the
+app, React updates the DOM dynamically without requiring a full page
+reload.</li>
+</ol>
+<h2 id="key-advantages-of-csr-in-react">Key Advantages of CSR in
+React</h2>
+<ul>
+<li><strong>Rich User Experience:</strong> Once the initial bundle is
+loaded, navigating between pages is incredibly fast and seamless. There
+are no full-page reloads, making the website feel like a desktop
+application.</li>
+<li><strong>Reduced Server Load:</strong> The server only needs to host
+and serve static files (HTML, JS, CSS). It does not need to spend
+computational power rendering pages for every request.</li>
+<li><strong>Perfect for Web Applications:</strong> CSR is ideal for
+single-page applications (SPAs), dashboards, and SaaS platforms where
+users interact heavily with the interface and require real-time
+updates.</li>
+</ul>
+<h2 id="disadvantages-of-csr">Disadvantages of CSR</h2>
+<ul>
+<li><strong>Slower Initial Load Time:</strong> Because the browser must
+download and execute the entire JavaScript bundle before displaying any
+content, the user may experience a blank screen (or loading spinner)
+during the initial load.</li>
+<li><strong>SEO Challenges:</strong> Search engine crawlers index
+websites by reading their HTML content. If a crawler scans a CSR site
+before the JavaScript has executed, it may only see an empty HTML file.
+While modern search engine crawlers (like Googlebot) can execute
+JavaScript, it is still slower and less reliable than indexing
+pre-rendered HTML.</li>
+</ul>
+<h2 id="csr-vs-ssr-in-react">CSR vs. SSR in React</h2>
+<p>While CSR renders the application in the user's browser, Server-Side
+Rendering (SSR) generates the full HTML on the server for every request
+and sends it pre-rendered to the browser.</p>
+<ul>
+<li><strong>Choose CSR if:</strong> You are building an authenticated
+dashboard, a portal, or a highly interactive application where SEO is
+not a priority and fast page transitions are crucial.</li>
+<li><strong>Choose SSR if:</strong> You are building a public-facing
+website, a blog, or an e-commerce store where search engine visibility
+(SEO) and fast initial load times are vital for user retention.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Optimize useState Hook in React - react</title>
+    <meta name="description" content="This article provides a practical guide on how to optimize the useState hook in React to improve application performance. You will learn how to prevent unnecessary re-renders, avoid expensive recalculations during initial renders, and structure your comp">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-optimize-usestate-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Optimize useState Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-optimize-usestate-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a practical guide on how to optimize the useState hook in React to improve application performance. You will learn how to prevent unnecessary re-renders, avoid expensive recalculations during initial renders, and structure your comp" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-optimize-usestate-hook-in-react">How to Optimize useState
+Hook in React</h1>
+<p>This article provides a practical guide on how to optimize the
+<code>useState</code> hook in React to improve application performance.
+You will learn how to prevent unnecessary re-renders, avoid expensive
+recalculations during initial renders, and structure your component
+state efficiently using techniques like lazy initialization, functional
+updates, and state hoisting.</p>
+<h2 id="1-use-lazy-state-initialization-for-expensive-computations">1.
+Use Lazy State Initialization for Expensive Computations</h2>
+<p>By default, if you pass an initial value directly to
+<code>useState</code>, React evaluates that value on every single
+render, even though it only uses it during the initial mount. If the
+initial state requires a heavy computation—such as reading from
+<code>localStorage</code> or filtering a large array—it can slow down
+your application.</p>
+<p>To optimize this, pass a function (a callback) to
+<code>useState</code> instead of a direct value. React will only run
+this function once during the initial render.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Unoptimized: Evaluates localStorage on every render</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [data<span class="op">,</span> setData] <span class="op">=</span> <span class="fu">useState</span>(<span class="fu">getExpensiveData</span>())<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Optimized: Evaluates getExpensiveData only once</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [data<span class="op">,</span> setData] <span class="op">=</span> <span class="fu">useState</span>(() <span class="kw">=&gt;</span> <span class="fu">getExpensiveData</span>())<span class="op">;</span></span></code></pre></div>
+<h2 id="2-use-functional-state-updates-to-prevent-closure-bugs">2. Use
+Functional State Updates to Prevent Closure Bugs</h2>
+<p>When updating state based on the previous state, always use the
+functional updater form (<code>prev =&gt; newValue</code>). This ensures
+you are always working with the most up-to-date state value and prevents
+closure-related bugs, especially when dealing with asynchronous
+operations like <code>setTimeout</code> or API calls.</p>
+<p>Using functional updates also allows you to omit the state variable
+from dependency arrays in hooks like <code>useEffect</code> or
+<code>useCallback</code>, reducing unnecessary hook executions.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Unoptimized: Can lead to stale state bugs in async operations</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleIncrement <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setCount</span>(count <span class="op">+</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Optimized: Always uses the latest state</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleIncrement <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setCount</span>(prevCount <span class="kw">=&gt;</span> prevCount <span class="op">+</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h2 id="3-avoid-unnecessary-state-derive-state-instead">3. Avoid
+Unnecessary State (Derive State Instead)</h2>
+<p>A common performance bottleneck is duplicating data in state that can
+be calculated from existing state or props. Synchronizing multiple
+states using <code>useEffect</code> triggers extra, unnecessary
+renders.</p>
+<p>Instead of storing calculated values in a separate state, calculate
+them on the fly during the render phase. If the calculation is
+expensive, wrap it in <code>useMemo</code>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Unoptimized: Extra state and extra render cycle</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [firstName<span class="op">,</span> setFirstName] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [lastName<span class="op">,</span> setLastName] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [fullName<span class="op">,</span> setFullName] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setFullName</span>(<span class="vs">`</span><span class="sc">${</span>firstName<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>lastName<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [firstName<span class="op">,</span> lastName])<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">// Optimized: Derived state (computed during render)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [firstName<span class="op">,</span> setFirstName] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [lastName<span class="op">,</span> setLastName] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> fullName <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>firstName<span class="sc">}</span><span class="vs"> </span><span class="sc">${</span>lastName<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span></code></pre></div>
+<h2 id="4-group-related-state-to-reduce-render-cycles">4. Group Related
+State to Reduce Render Cycles</h2>
+<p>If you find yourself updating multiple state variables at the exact
+same time, it may be more efficient to group them into a single state
+object. While React 18 batches state updates automatically, grouping
+related state makes the code cleaner and ensures the state updates
+logically together.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Unoptimized: Separate state for coordinates</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [x<span class="op">,</span> setX] <span class="op">=</span> <span class="fu">useState</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [y<span class="op">,</span> setY] <span class="op">=</span> <span class="fu">useState</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Optimized: Grouped state</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [position<span class="op">,</span> setPosition] <span class="op">=</span> <span class="fu">useState</span>({ <span class="dt">x</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="dv">0</span> })<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> move <span class="op">=</span> (newX<span class="op">,</span> newY) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setPosition</span>({ <span class="dt">x</span><span class="op">:</span> newX<span class="op">,</span> <span class="dt">y</span><span class="op">:</span> newY })<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p><em>Note: When updating object states, remember to copy the existing
+properties using the spread operator (<code>...position</code>) if you
+are only updating a subset of the fields.</em></p>
+<h2 id="5-move-state-down-to-avoid-parent-re-renders">5. Move State Down
+to Avoid Parent Re-renders</h2>
+<p>Whenever state changes, the component containing that state—and all
+of its child components—re-render. To optimize performance, move state
+to the smallest possible scope. If only a small subtree or a single
+button needs a state variable, isolate that state inside a smaller child
+component.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Unoptimized: Changing state re-renders the entire HeavyComponent</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">App</span>() {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [isOpen<span class="op">,</span> setIsOpen] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">setIsOpen</span>(<span class="op">!</span>isOpen)}<span class="op">&gt;</span>Toggle Modal<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      {isOpen <span class="op">&amp;&amp;</span> <span class="op">&lt;</span>Modal <span class="op">/&gt;</span>}</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>HeavyComponent <span class="op">/&gt;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">// Optimized: State is localized, HeavyComponent does not re-render</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">App</span>() {</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>ModalController <span class="op">/&gt;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>HeavyComponent <span class="op">/&gt;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ModalController</span>() {</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [isOpen<span class="op">,</span> setIsOpen] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;&gt;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">setIsOpen</span>(<span class="op">!</span>isOpen)}<span class="op">&gt;</span>Toggle Modal<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>      {isOpen <span class="op">&amp;&amp;</span> <span class="op">&lt;</span>Modal <span class="op">/&gt;</span>}</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/&gt;</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

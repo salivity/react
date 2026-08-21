@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use useLayoutEffect Hook in React - react</title>
+    <meta name="description" content="The useLayoutEffect hook in React is a specialized tool designed for scenarios where you need to measure DOM layout and make visual updates before the browser repaints the screen. While it shares the same signature as the standard useEffect hook, it oper">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-uselayouteffect-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use useLayoutEffect Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-uselayouteffect-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The useLayoutEffect hook in React is a specialized tool designed for scenarios where you need to measure DOM layout and make visual updates before the browser repaints the screen. While it shares the same signature as the standard useEffect hook, it oper" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-uselayouteffect-hook-in-react">Why Use useLayoutEffect
+Hook in React</h1>
+<p>The <code>useLayoutEffect</code> hook in React is a specialized tool
+designed for scenarios where you need to measure DOM layout and make
+visual updates before the browser repaints the screen. While it shares
+the same signature as the standard <code>useEffect</code> hook, it
+operates synchronously to prevent visual flickers in the user interface.
+This article explains why developers should use
+<code>useLayoutEffect</code>, its key differences from
+<code>useEffect</code>, and the specific scenarios where it is essential
+for delivering a seamless user experience.</p>
+<h2 id="the-core-difference-timing">The Core Difference: Timing</h2>
+<p>To understand why you should use <code>useLayoutEffect</code>, you
+must understand the browser rendering pipeline and how it interacts with
+React hooks:</p>
+<ul>
+<li><strong><code>useEffect</code> (Asynchronous):</strong> Runs
+<em>after</em> React has committed updates to the DOM and <em>after</em>
+the browser has painted those changes to the screen. This is ideal for
+most side effects, like data fetching or setting up event listeners,
+because it does not block the browser from updating the UI.</li>
+<li><strong><code>useLayoutEffect</code> (Synchronous):</strong> Runs
+<em>after</em> React commits updates to the DOM, but <em>before</em> the
+browser has a chance to paint those changes to the screen. It
+temporarily blocks the browser's paint process to run your code,
+allowing you to make further DOM modifications that will render in the
+same frame.</li>
+</ul>
+<h2 id="key-reasons-to-use-uselayouteffect">Key Reasons to Use
+useLayoutEffect</h2>
+<h3 id="1-preventing-visual-flickering">1. Preventing Visual
+Flickering</h3>
+<p>If you need to update a component's state based on a DOM measurement
+(like an element's width or height), using <code>useEffect</code> can
+cause a noticeable visual flicker.</p>
+<p>With <code>useEffect</code>, the browser paints the initial layout,
+your hook runs, measures the DOM, updates the state, and the browser
+repaints. This results in the user briefly seeing the "incorrect"
+initial layout. With <code>useLayoutEffect</code>, the measurements and
+state updates happen in a single pass before anything is painted,
+ensuring the user only sees the final, corrected layout.</p>
+<h3 id="2-measuring-dom-elements-accurately">2. Measuring DOM Elements
+Accurately</h3>
+<p>When building complex UI components like tooltips, dropdowns,
+popovers, or custom dropdown menus, you often need to position them
+relative to a "trigger" element.</p>
+<p>To calculate the correct coordinates, you must use
+<code>element.getBoundingClientRect()</code> or scroll positions. Doing
+this in <code>useLayoutEffect</code> ensures that your positioning
+calculations are applied before the user sees the element, preventing it
+from jumping around on the screen.</p>
+<h3 id="3-animating-initial-layouts">3. Animating Initial Layouts</h3>
+<p>If you are initiating animations that rely on the initial physical
+dimensions of a DOM node, <code>useLayoutEffect</code> is the safest
+place to read those layout values. It guarantees that your initial
+animation values are calculated and applied seamlessly before the
+browser draws the first frame.</p>
+<h2 id="a-quick-guidelines-check">A Quick Guidelines Check</h2>
+<p>Because <code>useLayoutEffect</code> is synchronous, it blocks the
+browser from painting. Overusing it can slow down your application's
+performance. Follow this simple rule of thumb:</p>
+<ul>
+<li><strong>Use <code>useEffect</code> by default</strong> for almost
+all side effects, such as API calls, subscriptions, event handlers, and
+state changes that do not immediately affect the visual layout of a DOM
+element.</li>
+<li><strong>Use <code>useLayoutEffect</code> only</strong> when your
+code directly mutates the DOM or measures the DOM in a way that, if done
+asynchronously, would cause a visible layout glitch or jump.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

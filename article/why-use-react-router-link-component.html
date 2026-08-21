@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use React Router Link Component - react</title>
+    <meta name="description" content="In modern web development, creating a seamless user experience is crucial for the success of single-page applications (SPAs). This article explains why React developers should use the Link component—typically provided by routing libraries like React Ro">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-react-router-link-component">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use React Router Link Component - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-react-router-link-component" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In modern web development, creating a seamless user experience is crucial for the success of single-page applications (SPAs). This article explains why React developers should use the Link component—typically provided by routing libraries like React Ro" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-react-router-link-component">Why Use React Router Link
+Component</h1>
+<p>In modern web development, creating a seamless user experience is
+crucial for the success of single-page applications (SPAs). This article
+explains why React developers should use the <code>Link</code>
+component—typically provided by routing libraries like React
+Router—instead of traditional HTML anchor (<code>&lt;a&gt;</code>) tags.
+You will learn how the <code>Link</code> component prevents page
+reloads, preserves application state, boosts performance, and maintains
+standard web accessibility.</p>
+<h3 id="preventing-full-page-reloads">Preventing Full Page Reloads</h3>
+<p>The primary reason to use the <code>Link</code> component is to
+prevent the browser from reloading the entire page when a user navigates
+to a new route.</p>
+<p>When you use a standard HTML anchor tag
+(<code>&lt;a href="/about"&gt;</code>), the browser requests the new
+page from the server. This causes a complete refresh, destroying the
+current page's resources and reloading all CSS, JavaScript, and asset
+files.</p>
+<p>The React Router <code>Link</code> component intercepts this default
+browser behavior. Instead of requesting a new document from the server,
+it handles the routing client-side by updating the browser's URL and
+rendering only the components associated with the new route.</p>
+<h3 id="preserving-application-state">Preserving Application State</h3>
+<p>In a React application, managing state (via hooks like
+<code>useState</code>, Context API, or Redux) is vital. A full page
+reload triggered by a standard anchor tag completely resets the
+application state back to its initial value.</p>
+<p>By utilizing the <code>Link</code> component, navigation occurs
+entirely within the virtual DOM. Because the page does not reload, your
+application maintains its state, user inputs, and cache throughout the
+user's journey.</p>
+<h3 id="faster-performance-and-resource-efficiency">Faster Performance
+and Resource Efficiency</h3>
+<p>Because client-side routing avoids fetching entire pages from a
+server, navigation becomes instantaneous. The browser only needs to
+download the raw data or components required for the new view, rather
+than re-downloading the entire React bundle, CSS files, and image
+assets. This drastic reduction in data transfer leads to a faster, more
+responsive user interface.</p>
+<h3 id="seamless-seo-and-accessibility">Seamless SEO and
+Accessibility</h3>
+<p>The <code>Link</code> component compiles down to a standard HTML
+<code>&lt;a&gt;</code> tag with a valid <code>href</code> attribute in
+the rendered DOM. This is crucial for two reasons:</p>
+<ul>
+<li><strong>Search Engine Optimization (SEO):</strong> Search engine
+crawlers can easily discover and follow these links to index your entire
+website.</li>
+<li><strong>Accessibility (a11y):</strong> Screen readers and assistive
+technologies recognize the rendered element as a standard link. Users
+can also perform native browser actions, such as right-clicking to open
+the link in a new tab or holding <code>Ctrl/Cmd</code> while
+clicking.</li>
+</ul>
+<h3 id="simple-syntax-and-clean-integration">Simple Syntax and Clean
+Integration</h3>
+<p>Implementing the <code>Link</code> component is straightforward. It
+replaces the traditional anchor tag syntax seamlessly:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Link } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Navigation</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>nav<span class="op">&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      {<span class="co">/* Instead of &lt;a href=&quot;/dashboard&quot;&gt;Dashboard&lt;/a&gt; */</span>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>Link to<span class="op">=</span><span class="st">&quot;/dashboard&quot;</span><span class="op">&gt;</span>Dashboard<span class="op">&lt;/</span>Link<span class="op">&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>nav<span class="op">&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>By switching to <code>Link</code>, developers unlock optimal
+performance, preserve app states, and deliver a native-app-like
+experience to their users.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding React Refs in React - react</title>
+    <meta name="description" content="This article provides a clear and concise guide to React Refs, explaining what they are, why they are used, and how to implement them in your projects. You will learn the fundamental differences between React state and refs, explore practical code exampl">
+    <link rel="canonical" href="https://salivity.github.io/react/article/understanding-react-refs-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Understanding React Refs in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/understanding-react-refs-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a clear and concise guide to React Refs, explaining what they are, why they are used, and how to implement them in your projects. You will learn the fundamental differences between React state and refs, explore practical code exampl" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="understanding-react-refs-in-react">Understanding React Refs in
+React</h1>
+<p>This article provides a clear and concise guide to React Refs,
+explaining what they are, why they are used, and how to implement them
+in your projects. You will learn the fundamental differences between
+React state and refs, explore practical code examples using the
+<code>useRef</code> hook to interact directly with the DOM, and
+understand the best practices for using them safely in functional
+components.</p>
+<h2 id="what-is-a-react-ref">What is a React Ref?</h2>
+<p>A Ref (short for reference) is a built-in React feature that allows
+you to persist values between renders without triggering a re-render
+when the value changes. Additionally, refs provide a way to directly
+access and interact with actual HTML DOM nodes created in the render
+method.</p>
+<p>While React typically handles DOM updates automatically through its
+declarative state paradigm, refs act as an escape hatch for cases where
+you need to imperatively modify the DOM.</p>
+<h2 id="common-use-cases-for-refs">Common Use Cases for Refs</h2>
+<p>You should not use refs for anything that can be done declaratively.
+However, refs are highly useful for the following scenarios:</p>
+<ul>
+<li><strong>Managing Focus, Text Selection, or Media Playback:</strong>
+Automatically focusing an input field when a page loads, selecting text,
+or controlling video/audio elements.</li>
+<li><strong>Triggering Imperative Animations:</strong> Controlling
+animations that require direct DOM manipulation.</li>
+<li><strong>Integrating with Third-Party DOM Libraries:</strong>
+Interfacing with non-React libraries (such as D3.js or jQuery plugins)
+that need access to real DOM elements.</li>
+<li><strong>Storing Timer IDs or Previous Values:</strong> Keeping track
+of <code>setInterval</code> or <code>setTimeout</code> IDs, or storing
+data that needs to be preserved across renders without affecting the
+visual output.</li>
+</ul>
+<h2 id="how-to-use-refs-with-the-useref-hook">How to Use Refs with the
+<code>useRef</code> Hook</h2>
+<p>In modern React functional components, you declare a ref using the
+<code>useRef</code> hook. This hook returns a mutable ref object with a
+single property called <code>current</code>.</p>
+<p>Here is a practical example of using a ref to focus an input
+element:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useRef } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">FocusInput</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1. Initialize the ref with a default value of null</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleClick <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 3. Access the DOM node via inputRef.current and call focus()</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span><span class="co">/* 2. Attach the ref to the DOM element using the ref attribute */</span><span class="va">}</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;input</span> <span class="ot">ref</span><span class="op">=</span><span class="va">{</span>inputRef<span class="va">}</span> <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> <span class="ot">placeholder</span><span class="op">=</span><span class="st">&quot;Click button to focus me&quot;</span> <span class="kw">/&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>handleClick<span class="va">}</span><span class="kw">&gt;</span>Focus the Input<span class="kw">&lt;/button&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> FocusInput<span class="op">;</span></span></code></pre></div>
+<p>In this example, <code>useRef(null)</code> creates a ref object. By
+passing this object to the <code>&lt;input&gt;</code> element's
+<code>ref</code> attribute, React automatically assigns the
+corresponding DOM element to <code>inputRef.current</code> once the
+component mounts.</p>
+<h2 id="key-differences-refs-vs-state">Key Differences: Refs vs.
+State</h2>
+<p>Understanding when to use state versus when to use refs is crucial
+for writing efficient React applications:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;">React State</th>
+<th style="text-align: left;">React Refs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Re-renders</strong></td>
+<td style="text-align: left;">Updating state triggers a component
+re-render.</td>
+<td style="text-align: left;">Updating a ref does not trigger a
+re-render.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Usage</strong></td>
+<td style="text-align: left;">Used for values that are rendered on the
+screen.</td>
+<td style="text-align: left;">Used for values not used in rendering (DOM
+nodes, timers).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Access</strong></td>
+<td style="text-align: left;">Updated asynchronously via a setter
+function.</td>
+<td style="text-align: left;">Updated synchronously by modifying the
+<code>current</code> property directly.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="best-practices-for-using-refs">Best Practices for Using
+Refs</h2>
+<p>To maintain clean and predictable code, keep these rules in mind when
+working with refs:</p>
+<ul>
+<li><strong>Do not read or write <code>ref.current</code> during
+rendering:</strong> React expects rendering to be a pure function.
+Reading or writing to <code>ref.current</code> during the render phase
+can lead to unpredictable behavior. Only read or write to refs inside
+event handlers or the <code>useEffect</code> hook.</li>
+<li><strong>Keep it local:</strong> Avoid passing refs deeply down the
+component tree. If a parent component needs access to a child's DOM
+node, use the <code>forwardRef</code> API.</li>
+<li><strong>Avoid overusing refs:</strong> Do not use refs to bypass
+React's data-flow model. If a value can be computed or stored in state,
+prefer state over refs.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

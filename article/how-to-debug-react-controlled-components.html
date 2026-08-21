@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug React Controlled Components - react</title>
+    <meta name="description" content="Controlled components in React are form elements whose values are driven by the component's state. While they offer precise control over form data, debugging issues like frozen inputs, lag, or synchronization errors can be challenging. This article provi">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-react-controlled-components">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug React Controlled Components - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-react-controlled-components" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Controlled components in React are form elements whose values are driven by the component's state. While they offer precise control over form data, debugging issues like frozen inputs, lag, or synchronization errors can be challenging. This article provi" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-react-controlled-components">How to Debug React
+Controlled Components</h1>
+<p>Controlled components in React are form elements whose values are
+driven by the component's state. While they offer precise control over
+form data, debugging issues like frozen inputs, lag, or synchronization
+errors can be challenging. This article provides a direct, practical
+guide on how to debug React controlled components using React Developer
+Tools, console logs, and common troubleshooting patterns.</p>
+<h2 id="understand-the-controlled-component-flow">Understand the
+Controlled Component Flow</h2>
+<p>To debug a controlled component, you must first verify that the
+unidirectional data flow is intact. A properly controlled component
+requires two essential elements:</p>
+<ol type="1">
+<li>A <code>value</code> prop bound to a state variable.</li>
+<li>An <code>onChange</code> event handler that updates that state
+variable.</li>
+</ol>
+<p>If the input is frozen (i.e., you type but nothing happens), the loop
+is broken. The input is rendering the state value, but the state is
+never updating.</p>
+<h2 id="step-1-inspect-state-with-react-developer-tools">Step 1: Inspect
+State with React Developer Tools</h2>
+<p>The React Developer Tools browser extension is the most efficient
+tool for debugging state issues.</p>
+<ol type="1">
+<li>Open your browser's Developer Tools and navigate to the
+<strong>Components</strong> tab.</li>
+<li>Select the component containing your form input.</li>
+<li>In the right-hand panel, locate the <strong>State</strong> section
+under hooks or props.</li>
+<li>Type in the input field and watch the state value in the panel.</li>
+</ol>
+<p>If the state changes in the DevTools but the input UI does not
+update, your <code>value</code> prop is likely not bound to the correct
+state variable. If the state does not change at all, your
+<code>onChange</code> handler is failing.</p>
+<h2 id="step-2-log-the-event-handler-output">Step 2: Log the Event
+Handler Output</h2>
+<p>If the state is not updating, add a temporary
+<code>console.log</code> inside your <code>onChange</code> handler to
+inspect the event payload.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleChange <span class="op">=</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Input Value:&quot;</span><span class="op">,</span> <span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setValue</span>(<span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong>If the log does not appear:</strong> The handler is not
+correctly bound to the input's <code>onChange</code> attribute.</li>
+<li><strong>If the log appears but shows
+<code>undefined</code>:</strong> You might be destructuring the wrong
+property or working with a custom UI library component that returns data
+differently than a standard HTML input.</li>
+<li><strong>If the log shows the correct value but the UI does not
+change:</strong> The state setter function (e.g., <code>setValue</code>)
+is either not being called, is being called with the wrong variable, or
+the component is failing to re-render.</li>
+</ul>
+<h2 id="step-3-check-for-uncontrolled-to-controlled-warnings">Step 3:
+Check for "Uncontrolled to Controlled" Warnings</h2>
+<p>React will throw a console warning if an input changes from
+uncontrolled to controlled (or vice versa). This usually happens when
+the initial state is set to <code>undefined</code> or
+<code>null</code>.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Incorrect: Initial state is undefined, making the input uncontrolled initially</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [name<span class="op">,</span> setName] <span class="op">=</span> <span class="fu">useState</span>()<span class="op">;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Correct: Initial state is an empty string, keeping it controlled from the start</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [name<span class="op">,</span> setName] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&quot;&quot;</span>)<span class="op">;</span> </span></code></pre></div>
+<p>Always ensure your initial state matches the expected type of the
+input (e.g., an empty string <code>""</code> for text inputs, or
+<code>false</code> for checkboxes).</p>
+<h2 id="step-4-rule-out-synthetic-event-pooling-issues">Step 4: Rule out
+Synthetic Event Pooling Issues</h2>
+<p>In older versions of React (React 16 and earlier), synthetic events
+were pooled for performance reasons. If you try to access
+<code>event.target.value</code> inside an asynchronous operation (like a
+<code>setTimeout</code> or an API call) within your
+<code>onChange</code> handler, it will return <code>null</code> or
+<code>undefined</code>.</p>
+<p>If you must access the event asynchronously, use
+<code>event.persist()</code> at the beginning of the handler, or extract
+the value into a local variable immediately:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleChange <span class="op">=</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> newValue <span class="op">=</span> <span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span><span class="op">;</span> <span class="co">// Extract value synchronously</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(newValue)<span class="op">;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> <span class="dv">1000</span>)<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

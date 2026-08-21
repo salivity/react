@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Test Client-Side Rendering in React - react</title>
+    <meta name="description" content="Testing Client-Side Rendering (CSR) in React is essential for ensuring your application's user interface behaves correctly as state, props, and browser-based events change. This article provides a straightforward guide on how to test CSR in React, coveri">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-test-client-side-rendering-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Test Client-Side Rendering in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-test-client-side-rendering-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Testing Client-Side Rendering (CSR) in React is essential for ensuring your application's user interface behaves correctly as state, props, and browser-based events change. This article provides a straightforward guide on how to test CSR in React, coveri" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-test-client-side-rendering-in-react">How to Test
+Client-Side Rendering in React</h1>
+<p>Testing Client-Side Rendering (CSR) in React is essential for
+ensuring your application's user interface behaves correctly as state,
+props, and browser-based events change. This article provides a
+straightforward guide on how to test CSR in React, covering the
+industry-standard testing stack, how to simulate real user interactions,
+and how to handle common CSR scenarios like asynchronous data fetching
+and client-side routing.</p>
+<h2 id="the-core-testing-stack-jest-and-react-testing-library">The Core
+Testing Stack: Jest and React Testing Library</h2>
+<p>To effectively test client-side rendered React applications, the
+industry standard is to use <strong>Jest</strong> (or Vitest) as the
+test runner and <strong>React Testing Library (RTL)</strong> for
+rendering components.</p>
+<p>React Testing Library is specifically designed for testing CSR
+because it encourages testing user behavior rather than implementation
+details. It renders your components into a virtual DOM (using
+<code>jsdom</code>), allowing you to query elements just like a real
+user would.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> MyComponent <span class="im">from</span> <span class="st">&#39;./MyComponent&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span>(<span class="st">&#39;renders the welcome message&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">render</span>(<span class="op">&lt;</span>MyComponent <span class="op">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> linkElement <span class="op">=</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">getByText</span>(<span class="ss">/welcome to our app/i</span>)<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect</span>(linkElement)<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h2 id="simulating-user-interactions">Simulating User Interactions</h2>
+<p>Because CSR relies heavily on the browser to handle events (like
+clicks, form submissions, and keyboard inputs), your tests must
+accurately simulate these interactions.</p>
+<p>Using <code>@testing-library/user-event</code> is the recommended way
+to trigger browser events, as it mimics real-world browser behavior more
+closely than the legacy <code>fireEvent</code> utility.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> userEvent <span class="im">from</span> <span class="st">&#39;@testing-library/user-event&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Counter <span class="im">from</span> <span class="st">&#39;./Counter&#39;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span>(<span class="st">&#39;increments counter on button click&#39;</span><span class="op">,</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">render</span>(<span class="op">&lt;</span>Counter <span class="op">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> button <span class="op">=</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">getByRole</span>(<span class="st">&#39;button&#39;</span><span class="op">,</span> { <span class="dt">name</span><span class="op">:</span> <span class="ss">/increment/i</span> })<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> userEvent<span class="op">.</span><span class="fu">click</span>(button)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> countValue <span class="op">=</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">getByText</span>(<span class="ss">/count: 1/i</span>)<span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect</span>(countValue)<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h2 id="handling-asynchronous-data-fetching">Handling Asynchronous Data
+Fetching</h2>
+<p>In client-side rendering, components often mount in a loading state
+and then fetch data from an API to populate the UI. Testing this flow
+requires mocking the API calls and waiting for the DOM to update.</p>
+<ol type="1">
+<li><strong>Mock the API network request:</strong> Use tools like Mock
+Service Worker (MSW) or Jest mocks to intercept API calls.</li>
+<li><strong>Use <code>findBy</code> queries:</strong> RTL's
+<code>findBy</code> queries return a promise and automatically wait for
+the element to appear in the DOM.</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> UserProfile <span class="im">from</span> <span class="st">&#39;./UserProfile&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Example using a global fetch mock</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">beforeEach</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">global</span><span class="op">.</span><span class="at">fetch</span> <span class="op">=</span> jest<span class="op">.</span><span class="fu">fn</span>(() <span class="kw">=&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>({</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">json</span><span class="op">:</span> () <span class="kw">=&gt;</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">resolve</span>({ <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;John Doe&#39;</span> })<span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span>(<span class="st">&#39;fetches and displays user data&#39;</span><span class="op">,</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">render</span>(<span class="op">&lt;</span>UserProfile <span class="op">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Wait for the loader to disappear and the user name to render</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> profileName <span class="op">=</span> <span class="cf">await</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">findByText</span>(<span class="st">&#39;John Doe&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect</span>(profileName)<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h2 id="testing-client-side-routing">Testing Client-Side Routing</h2>
+<p>If your React application uses client-side routing (such as React
+Router), you must wrap your components in a router provider during
+testing.</p>
+<p>Using <code>MemoryRouter</code> allows you to manually set the
+initial history entries to test how components render at specific URL
+paths.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { MemoryRouter<span class="op">,</span> Routes<span class="op">,</span> Route } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Dashboard <span class="im">from</span> <span class="st">&#39;./Dashboard&#39;</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span>(<span class="st">&#39;renders dashboard when navigating to /dashboard&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">render</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>MemoryRouter initialEntries<span class="op">=</span>{[<span class="st">&#39;/dashboard&#39;</span>]}<span class="op">&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>Routes<span class="op">&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/dashboard&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Dashboard <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>Routes<span class="op">&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>MemoryRouter<span class="op">&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect</span>(<span class="bu">screen</span><span class="op">.</span><span class="fu">getByRole</span>(<span class="st">&#39;heading&#39;</span><span class="op">,</span> { <span class="dt">name</span><span class="op">:</span> <span class="ss">/dashboard/i</span> }))<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

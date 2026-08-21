@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug Synthetic Events in React - react</title>
+    <meta name="description" content="React utilizes a wrapper system called SyntheticEvents to ensure cross-browser compatibility for event handling. Debugging these events can be challenging because React pools and neutralizes event properties in older versions, and behaves differently fro">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-synthetic-events-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug Synthetic Events in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-synthetic-events-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React utilizes a wrapper system called SyntheticEvents to ensure cross-browser compatibility for event handling. Debugging these events can be challenging because React pools and neutralizes event properties in older versions, and behaves differently fro" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-synthetic-events-in-react">How to Debug Synthetic
+Events in React</h1>
+<p>React utilizes a wrapper system called SyntheticEvents to ensure
+cross-browser compatibility for event handling. Debugging these events
+can be challenging because React pools and neutralizes event properties
+in older versions, and behaves differently from native DOM events. This
+article explains how to inspect SyntheticEvents, access native event
+properties, handle asynchronous event logging, and use browser developer
+tools to troubleshoot event-related issues in React.</p>
+<h2 id="access-the-native-event">Access the Native Event</h2>
+<p>When debugging, you might need to inspect the actual browser event
+rather than React's wrapper. Every SyntheticEvent contains a reference
+to the browser's underlying native event. You can access this by
+inspecting the <code>nativeEvent</code> property inside your event
+handler:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleClick <span class="op">=</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Synthetic Event:&quot;</span><span class="op">,</span> <span class="bu">event</span>)<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Native Browser Event:&quot;</span><span class="op">,</span> <span class="bu">event</span><span class="op">.</span><span class="at">nativeEvent</span>)<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p>This is useful when you need to inspect browser-specific properties,
+such as <code>composedPath()</code> or specific touch event details,
+that React's wrapper does not expose directly.</p>
+<h2 id="handle-event-pooling-react-16-and-older">Handle Event Pooling
+(React 16 and Older)</h2>
+<p>If you are debugging a React 16 or older application, you may notice
+that printing an event with <code>console.log(event)</code> inside an
+asynchronous callback (such as <code>setTimeout</code> or a promise
+resolution) results in nullified properties. This is due to event
+pooling, where React reuses event objects to improve performance.</p>
+<p>To debug these events asynchronously, you must call
+<code>event.persist()</code> at the very beginning of your handler. This
+removes the event from the pool and allows its properties to remain
+accessible:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleChange <span class="op">=</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">event</span><span class="op">.</span><span class="fu">persist</span>()<span class="op">;</span> <span class="co">// Necessary for React 16 and below</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> <span class="dv">1000</span>)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p><em>Note: Event pooling was completely removed in React 17, meaning
+<code>event.persist()</code> is no longer required in modern React
+applications.</em></p>
+<h2 id="log-specific-properties-instead-of-the-whole-object">Log
+Specific Properties Instead of the Whole Object</h2>
+<p>Instead of logging the entire event object—which can be cluttered and
+difficult to read in the console—destructure and log only the specific
+properties you need. This prevents issues related to console object
+reference updates and makes your debugging logs much cleaner:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleInput <span class="op">=</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { name<span class="op">,</span> value } <span class="op">=</span> <span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="vs">`Field: </span><span class="sc">${</span>name<span class="sc">}</span><span class="vs">, Value: </span><span class="sc">${</span>value<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h2 id="utilize-browser-developer-tools">Utilize Browser Developer
+Tools</h2>
+<p>You can use your browser’s DevTools to pause JavaScript execution
+when a specific event fires:</p>
+<ol type="1">
+<li>Open your browser's Developer Tools (F12 or Right-Click -&gt;
+Inspect).</li>
+<li>Navigate to the <strong>Sources</strong> tab.</li>
+<li>In the right-hand pane, expand the <strong>Event Listener
+Breakpoints</strong> section.</li>
+<li>Check the boxes for the events you want to debug (e.g., expand
+"Mouse" and select "click").</li>
+<li>Trigger the event in your application. The browser will pause
+execution at the exact moment the event is fired, allowing you to step
+through the call stack to see how React processes the event.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

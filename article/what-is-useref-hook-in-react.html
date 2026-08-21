@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is useRef Hook in React - react</title>
+    <meta name="description" content="This article provides a clear overview of the useRef hook in React, explaining its purpose, core characteristics, and primary use cases. You will learn how useRef allows you to persist values across renders without triggering UI updates, how to use it to">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-useref-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is useRef Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-useref-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a clear overview of the useRef hook in React, explaining its purpose, core characteristics, and primary use cases. You will learn how useRef allows you to persist values across renders without triggering UI updates, how to use it to" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-useref-hook-in-react">What is useRef Hook in React</h1>
+<p>This article provides a clear overview of the <code>useRef</code>
+hook in React, explaining its purpose, core characteristics, and primary
+use cases. You will learn how <code>useRef</code> allows you to persist
+values across renders without triggering UI updates, how to use it to
+directly access and manipulate DOM elements, and how it differs from the
+standard <code>useState</code> hook.</p>
+<h2 id="understanding-useref">Understanding useRef</h2>
+<p>The <code>useRef</code> hook is a built-in React hook that returns a
+mutable "ref" object. This object has a single property called
+<code>.current</code>, which is initialized with the argument you pass
+to the hook (e.g., <code>useRef(initialValue)</code>).</p>
+<p>The defining characteristic of <code>useRef</code> is that
+<strong>updating the <code>.current</code> property does not trigger a
+component re-render</strong>. This makes it fundamentally different from
+<code>useState</code>, where updating state always forces React to
+re-render the component and update the UI.</p>
+<h2 id="primary-use-cases">Primary Use Cases</h2>
+<p>There are two main scenarios where you should use the
+<code>useRef</code> hook in your React applications:</p>
+<h3 id="1-accessing-and-manipulating-dom-elements">1. Accessing and
+Manipulating DOM Elements</h3>
+<p>In React, you typically let the library handle DOM updates. However,
+sometimes you need direct access to a DOM node—for example, to focus an
+input field, measure an element's size, or trigger an animation.</p>
+<p>By passing the ref object to a JSX element’s <code>ref</code>
+attribute, React will set the <code>.current</code> property to the
+corresponding DOM node once it renders.</p>
+<h3 id="2-storing-mutable-values-without-re-renders">2. Storing Mutable
+Values (Without Re-renders)</h3>
+<p>If you need to keep track of a value that changes over time, but that
+value has no impact on the visual output of the component,
+<code>useRef</code> is the ideal choice. Examples include:</p>
+<ul>
+<li>Storing interval or timeout IDs so you can clear them later.</li>
+<li>Counting how many times a component has rendered.</li>
+<li>Storing the previous value of a state variable.</li>
+</ul>
+<h2 id="code-example-focusing-an-input">Code Example: Focusing an
+Input</h2>
+<p>The following example demonstrates how to use <code>useRef</code> to
+directly access a DOM element and focus an input field when a button is
+clicked:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useRef } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">FocusInput</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1. Initialize the ref with null</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleClick <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 3. Access the DOM node via .current and call focus()</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span><span class="co">/* 2. Attach the ref to the input element */</span><span class="va">}</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;input</span> <span class="ot">ref</span><span class="op">=</span><span class="va">{</span>inputRef<span class="va">}</span> <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> <span class="ot">placeholder</span><span class="op">=</span><span class="st">&quot;Click button to focus...&quot;</span> <span class="kw">/&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>handleClick<span class="va">}</span><span class="kw">&gt;</span>Focus the input<span class="kw">&lt;/button&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> FocusInput<span class="op">;</span></span></code></pre></div>
+<h2 id="summary-useref-vs-usestate">Summary: useRef vs useState</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature</th>
+<th style="text-align: left;"><code>useState</code></th>
+<th style="text-align: left;"><code>useRef</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Triggers Re-render?</strong></td>
+<td style="text-align: left;">Yes, when the state value changes.</td>
+<td style="text-align: left;">No, when the <code>.current</code> value
+changes.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Value Persistence</strong></td>
+<td style="text-align: left;">Persists across renders.</td>
+<td style="text-align: left;">Persists across renders.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Best Used For</strong></td>
+<td style="text-align: left;">Data that determines what is rendered on
+the screen.</td>
+<td style="text-align: left;">DOM manipulation, storing IDs, and
+tracking non-visual data.</td>
+</tr>
+</tbody>
+</table></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

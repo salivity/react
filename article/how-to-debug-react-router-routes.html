@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug React Router Routes - react</title>
+    <meta name="description" content="Debugging routing issues in React applications can be challenging, especially as your application grows in complexity. This article provides a straightforward guide on how to identify, diagnose, and fix common routing errors in React Router. You will lea">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-react-router-routes">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug React Router Routes - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-react-router-routes" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Debugging routing issues in React applications can be challenging, especially as your application grows in complexity. This article provides a straightforward guide on how to identify, diagnose, and fix common routing errors in React Router. You will lea" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-react-router-routes">How to Debug React Router
+Routes</h1>
+<p>Debugging routing issues in React applications can be challenging,
+especially as your application grows in complexity. This article
+provides a straightforward guide on how to identify, diagnose, and fix
+common routing errors in React Router. You will learn about key
+debugging techniques, including logging route state with hooks,
+inspecting components using React Developer Tools, handling wildcard
+matching, and configuring fallback routes to ensure seamless
+navigation.</p>
+<h2 id="inspect-the-route-state-with-uselocation">Inspect the Route
+State with useLocation</h2>
+<p>One of the most effective ways to debug routing is to monitor the
+active location state. React Router provides the
+<code>useLocation</code> hook, which returns the current location object
+representing the URL. By logging this object, you can see the exact
+pathname, search queries, and state being passed.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useLocation } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">RouteDebugger</span>() {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> location <span class="op">=</span> <span class="fu">useLocation</span>()<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;Current Route Info:&#39;</span><span class="op">,</span> {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">pathname</span><span class="op">:</span> location<span class="op">.</span><span class="at">pathname</span><span class="op">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">search</span><span class="op">:</span> location<span class="op">.</span><span class="at">search</span><span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">hash</span><span class="op">:</span> location<span class="op">.</span><span class="at">hash</span><span class="op">,</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">state</span><span class="op">:</span> location<span class="op">.</span><span class="at">state</span><span class="op">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [location])<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Include this <code>RouteDebugger</code> component inside your
+<code>&lt;BrowserRouter&gt;</code> to print real-time URL updates to
+your browser's console.</p>
+<h2 id="use-react-developer-tools">Use React Developer Tools</h2>
+<p>The React Developer Tools browser extension is invaluable for
+inspecting the router's internal state.</p>
+<ol type="1">
+<li>Open your browser's Developer Tools and navigate to the
+<strong>Components</strong> tab.</li>
+<li>Search for <code>Router</code>, <code>Routes</code>, or
+<code>BrowserRouter</code> in the component tree.</li>
+<li>Select the component to inspect its hooks and context. You can view
+the current navigation context, history stack, and match objects to
+verify if React Router is processing the path correctly.</li>
+</ol>
+<h2 id="implement-a-catch-all-route-for-404s">Implement a Catch-All
+Route for 404s</h2>
+<p>If a user navigates to a broken link and sees a blank page, it can be
+difficult to tell if the application crashed or if the route simply does
+not exist. Implementing a catch-all (404) route helps isolate unmatched
+paths.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Routes<span class="op">,</span> Route } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;</span>Routes<span class="op">&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Home <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/about&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>About <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  {<span class="co">/* Catch-all route for debugging unmatched paths */</span>}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;*&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>NotFound <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="op">&lt;/</span>Routes<span class="op">&gt;</span></span></code></pre></div>
+<p>If the <code>NotFound</code> component renders, you know your router
+is active, but the URL you entered did not match any of your defined
+path patterns.</p>
+<h2 id="verify-nested-route-outlets">Verify Nested Route Outlets</h2>
+<p>A common issue in React Router v6 is nested routes failing to render.
+When nesting routes, the parent route component must render an
+<code>&lt;Outlet /&gt;</code> component for the child routes to
+display.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Routes<span class="op">,</span> Route<span class="op">,</span> Outlet } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Dashboard</span>() {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>h1<span class="op">&gt;</span>Dashboard Header<span class="op">&lt;/</span>h1<span class="op">&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      {<span class="co">/* Without Outlet, child components will not render */</span>}</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>Outlet <span class="op">/&gt;</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">App</span>() {</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>Routes<span class="op">&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;dashboard&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Dashboard <span class="op">/&gt;</span>}<span class="op">&gt;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;profile&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Profile <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;settings&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Settings <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>Route<span class="op">&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>Routes<span class="op">&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>If your nested routes are updating the URL but the UI remains
+unchanged, check if the parent component includes
+<code>&lt;Outlet /&gt;</code>.</p>
+<h2 id="check-server-side-routing-configuration">Check Server-Side
+Routing Configuration</h2>
+<p>If your routes work when clicking links inside the app but return a
+"404 Not Found" error when you refresh the browser, the issue lies in
+your development server configuration.</p>
+<p>Single Page Applications (SPAs) rely on client-side routing. When you
+refresh, the browser requests the specific path (e.g.,
+<code>/dashboard</code>) from the server instead of letting React Router
+handle it. You must configure your server to redirect all traffic back
+to <code>index.html</code>.</p>
+<ul>
+<li><strong>Vite:</strong> Handled automatically in development.</li>
+<li><strong>Webpack Dev Server:</strong> Ensure
+<code>historyApiFallback: true</code> is set in your
+<code>webpack.config.js</code>.</li>
+<li><strong>Netlify:</strong> Add a <code>_redirects</code> file
+containing <code>/* /index.html 200</code>.</li>
+<li><strong>Vercel:</strong> Add a rewrite rule in your
+<code>vercel.json</code> file.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

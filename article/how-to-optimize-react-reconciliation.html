@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Optimize React Reconciliation - react</title>
+    <meta name="description" content="React's reconciliation process is the core algorithm behind its virtual DOM diffing, determining how the user interface updates efficiently when state or props change. While React is highly optimized out of the box, complex applications can suffer from p">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-optimize-react-reconciliation">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Optimize React Reconciliation - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-optimize-react-reconciliation" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's reconciliation process is the core algorithm behind its virtual DOM diffing, determining how the user interface updates efficiently when state or props change. While React is highly optimized out of the box, complex applications can suffer from p" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-optimize-react-reconciliation">How to Optimize React
+Reconciliation</h1>
+<p>React's reconciliation process is the core algorithm behind its
+virtual DOM diffing, determining how the user interface updates
+efficiently when state or props change. While React is highly optimized
+out of the box, complex applications can suffer from performance
+bottlenecks due to unnecessary virtual DOM comparisons and re-renders.
+This article provides a direct, actionable guide on how to optimize
+React reconciliation using stable keys, memoization, strategic state
+management, and smart component composition.</p>
+<h2 id="use-unique-and-stable-keys">Use Unique and Stable Keys</h2>
+<p>During reconciliation, React compares the old virtual DOM tree with
+the new one. When rendering lists, React relies on the <code>key</code>
+prop to match children in the original tree with children in the
+subsequent tree.</p>
+<ul>
+<li><strong>Avoid using array indices as keys:</strong> If the list is
+reordered, filtered, or has items inserted, using the index as a key
+forces React to re-create and re-render DOM nodes unnecessarily.</li>
+<li><strong>Use stable, unique IDs:</strong> Always use unique
+identifiers from your data source (such as database primary keys) as the
+<code>key</code> prop. This allows React to track elements accurately
+across renders, moving elements in the DOM instead of destroying and
+recreating them.</li>
+</ul>
+<h2 id="implement-memoization">Implement Memoization</h2>
+<p>By default, when a parent component re-renders, React recursively
+reconciles all of its child components. You can prevent this default
+behavior for unchanged child components using memoization.</p>
+<ul>
+<li><strong><code>React.memo</code>:</strong> Wrap functional components
+in <code>React.memo</code>. This high-order component performs a shallow
+comparison of the component’s props. If the props have not changed,
+React skips rendering the component and its reconciliation subtree
+entirely.</li>
+<li><strong><code>useCallback</code>:</strong> When passing callback
+functions as props to memoized child components, wrap those functions in
+the <code>useCallback</code> hook. This ensures the function maintains a
+stable reference across renders, preventing the child component from
+detecting a "changed" prop.</li>
+<li><strong><code>useMemo</code>:</strong> Use <code>useMemo</code> to
+cache the results of expensive calculations. This prevents CPU-intensive
+tasks from running during every render cycle.</li>
+</ul>
+<h2 id="optimize-state-placement-colocation">Optimize State Placement
+(Colocation)</h2>
+<p>Reconciliation is triggered by state changes. To minimize the size of
+the virtual DOM tree that React must diff, keep state as close to where
+it is used as possible.</p>
+<ul>
+<li><strong>Avoid unnecessary global state:</strong> If a state variable
+is only used in a small, localized UI element, do not store it in a
+global context or a top-level parent component.</li>
+<li><strong>Colocate state:</strong> Push state down to the lowest
+possible level in the component tree. When this state updates, only the
+localized subtree will undergo reconciliation, leaving the rest of the
+application untouched.</li>
+</ul>
+<h2 id="leverage-component-composition">Leverage Component
+Composition</h2>
+<p>You can optimize reconciliation without using memoization hooks by
+structuring your component hierarchy using the <code>children</code>
+prop.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Instead of this:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Parent</span>() {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [state<span class="op">,</span> setState] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> <span class="fu">setState</span>(<span class="op">!</span>state)<span class="va">}</span><span class="kw">&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">&lt;ExpensiveChild</span> <span class="fu">/&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Do this:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Parent</span>({ children }) {</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [state<span class="op">,</span> setState] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> <span class="fu">setState</span>(<span class="op">!</span>state)<span class="va">}</span><span class="kw">&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span>children<span class="va">}</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">// Usage:</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;Parent&gt;</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">&lt;ExpensiveChild</span> <span class="fu">/&gt;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">&lt;/Parent&gt;</span></span></code></pre></div>
+<p>In the optimized approach, when <code>Parent</code> re-renders due to
+a state change, the <code>ExpensiveChild</code> (passed as
+<code>children</code>) does not re-render. This is because
+<code>children</code> is a prop that refers to the exact same element
+reference created by the grand-parent, allowing React to skip its
+reconciliation.</p>
+<h2 id="avoid-inline-objects-and-anonymous-functions">Avoid Inline
+Objects and Anonymous Functions</h2>
+<p>Passing inline objects, arrays, or arrow functions directly as props
+to components creates a new reference on every single render.</p>
+<ul>
+<li><strong>Inline styles and configurations:</strong> Define static
+objects and arrays outside of the component render function.</li>
+<li><strong>Inline arrow functions:</strong> Avoid writing
+<code>&lt;button onClick={() =&gt; handleClick(id)}&gt;</code> inside
+the render tree if the button is a custom memoized component. Instead,
+handle the identification within the child component or use a memoized
+callback.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

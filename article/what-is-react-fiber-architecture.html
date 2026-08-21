@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is React Fiber Architecture? - react</title>
+    <meta name="description" content="React Fiber is a complete rewrite of React's core reconciliation algorithm, designed to enable incremental rendering and improve application responsiveness. This article explores what React Fiber is, why it was introduced, how it differs from the previou">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-react-fiber-architecture">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is React Fiber Architecture? - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-react-fiber-architecture" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React Fiber is a complete rewrite of React's core reconciliation algorithm, designed to enable incremental rendering and improve application responsiveness. This article explores what React Fiber is, why it was introduced, how it differs from the previou" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-react-fiber-architecture">What is React Fiber
+Architecture?</h1>
+<p>React Fiber is a complete rewrite of React's core reconciliation
+algorithm, designed to enable incremental rendering and improve
+application responsiveness. This article explores what React Fiber is,
+why it was introduced, how it differs from the previous stack
+reconciler, and how it enables key features like concurrency and
+scheduling in modern React applications.</p>
+<h2 id="the-need-for-react-fiber">The Need for React Fiber</h2>
+<p>Before React 16, the library used a synchronous reconciliation engine
+known as the <strong>Stack Reconciler</strong>. When a state change
+occurred, React would traverse the entire component tree recursively to
+find changes and update the DOM.</p>
+<p>While efficient for simple applications, this synchronous approach
+had a major drawback: it blocked the main thread. If a component tree
+was deep and complex, the reconciliation process could take longer than
+16 milliseconds (the window required to maintain a smooth 60 frames per
+second). This resulted in dropped frames, stuttering animations, and
+unresponsive user interfaces during heavy updates.</p>
+<h2 id="what-is-a-fiber">What is a "Fiber"?</h2>
+<p>At its core, a <strong>Fiber</strong> is a plain JavaScript object
+that represents a unit of work. It corresponds to a React component and
+contains metadata about its state, props, and relationship to other
+components in the tree.</p>
+<p>Unlike the classic execution stack, which is controlled by the
+browser's engine, Fibers are a virtual stack frame implementation. This
+allows React to control the execution of the stack manually, giving it
+the ability to:</p>
+<ul>
+<li>Pause work and come back to it later.</li>
+<li>Assign priority to different types of work.</li>
+<li>Reuse previously completed work.</li>
+<li>Abort work if it is no longer needed.</li>
+</ul>
+<h2 id="key-capabilities-of-fiber-architecture">Key Capabilities of
+Fiber Architecture</h2>
+<p>The Fiber architecture introduces several critical mechanisms that
+make modern React features possible:</p>
+<h3 id="1-incremental-rendering">1. Incremental Rendering</h3>
+<p>Instead of processing the entire component tree in one continuous
+block, Fiber breaks the rendering work into smaller, manageable chunks.
+React can execute a chunk of work, pause to let the browser handle user
+input or animations, and then resume rendering from where it left
+off.</p>
+<h3 id="2-concurrency-and-work-prioritization">2. Concurrency and Work
+Prioritization</h3>
+<p>Fiber classifies updates into different priority levels. For
+example:</p>
+<ul>
+<li><strong>High Priority:</strong> Interactive updates, such as typing
+in a text input or clicking a button, which require immediate visual
+feedback.</li>
+<li><strong>Low Priority:</strong> Background updates, such as rendering
+off-screen content or fetching data, which can be delayed without
+degrading the user experience.</li>
+</ul>
+<p>If a high-priority update occurs while React is busy rendering a
+low-priority update, React can pause the current work, process the
+high-priority update, and then restart or resume the low-priority
+work.</p>
+<h3 id="3-dual-buffering-work-in-progress-tree">3. Dual Buffering
+(Work-in-Progress Tree)</h3>
+<p>React Fiber operates using two trees:</p>
+<ul>
+<li><strong>Current Tree:</strong> The tree that is currently visible on
+the screen.</li>
+<li><strong>Work-in-Progress Tree:</strong> An alternate tree
+constructed in memory during reconciliation.</li>
+</ul>
+<p>React performs all updates on the work-in-progress tree. Once the
+reconciliation is complete and all changes are ready, React swaps the
+pointers, instantly updating the UI. This prevents the user from seeing
+partially rendered or inconsistent states.</p>
+<h2 id="how-fiber-works-the-render-and-commit-phases">How Fiber Works:
+The Render and Commit Phases</h2>
+<p>To manage work effectively, Fiber divides reconciliation into two
+distinct phases:</p>
+<h3 id="phase-1-render--reconciliation-interruptible">Phase 1: Render /
+Reconciliation (Interruptible)</h3>
+<p>In this phase, React traverses the component tree and computes the
+changes that need to be made to the DOM. This phase is asynchronous and
+can be paused, aborted, or restarted by the scheduler if higher-priority
+tasks arise.</p>
+<h3 id="phase-2-commit-uninterruptible">Phase 2: Commit
+(Uninterruptible)</h3>
+<p>Once the work-in-progress tree is fully computed, React enters the
+commit phase. In this phase, React applies the calculated changes to the
+DOM and executes lifecycle methods or hooks (like
+<code>useEffect</code>). To avoid an inconsistent UI, this phase is
+synchronous and cannot be interrupted.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

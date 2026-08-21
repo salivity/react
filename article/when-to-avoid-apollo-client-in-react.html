@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid Apollo Client in React - react</title>
+    <meta name="description" content="Apollo Client is a popular and powerful library for managing remote and local data with GraphQL in React applications. However, despite its robust feature set, it is not the ideal tool for every project. This article examines the key scenarios where you">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-apollo-client-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid Apollo Client in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-apollo-client-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Apollo Client is a popular and powerful library for managing remote and local data with GraphQL in React applications. However, despite its robust feature set, it is not the ideal tool for every project. This article examines the key scenarios where you" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-apollo-client-in-react">When to Avoid Apollo
+Client in React</h1>
+<p>Apollo Client is a popular and powerful library for managing remote
+and local data with GraphQL in React applications. However, despite its
+robust feature set, it is not the ideal tool for every project. This
+article examines the key scenarios where you should avoid using Apollo
+Client, highlighting alternative solutions that may better suit your
+application's size, architecture, and performance goals.</p>
+<h3 id="1-your-application-does-not-use-graphql">1. Your Application
+Does Not Use GraphQL</h3>
+<p>This is the most straightforward reason to avoid Apollo Client. While
+Apollo does have plugins to integrate with REST APIs (such as
+<code>apollo-link-rest</code>), doing so introduces unnecessary
+complexity. If your backend relies on traditional REST APIs or gRPC, you
+should use lightweight data-fetching libraries like TanStack Query
+(React Query), SWR, or standard Axios instead.</p>
+<h3 id="2-the-project-is-small-with-simple-data-fetching-needs">2. The
+Project is Small with Simple Data Fetching Needs</h3>
+<p>Apollo Client comes with a steep learning curve and significant
+boilerplate code. If your React app only needs to make a few basic API
+calls to display static or infrequently updated data, the overhead of
+setting up Apollo Client, writing schemas, and defining queries is not
+justified. A simple <code>fetch</code> request combined with React’s
+built-in <code>useState</code> and <code>useEffect</code> hooks, or a
+lightweight wrapper, is often sufficient.</p>
+<h3 id="3-bundle-size-and-performance-are-critical-constraints">3.
+Bundle Size and Performance are Critical Constraints</h3>
+<p>Apollo Client is a relatively large library, adding roughly 30KB to
+40KB (gzipped) to your JavaScript bundle. For performance-sensitive
+applications—such as mobile-first web apps, e-commerce sites, or
+projects targeting users with slow internet connections—this added
+weight can negatively impact initial load times. Using lighter GraphQL
+clients like <code>graphql-request</code> or <code>urql</code> can
+significantly reduce your bundle size while still allowing you to query
+GraphQL APIs.</p>
+<h3 id="4-you-only-need-local-state-management">4. You Only Need Local
+State Management</h3>
+<p>While Apollo Client offers mechanisms for managing local state (using
+reactive variables or local client fields), it is primarily designed as
+a network-first cache. If your primary goal is to manage client-side
+state (such as UI themes, modal toggles, or user preferences) without
+heavy server-side interactions, dedicated state management libraries
+like Zustand, Redux Toolkit, Jotai, or even React's native Context API
+are much simpler and more efficient.</p>
+<h3 id="5-you-want-to-avoid-complex-cache-management">5. You Want to
+Avoid Complex Cache Management</h3>
+<p>One of Apollo's greatest strengths is its normalized cache, but it is
+also a common source of bugs and developer frustration. When dealing
+with complex mutations, nested data structures, or paginated lists,
+manually updating the cache to keep the UI in sync can become incredibly
+tedious and error-prone. If your team wants to avoid the complexities of
+managing a normalized cache, a document-cache-based library like
+<code>urql</code> or a key-value cache like TanStack Query will save you
+significant development time.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

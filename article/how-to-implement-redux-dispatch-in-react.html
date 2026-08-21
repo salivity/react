@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Implement Redux Dispatch in React - react</title>
+    <meta name="description" content="In this guide, you will learn how to implement Redux Dispatch in a React application to update your global state. We will cover the essential steps to set up the useDispatch hook from the react-redux library, define actions, and trigger state changes thr">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-implement-redux-dispatch-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Implement Redux Dispatch in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-implement-redux-dispatch-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In this guide, you will learn how to implement Redux Dispatch in a React application to update your global state. We will cover the essential steps to set up the useDispatch hook from the react-redux library, define actions, and trigger state changes thr" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-implement-redux-dispatch-in-react">How to Implement Redux
+Dispatch in React</h1>
+<p>In this guide, you will learn how to implement Redux Dispatch in a
+React application to update your global state. We will cover the
+essential steps to set up the <code>useDispatch</code> hook from the
+<code>react-redux</code> library, define actions, and trigger state
+changes through user interactions using a straightforward, practical
+code example.</p>
+<h3 id="understanding-redux-dispatch">Understanding Redux Dispatch</h3>
+<p>In Redux, the state is read-only. The only way to modify the state is
+by dispatching an "action." An action is a plain JavaScript object that
+describes an event or update. The Redux store receives this action and
+passes it to a reducer, which then calculates and returns the new state.
+In React, the <code>useDispatch</code> hook is the standard way to send
+these actions to your Redux store from within functional components.</p>
+<h3 id="step-1-install-the-required-packages">Step 1: Install the
+Required Packages</h3>
+<p>To use Redux in your React project, make sure you have installed
+<code>@reduxjs/toolkit</code> and <code>react-redux</code>.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install @reduxjs/toolkit react-redux</span></code></pre></div>
+<h3 id="step-2-create-a-slice-and-actions">Step 2: Create a Slice and
+Actions</h3>
+<p>Using Redux Toolkit, you can define your state and reducers inside a
+"slice." The slice automatically generates action creators for you. Here
+is an example of a simple counter slice:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// counterSlice.js</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { createSlice } <span class="im">from</span> <span class="st">&#39;@reduxjs/toolkit&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> counterSlice <span class="op">=</span> <span class="fu">createSlice</span>({</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;counter&#39;</span><span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">initialState</span><span class="op">:</span> { <span class="dt">value</span><span class="op">:</span> <span class="dv">0</span> }<span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducers</span><span class="op">:</span> {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">increment</span><span class="op">:</span> (state) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      state<span class="op">.</span><span class="at">value</span> <span class="op">+=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">decrement</span><span class="op">:</span> (state) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      state<span class="op">.</span><span class="at">value</span> <span class="op">-=</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">incrementByAmount</span><span class="op">:</span> (state<span class="op">,</span> action) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      state<span class="op">.</span><span class="at">value</span> <span class="op">+=</span> action<span class="op">.</span><span class="at">payload</span><span class="op">;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">// Export the auto-generated action creators</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> { increment<span class="op">,</span> decrement<span class="op">,</span> incrementByAmount } <span class="op">=</span> counterSlice<span class="op">.</span><span class="at">actions</span><span class="op">;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> counterSlice<span class="op">.</span><span class="at">reducer</span><span class="op">;</span></span></code></pre></div>
+<h3 id="step-3-configure-the-redux-store">Step 3: Configure the Redux
+Store</h3>
+<p>You need to provide the store to your React application using the
+<code>Provider</code> component.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// store.js</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { configureStore } <span class="im">from</span> <span class="st">&#39;@reduxjs/toolkit&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> counterReducer <span class="im">from</span> <span class="st">&#39;./counterSlice&#39;</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> store <span class="op">=</span> <span class="fu">configureStore</span>({</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">reducer</span><span class="op">:</span> {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">counter</span><span class="op">:</span> counterReducer<span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Wrap your main application component with the <code>Provider</code>
+in your entry file (usually <code>main.js</code> or
+<code>index.js</code>):</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ReactDOM <span class="im">from</span> <span class="st">&#39;react-dom/client&#39;</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Provider } <span class="im">from</span> <span class="st">&#39;react-redux&#39;</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { store } <span class="im">from</span> <span class="st">&#39;./store&#39;</span><span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> App <span class="im">from</span> <span class="st">&#39;./App&#39;</span><span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>ReactDOM<span class="op">.</span><span class="fu">createRoot</span>(<span class="bu">document</span><span class="op">.</span><span class="fu">getElementById</span>(<span class="st">&#39;root&#39;</span>))<span class="op">.</span><span class="fu">render</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;</span>Provider store<span class="op">=</span>{store}<span class="op">&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>App <span class="op">/&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="op">&lt;/</span>Provider<span class="op">&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code></pre></div>
+<h3 id="step-4-use-usedispatch-in-a-react-component">Step 4: Use
+<code>useDispatch</code> in a React Component</h3>
+<p>To dispatch actions, import the <code>useDispatch</code> hook from
+<code>react-redux</code> along with your action creators. Call
+<code>useDispatch()</code> inside your component to get the dispatch
+function, then invoke it inside your event handlers.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// CounterComponent.js</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useDispatch<span class="op">,</span> useSelector } <span class="im">from</span> <span class="st">&#39;react-redux&#39;</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { increment<span class="op">,</span> decrement<span class="op">,</span> incrementByAmount } <span class="im">from</span> <span class="st">&#39;./counterSlice&#39;</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">CounterComponent</span>() {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Initialize the dispatch function</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> dispatch <span class="op">=</span> <span class="fu">useDispatch</span>()<span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Access the current count value from the store</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> count <span class="op">=</span> <span class="fu">useSelector</span>((state) <span class="kw">=&gt;</span> state<span class="op">.</span><span class="at">counter</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div style<span class="op">=</span>{{ <span class="dt">textAlign</span><span class="op">:</span> <span class="st">&#39;center&#39;</span><span class="op">,</span> <span class="dt">marginTop</span><span class="op">:</span> <span class="st">&#39;50px&#39;</span> }}<span class="op">&gt;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>h2<span class="op">&gt;</span><span class="dt">Count</span><span class="op">:</span> {count}<span class="op">&lt;/</span>h2<span class="op">&gt;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      {<span class="co">/* Dispatch actions on button clicks */</span>}</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">dispatch</span>(<span class="fu">increment</span>())}<span class="op">&gt;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        Increment</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">dispatch</span>(<span class="fu">decrement</span>())} style<span class="op">=</span>{{ <span class="dt">margin</span><span class="op">:</span> <span class="st">&#39;0 10px&#39;</span> }}<span class="op">&gt;</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        Decrement</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">dispatch</span>(<span class="fu">incrementByAmount</span>(<span class="dv">5</span>))}<span class="op">&gt;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        Add <span class="dv">5</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> CounterComponent<span class="op">;</span></span></code></pre></div>
+<h3 id="key-summary">Key Summary</h3>
+<ol type="1">
+<li><strong>Import <code>useDispatch</code></strong>: Pull the hook from
+<code>react-redux</code>.</li>
+<li><strong>Retrieve the dispatch function</strong>: Call
+<code>const dispatch = useDispatch()</code> inside your functional
+component.</li>
+<li><strong>Dispatch actions</strong>: Call
+<code>dispatch(actionCreator())</code> inside your event listeners (like
+<code>onClick</code>) to send the update to the store.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

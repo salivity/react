@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Secure React State - react</title>
+    <meta name="description" content="Securing state in a React application is crucial for protecting sensitive user data and preventing client-side security vulnerabilities. This article explores the essential practices for securing React state, including minimizing client-side exposure, sa">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-secure-react-state">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Secure React State - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-secure-react-state" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Securing state in a React application is crucial for protecting sensitive user data and preventing client-side security vulnerabilities. This article explores the essential practices for securing React state, including minimizing client-side exposure, sa" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-secure-react-state">How to Secure React State</h1>
+<p>Securing state in a React application is crucial for protecting
+sensitive user data and preventing client-side security vulnerabilities.
+This article explores the essential practices for securing React state,
+including minimizing client-side exposure, safeguarding tokens,
+preventing Cross-Site Scripting (XSS) attacks, and offloading sensitive
+operations to the backend.</p>
+<h2 id="1-never-store-sensitive-data-in-react-state">1. Never Store
+Sensitive Data in React State</h2>
+<p>React state is stored in browser memory, making it highly accessible
+to anyone with access to the device or browser developer tools (like
+React DevTools).</p>
+<ul>
+<li><strong>What to avoid:</strong> Do not store plain-text passwords,
+credit card numbers, or private API keys in <code>useState</code>,
+Redux, or any other client-side state management tool.</li>
+<li><strong>The solution:</strong> Only store UI-related state (such as
+toggle switches, form inputs before submission, or non-sensitive user
+profile data) in the client-side state.</li>
+</ul>
+<h2 id="2-secure-your-authentication-tokens">2. Secure Your
+Authentication Tokens</h2>
+<p>Storing JSON Web Tokens (JWTs) or session IDs in React state or
+standard browser storage (like <code>localStorage</code>) exposes them
+to Cross-Site Scripting (XSS) attacks.</p>
+<ul>
+<li><strong>Avoid LocalStorage:</strong> If an attacker executes a
+malicious script on your site, they can easily read
+<code>localStorage</code> and steal user tokens.</li>
+<li><strong>Use HttpOnly Cookies:</strong> The most secure way to handle
+authentication state is to store tokens in an <code>HttpOnly</code>,
+<code>Secure</code>, and <code>SameSite=Strict</code> cookie. This
+prevents client-side JavaScript—including your React code and malicious
+scripts—from accessing the token directly.</li>
+</ul>
+<h2 id="3-implement-backend-for-frontend-bff-for-api-keys">3. Implement
+Backend-for-Frontend (BFF) for API Keys</h2>
+<p>React applications are compiled into static JavaScript files that are
+sent to the user's browser. Any environment variables prefixed with
+<code>REACT_APP_</code> or <code>VITE_</code> are injected at build time
+and can be easily extracted by inspecting the source code.</p>
+<ul>
+<li><strong>The solution:</strong> Never make direct requests to
+third-party APIs using private keys from your React state. Instead,
+route your requests through a Backend-for-Frontend (BFF) or a serverless
+function. Your backend should hold the secret API keys and make the
+request on behalf of the React frontend.</li>
+</ul>
+<h2 id="4-prevent-cross-site-scripting-xss">4. Prevent Cross-Site
+Scripting (XSS)</h2>
+<p>If an attacker successfully injects a script into your React app,
+they can manipulate or extract your application's state. While React
+automatically escapes values to prevent XSS, you must remain cautious
+with specific APIs.</p>
+<ul>
+<li><strong>Avoid <code>dangerouslySetInnerHTML</code>:</strong> Avoid
+using this attribute unless absolutely necessary. If you must render raw
+HTML, sanitize the input first using a library like
+<code>DOMPurify</code>.</li>
+<li><strong>Sanitize User Input:</strong> Always validate and sanitize
+user inputs on both the frontend and backend before saving them to your
+database or rendering them in the UI.</li>
+</ul>
+<h2 id="5-clear-state-on-user-logout">5. Clear State on User Logout</h2>
+<p>When a user logs out, lingering data in React state or persistent
+browser storage can pose a security risk, especially on shared or public
+computers.</p>
+<ul>
+<li><strong>Reset State:</strong> Ensure your application dispatches
+action creators or state-setting functions to reset your global state
+(e.g., Redux, Context API) to its initial empty values upon logout.</li>
+<li><strong>Clear Storage:</strong> Explicitly clear any session-related
+data stored in <code>sessionStorage</code> or <code>localStorage</code>
+using <code>localStorage.clear()</code>.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

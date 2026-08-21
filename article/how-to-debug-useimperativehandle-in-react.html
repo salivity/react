@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug useImperativeHandle in React - react</title>
+    <meta name="description" content="React's useImperativeHandle hook allows you to customize the instance value that a child component exposes to its parent when using forwardRef. Because this hook bypasses React's standard declarative data flow, identifying issues with exposed ref methods">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-useimperativehandle-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug useImperativeHandle in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-useimperativehandle-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's useImperativeHandle hook allows you to customize the instance value that a child component exposes to its parent when using forwardRef. Because this hook bypasses React's standard declarative data flow, identifying issues with exposed ref methods" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-useimperativehandle-in-react">How to Debug
+useImperativeHandle in React</h1>
+<p>React's <code>useImperativeHandle</code> hook allows you to customize
+the instance value that a child component exposes to its parent when
+using <code>forwardRef</code>. Because this hook bypasses React's
+standard declarative data flow, identifying issues with exposed ref
+methods can be tricky. This article outlines practical techniques to
+debug <code>useImperativeHandle</code>, including verifying component
+setups, inspecting refs using React Developer Tools, and identifying
+common closure-related bugs.</p>
+<hr />
+<h3 id="1-verify-the-forwardref-setup">1. Verify the
+<code>forwardRef</code> Setup</h3>
+<p>Before debugging the hook itself, ensure the child component is
+correctly wrapped in <code>forwardRef</code> and that the ref is passed
+as the second argument. If <code>forwardRef</code> is missing, the
+parent ref will remain <code>undefined</code> or <code>null</code>.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { forwardRef<span class="op">,</span> useRef<span class="op">,</span> useImperativeHandle } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> FancyInput <span class="op">=</span> <span class="fu">forwardRef</span>((props<span class="op">,</span> ref) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span>()<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">focus</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>input ref<span class="op">=</span>{inputRef} type<span class="op">=</span><span class="st">&quot;text&quot;</span> <span class="op">/&gt;;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="2-inspect-refs-with-react-developer-tools">2. Inspect Refs with
+React Developer Tools</h3>
+<p>React Developer Tools is the most efficient way to inspect what a
+component exposes.</p>
+<ol type="1">
+<li>Open your browser's Developer Tools and navigate to the
+<strong>Components</strong> tab.</li>
+<li>Select the parent component holding the <code>ref</code>.</li>
+<li>In the right-hand panel, look at the <strong>Hooks</strong> or
+<strong>Props</strong> section of the parent to inspect the ref
+object.</li>
+<li>Expand the <code>.current</code> property of the ref. You should see
+the exact keys and functions you returned in your
+<code>useImperativeHandle</code> callback (e.g.,
+<code>{ focus: ƒ }</code>).</li>
+</ol>
+<h3 id="3-log-the-ref-in-the-parent-component">3. Log the Ref in the
+Parent Component</h3>
+<p>To verify when and how the parent accesses the imperative handle, log
+the ref inside the parent component. Note that ref updates do not
+trigger re-renders, so logging directly in the render body may show
+<code>null</code>. Instead, log the ref inside a <code>useEffect</code>
+hook or an event handler.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Parent Component</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> Parent <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This logs the object exposed by useImperativeHandle</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Exposed Ref:&quot;</span><span class="op">,</span> inputRef<span class="op">.</span><span class="at">current</span>)<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleClick <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (inputRef<span class="op">.</span><span class="at">current</span>) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">warn</span>(<span class="st">&quot;Ref is not yet attached.&quot;</span>)<span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>FancyInput ref<span class="op">=</span>{inputRef} <span class="op">/&gt;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{handleClick}<span class="op">&gt;</span>Focus Input<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h3 id="4-check-for-stale-closures-in-the-dependency-array">4. Check for
+Stale Closures in the Dependency Array</h3>
+<p>A common bug with <code>useImperativeHandle</code> is stale state
+inside the exposed methods. If your exposed function relies on a state
+variable or prop, that dependency must be included in the dependency
+array of <code>useImperativeHandle</code>. Otherwise, the function will
+capture the initial value (a stale closure).</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">logValue</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">// If &#39;value&#39; is not in the dependency array, this will print an outdated value</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(value)<span class="op">;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>})<span class="op">,</span> [value])<span class="op">;</span> <span class="co">// Always include reactive values used inside the handle</span></span></code></pre></div>
+<h3 id="5-set-breakpoints-inside-the-imperative-methods">5. Set
+Breakpoints inside the Imperative Methods</h3>
+<p>If the ref method is called but behaves unexpectedly, place a
+<code>debugger</code> statement or a console breakpoint directly inside
+the returned object functions in the child component.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">customMethod</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">debugger</span><span class="op">;</span> <span class="co">// Execution pauses here when parent calls inputRef.current.customMethod()</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Perform debugging actions</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>}))<span class="op">;</span></span></code></pre></div>
+<p>This lets you inspect the local scope of the child component at the
+exact moment the parent invokes the imperative method.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

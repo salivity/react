@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use useImperativeHandle Hook in React - react</title>
+    <meta name="description" content="React's declarative nature usually discourages direct manipulation of DOM elements, but certain advanced scenarios require imperative control. This article explains why and when developers should use the useImperativeHandle hook in React. We will explore">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-useimperativehandle-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use useImperativeHandle Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-useimperativehandle-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's declarative nature usually discourages direct manipulation of DOM elements, but certain advanced scenarios require imperative control. This article explains why and when developers should use the useImperativeHandle hook in React. We will explore" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-useimperativehandle-hook-in-react">Why Use
+useImperativeHandle Hook in React</h1>
+<p>React's declarative nature usually discourages direct manipulation of
+DOM elements, but certain advanced scenarios require imperative control.
+This article explains why and when developers should use the
+<code>useImperativeHandle</code> hook in React. We will explore how it
+works in tandem with <code>forwardRef</code> to customize the instance
+value exposed to parent components, examine its primary use cases like
+managing focus or triggering animations, and discuss why it should be
+used selectively to maintain clean, maintainable code.</p>
+<h2 id="understanding-useimperativehandle">Understanding
+useImperativeHandle</h2>
+<p>In standard React data flow, parents communicate with children using
+props. However, there are times when a parent component needs to trigger
+an action inside a child component imperatively.</p>
+<p>By default, when you pass a <code>ref</code> to a child component
+using <code>React.forwardRef</code>, the parent component gains access
+to the child's entire underlying DOM node. The
+<code>useImperativeHandle</code> hook allows you to intercept this ref
+and customize exactly which properties or methods are exposed to the
+parent, keeping the rest of the child's internal structure private.</p>
+<h2 id="why-developers-should-use-useimperativehandle">Why Developers
+Should Use useImperativeHandle</h2>
+<h3 id="1-encapsulation-and-security">1. Encapsulation and Security</h3>
+<p>Exposing a raw DOM node to a parent component breaks encapsulation.
+The parent component could theoretically modify CSS classes, append
+random child nodes, or alter attributes that the child component relies
+on, leading to bugs. By using <code>useImperativeHandle</code>, you
+limit the API surface area. You only expose specific functions (like
+<code>focus()</code>, <code>clear()</code>, or <code>scroll()</code>),
+protecting the child's internal DOM structure from unauthorized external
+manipulation.</p>
+<h3 id="2-managing-complex-component-states-eg-modals-and-forms">2.
+Managing Complex Component States (e.g., Modals and Forms)</h3>
+<p>Some components, such as modals, custom video players, or multi-step
+forms, have internal states that are highly imperative by nature.</p>
+<ul>
+<li><strong>Modals:</strong> A parent might need to call
+<code>.open()</code> or <code>.close()</code>.</li>
+<li><strong>Video Players:</strong> A parent might need to trigger
+<code>.play()</code> or <code>.pause()</code>.</li>
+<li><strong>Forms:</strong> A parent might need to call
+<code>.reset()</code> or <code>.validate()</code>.</li>
+</ul>
+<p>Instead of lifting complex state to the parent and causing
+unnecessary re-renders, <code>useImperativeHandle</code> lets the child
+manage its own state while giving the parent a clean,
+imperatively-callable interface.</p>
+<h3 id="3-hiding-implementation-details">3. Hiding Implementation
+Details</h3>
+<p>If you decide to change how a child component is rendered—for
+example, switching from an <code>&lt;input&gt;</code> tag to a custom
+styled contenteditable <code>&lt;div&gt;</code>—the parent component
+does not need to change. Because the parent only calls the custom
+methods you exposed via <code>useImperativeHandle</code>, the underlying
+DOM changes remain completely hidden.</p>
+<hr />
+<h2 id="code-example-customizing-exposed-methods">Code Example:
+Customizing Exposed Methods</h2>
+<p>Here is a practical example of how <code>useImperativeHandle</code>
+is implemented.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useRef<span class="op">,</span> useImperativeHandle<span class="op">,</span> forwardRef } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> CustomInput <span class="op">=</span> <span class="fu">forwardRef</span>((props<span class="op">,</span> ref) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputRef <span class="op">=</span> <span class="fu">useRef</span>()<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Only expose the focus and clear functions to the parent</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useImperativeHandle</span>(ref<span class="op">,</span> () <span class="kw">=&gt;</span> ({</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">focusInput</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focus</span>()<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">clearInput</span><span class="op">:</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      inputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="at">value</span> <span class="op">=</span> <span class="st">&#39;&#39;</span><span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return </span><span class="kw">&lt;input</span> <span class="ot">ref</span><span class="op">=</span><span class="va">{</span>inputRef<span class="va">}</span> <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> <span class="ot">placeholder</span><span class="op">=</span><span class="st">&quot;Type here...&quot;</span> <span class="kw">/&gt;</span><span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="fu">ParentComponent</span>() {</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> customInputRef <span class="op">=</span> <span class="fu">useRef</span>()<span class="op">;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">&lt;CustomInput</span> <span class="ot">ref</span><span class="op">=</span><span class="va">{</span>customInputRef<span class="va">}</span> <span class="fu">/&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> customInputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">focusInput</span>()<span class="va">}</span><span class="kw">&gt;</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        Focus Input</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;/button&gt;</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> customInputRef<span class="op">.</span><span class="at">current</span><span class="op">.</span><span class="fu">clearInput</span>()<span class="va">}</span><span class="kw">&gt;</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        Clear Input</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;/button&gt;</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>In this example, the parent component cannot access the raw input tag
+properties, such as <code>.value</code> or <code>.style</code> directly
+on the ref. It can only execute the <code>focusInput</code> and
+<code>clearInput</code> methods defined in the hook.</p>
+<hr />
+<h2 id="when-to-avoid-useimperativehandle">When to Avoid
+useImperativeHandle</h2>
+<p>While <code>useImperativeHandle</code> is powerful, it should be used
+as a last resort. React is built on a declarative paradigm, meaning the
+UI should ideally be a reflection of state and props.</p>
+<ul>
+<li><strong>Do not use it</strong> for things that can be easily
+achieved with props. For example, instead of calling a
+<code>.show()</code> method on a modal via a ref, pass an
+<code>isOpen</code> boolean prop.</li>
+<li><strong>Do use it</strong> when you must interact with native DOM
+APIs (focus, selection, scrolling, animations) that cannot be cleanly
+controlled via props alone.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

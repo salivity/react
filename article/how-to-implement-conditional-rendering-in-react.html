@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Implement Conditional Rendering in React - react</title>
+    <meta name="description" content="Conditional rendering in React allows developers to display different user interface elements based on specific states, props, or conditions. This guide provides a direct, practical overview of the most common and effective methods to implement condition">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-implement-conditional-rendering-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Implement Conditional Rendering in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-implement-conditional-rendering-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Conditional rendering in React allows developers to display different user interface elements based on specific states, props, or conditions. This guide provides a direct, practical overview of the most common and effective methods to implement condition" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-implement-conditional-rendering-in-react">How to
+Implement Conditional Rendering in React</h1>
+<p>Conditional rendering in React allows developers to display different
+user interface elements based on specific states, props, or conditions.
+This guide provides a direct, practical overview of the most common and
+effective methods to implement conditional rendering in your React
+applications, including if-else statements, ternary operators, the
+logical AND operator, and switch cases.</p>
+<h2 id="1-the-ternary-operator-condition--x--y">1. The Ternary Operator
+(<code>condition ? x : y</code>)</h2>
+<p>The ternary operator is the most common way to implement inline
+if-else conditions inside your JSX. It is compact, easy to read, and
+ideal for choosing between two different elements.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">WelcomeMessage</span>({ isLoggedIn }) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span>isLoggedIn <span class="op">? </span><span class="kw">&lt;h1&gt;</span>Welcome back!<span class="kw">&lt;/h1&gt;</span> <span class="op">: </span><span class="kw">&lt;h1&gt;</span>Please sign in.<span class="kw">&lt;/h1&gt;</span><span class="va">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="2-the-logical-and-operator-">2. The Logical AND Operator
+(<code>&amp;&amp;</code>)</h2>
+<p>When you want to render a component only if a condition is true, and
+render nothing if it is false, the logical <code>&amp;&amp;</code>
+operator is the cleanest approach.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">NotificationBadge</span>({ unreadMessages }) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;h2&gt;</span>Inbox<span class="kw">&lt;/h2&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span>unreadMessages<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp;</span> (</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">&lt;span</span> <span class="ot">className</span><span class="op">=</span><span class="st">&quot;badge&quot;</span><span class="kw">&gt;</span><span class="va">{</span>unreadMessages<span class="op">.</span><span class="at">length</span><span class="va">}</span><span class="kw">&lt;/span&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      )<span class="va">}</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><em>Note: Ensure the left side of the <code>&amp;&amp;</code>
+evaluates to a boolean. If it evaluates to a number like <code>0</code>,
+React will render the <code>0</code> on the screen.</em></p>
+<h2 id="3-standard-if-else-statements">3. Standard <code>if-else</code>
+Statements</h2>
+<p>If your conditional logic is complex, you cannot use it directly
+inside the JSX return statement. Instead, use standard JavaScript
+<code>if-else</code> blocks outside the return statement.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">UserGreeting</span>({ role }) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (role <span class="op">===</span> <span class="st">&#39;admin&#39;</span>) {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return </span><span class="kw">&lt;h1&gt;</span>Admin Dashboard<span class="kw">&lt;/h1&gt;</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (role <span class="op">===</span> <span class="st">&#39;editor&#39;</span>) {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return </span><span class="kw">&lt;h1&gt;</span>Editor Panel<span class="kw">&lt;/h1&gt;</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return </span><span class="kw">&lt;h1&gt;</span>Guest View<span class="kw">&lt;/h1&gt;</span><span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="4-preventing-rendering-with-null">4. Preventing Rendering with
+<code>null</code></h2>
+<p>Sometimes you want a component to hide itself entirely based on a
+prop or state. To prevent a component from rendering, return
+<code>null</code> from its render function.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">WarningBanner</span>({ warn }) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>warn) {</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div</span> <span class="ot">className</span><span class="op">=</span><span class="st">&quot;warning&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      Warning! Something went wrong.</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="5-switch-case-statements">5. Switch Case Statements</h2>
+<p>When dealing with multiple conditional paths (more than three), a
+<code>switch</code> statement written before the return block keeps the
+code clean and maintainable.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">StatusMessage</span>({ status }) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> (status) {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;loading&#39;</span><span class="op">:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return </span><span class="kw">&lt;p&gt;</span>Loading...<span class="kw">&lt;/p&gt;</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;success&#39;</span><span class="op">:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return </span><span class="kw">&lt;p&gt;</span>Data loaded successfully!<span class="kw">&lt;/p&gt;</span><span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;error&#39;</span><span class="op">:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return </span><span class="kw">&lt;p&gt;</span>An error occurred. Please try again.<span class="kw">&lt;/p&gt;</span><span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

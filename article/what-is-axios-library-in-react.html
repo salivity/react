@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is Axios Library in React - react</title>
+    <meta name="description" content="Axios is a popular, promise-based HTTP client that allows developers to make network requests from the browser to external servers. In this article, you will learn what the Axios library is, why it is highly preferred over the native Fetch API in React a">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-axios-library-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is Axios Library in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-axios-library-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Axios is a popular, promise-based HTTP client that allows developers to make network requests from the browser to external servers. In this article, you will learn what the Axios library is, why it is highly preferred over the native Fetch API in React a" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-axios-library-in-react">What is Axios Library in
+React</h1>
+<p>Axios is a popular, promise-based HTTP client that allows developers
+to make network requests from the browser to external servers. In this
+article, you will learn what the Axios library is, why it is highly
+preferred over the native Fetch API in React applications, how to
+install it, and how to perform basic data fetching operations within
+your React components.</p>
+<h2 id="what-is-axios">What is Axios?</h2>
+<p>Axios is a lightweight, open-source library used to send HTTP
+requests. It runs on both client-side (the browser) and server-side
+(Node.js) environments. In a React application, Axios acts as a bridge
+between your frontend user interface and backend APIs, enabling you to
+fetch, send, update, and delete data smoothly.</p>
+<p>Because Axios is promise-based, it allows you to write clean,
+readable asynchronous code using JavaScript's <code>async/await</code>
+syntax or <code>.then()</code> and <code>.catch()</code> blocks.</p>
+<h2 id="why-use-axios-instead-of-the-fetch-api">Why Use Axios Instead of
+the Fetch API?</h2>
+<p>While modern browsers come with a built-in <code>fetch()</code>
+method, Axios offers several advantages that make it the preferred
+choice for React developers:</p>
+<ul>
+<li><strong>Automatic JSON Transformation:</strong> Unlike Fetch, which
+requires you to manually convert response data using
+<code>response.json()</code>, Axios automatically serializes and parses
+data to and from JSON.</li>
+<li><strong>Simpler Error Handling:</strong> Axios automatically throws
+errors for any HTTP response status outside the 2xx range (such as 404
+or 500 errors). With Fetch, you have to manually check
+<code>response.ok</code> to handle these errors.</li>
+<li><strong>Request and Response Interceptors:</strong> Axios allows you
+to intercept requests or responses before they are handled by
+<code>then</code> or <code>catch</code>. This is highly useful for
+automatically injecting authentication tokens (like JWT) into request
+headers.</li>
+<li><strong>Wide Browser Compatibility:</strong> Axios works
+out-of-the-box on older web browsers without requiring additional
+polyfills.</li>
+<li><strong>Request Cancellation:</strong> Axios provides a
+straightforward way to cancel active HTTP requests if a user navigates
+away from a page, preventing memory leaks in React.</li>
+</ul>
+<h2 id="how-to-install-axios-in-a-react-project">How to Install Axios in
+a React Project</h2>
+<p>To start using Axios in your React application, navigate to your
+project directory in the terminal and run one of the following
+commands:</p>
+<p>Using npm:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install axios</span></code></pre></div>
+<p>Using yarn:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">yarn</span> add axios</span></code></pre></div>
+<h2 id="how-to-use-axios-in-react-examples">How to Use Axios in React
+(Examples)</h2>
+<p>To fetch data in a React component, you typically combine Axios with
+the <code>useState</code> and <code>useEffect</code> hooks.</p>
+<h3 id="1-making-a-get-request">1. Making a GET Request</h3>
+<p>Below is an example of fetching a list of users from a public API
+when the component mounts.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> axios <span class="im">from</span> <span class="st">&#39;axios&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">UserList</span>() {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [users<span class="op">,</span> setUsers] <span class="op">=</span> <span class="fu">useState</span>([])<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [loading<span class="op">,</span> setLoading] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [error<span class="op">,</span> setError] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    axios<span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;https://jsonplaceholder.typicode.com/users&#39;</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">then</span>((response) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setUsers</span>(response<span class="op">.</span><span class="at">data</span>)<span class="op">;</span> <span class="co">// Axios automatically parses JSON</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setLoading</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">catch</span>((error) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setError</span>(error<span class="op">.</span><span class="at">message</span>)<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setLoading</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (loading) <span class="cf">return </span><span class="kw">&lt;p&gt;</span>Loading users...<span class="kw">&lt;/p&gt;</span><span class="op">;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (error) <span class="cf">return </span><span class="kw">&lt;p&gt;</span>Error: <span class="va">{</span>error<span class="va">}</span><span class="kw">&lt;/p&gt;</span><span class="op">;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;ul&gt;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span>users<span class="op">.</span><span class="fu">map</span>(user <span class="kw">=&gt;</span> (</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="kw">&lt;li</span> <span class="ot">key</span><span class="op">=</span><span class="va">{</span>user<span class="op">.</span><span class="at">id</span><span class="va">}</span><span class="kw">&gt;</span><span class="va">{</span>user<span class="op">.</span><span class="at">name</span><span class="va">}</span><span class="kw">&lt;/li&gt;</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>      ))<span class="va">}</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> UserList<span class="op">;</span></span></code></pre></div>
+<h3 id="2-making-a-post-request">2. Making a POST Request</h3>
+<p>Here is how you can send new data to a server using a POST request
+with <code>async/await</code>.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> axios <span class="im">from</span> <span class="st">&#39;axios&#39;</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">CreateUser</span>() {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [name<span class="op">,</span> setName] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleSubmit <span class="op">=</span> <span class="kw">async</span> (e) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    e<span class="op">.</span><span class="fu">preventDefault</span>()<span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span> {</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> axios<span class="op">.</span><span class="fu">post</span>(<span class="st">&#39;https://jsonplaceholder.typicode.com/users&#39;</span><span class="op">,</span> {</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">name</span><span class="op">:</span> name</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;User created successfully:&#39;</span><span class="op">,</span> response<span class="op">.</span><span class="at">data</span>)<span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">catch</span> (error) {</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">&#39;Error creating user:&#39;</span><span class="op">,</span> error)<span class="op">;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;form</span> <span class="ot">onSubmit</span><span class="op">=</span><span class="va">{</span>handleSubmit<span class="va">}</span><span class="kw">&gt;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;input</span> </span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> </span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="ot">value</span><span class="op">=</span><span class="va">{</span>name<span class="va">}</span> </span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="ot">onChange</span><span class="op">=</span><span class="va">{</span>(e) <span class="kw">=&gt;</span> <span class="fu">setName</span>(e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="va">}</span> </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="ot">placeholder</span><span class="op">=</span><span class="st">&quot;Enter name&quot;</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>      <span class="kw">/&gt;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">type</span><span class="op">=</span><span class="st">&quot;submit&quot;</span><span class="kw">&gt;</span>Add User<span class="kw">&lt;/button&gt;</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/form&gt;</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> CreateUser<span class="op">;</span></span></code></pre></div>
+<h2 id="summary-of-axios-methods">Summary of Axios Methods</h2>
+<p>Axios maps directly to HTTP request methods, making the API intuitive
+to use:</p>
+<ul>
+<li><code>axios.get(url[, config])</code> — Retrieves data.</li>
+<li><code>axios.post(url[, data[, config]])</code> — Submits new
+data.</li>
+<li><code>axios.put(url[, data[, config]])</code> — Updates existing
+data.</li>
+<li><code>axios.delete(url[, config])</code> — Deletes data.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

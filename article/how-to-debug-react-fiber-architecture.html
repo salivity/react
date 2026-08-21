@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug React Fiber Architecture - react</title>
+    <meta name="description" content="React's Fiber architecture is the core reconciliation engine responsible for scheduling, pausing, and resuming rendering work. Debugging it requires looking beyond standard component state to inspect the underlying tree of Fiber nodes, work-in-progress q">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-react-fiber-architecture">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug React Fiber Architecture - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-react-fiber-architecture" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's Fiber architecture is the core reconciliation engine responsible for scheduling, pausing, and resuming rendering work. Debugging it requires looking beyond standard component state to inspect the underlying tree of Fiber nodes, work-in-progress q" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-react-fiber-architecture">How to Debug React Fiber
+Architecture</h1>
+<p>React's Fiber architecture is the core reconciliation engine
+responsible for scheduling, pausing, and resuming rendering work.
+Debugging it requires looking beyond standard component state to inspect
+the underlying tree of Fiber nodes, work-in-progress queues, and update
+priorities. This article outlines the essential tools, browser console
+tricks, and breakpoint strategies needed to inspect and debug React
+Fiber internals effectively.</p>
+<h2 id="inspecting-fiber-nodes-via-the-dom">Inspecting Fiber Nodes via
+the DOM</h2>
+<p>To inspect a Fiber node directly in your browser's developer tools,
+select an HTML element in the DOM tree, switch to the console, and
+access its internal React properties. React attaches its internal Fiber
+reference directly to the DOM node.</p>
+<p>In the browser console, type:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>$0<span class="op">.</span><span class="at">__reactFiber$</span></span></code></pre></div>
+<p><em>(Note: <code>$0</code> represents the currently selected element
+in the Elements panel. In older versions of React, this property might
+be named <code>__reactInternalInstance$</code>)</em>.</p>
+<p>Expanding this object in the console exposes key Fiber
+properties:</p>
+<ul>
+<li><strong><code>child</code></strong>: Points to the first child Fiber
+node.</li>
+<li><strong><code>sibling</code></strong>: Points to the next sibling
+Fiber node.</li>
+<li><strong><code>return</code></strong>: Points to the parent Fiber
+node, forming a doubly-linked list.</li>
+<li><strong><code>memoizedState</code></strong>: The state currently
+used to render the UI (where React hooks like <code>useState</code>
+store their values in a linked list).</li>
+<li><strong><code>memoizedProps</code></strong>: The props used during
+the last render.</li>
+<li><strong><code>pendingProps</code></strong>: The new props applied to
+the Fiber node that are waiting to be processed.</li>
+<li><strong><code>lanes</code></strong>: A bitmask representing the
+priority of updates scheduled for this Fiber.</li>
+</ul>
+<h2 id="utilizing-react-developer-tools">Utilizing React Developer
+Tools</h2>
+<p>The React Developer Tools extension is the most accessible way to
+debug Fiber behavior without manually navigating memory addresses.</p>
+<ul>
+<li><strong>The Components Tab</strong>: Select a component and type
+<code>$r</code> in the console. This helper variable references the
+selected component's backing instance or Fiber node, allowing you to
+inspect its state, hooks, and props programmatically.</li>
+<li><strong>The Profiler Tab</strong>: The Profiler records commit
+phases, render durations, and interaction tracing. Because Fiber splits
+rendering into "render" (asynchronous/interruptible) and "commit"
+(synchronous/DOM mutations) phases, the Profiler helps identify which
+Fiber updates are blocking the main thread.</li>
+</ul>
+<h2 id="setting-breakpoints-in-react-source-code">Setting Breakpoints in
+React Source Code</h2>
+<p>To trace how React processes Fiber nodes during its execution phases,
+you can set conditional breakpoints in the unminified development build
+of <code>react-dom.development.js</code> using your browser’s Sources
+panel.</p>
+<p>Search for and place breakpoints inside these critical functions:</p>
+<ul>
+<li><strong><code>performUnitOfWork</code></strong>: The main loop where
+React processes a Fiber node. Pausing here allows you to step through
+the entire Fiber tree traversal.</li>
+<li><strong><code>beginWork</code></strong>: The function where React
+decides if a Fiber needs to be updated or if it can be bailed out
+(reused). Inspecting the <code>workInProgress</code> Fiber here reveals
+the current update calculations.</li>
+<li><strong><code>completeWork</code></strong>: The step where React
+finishes processing a Fiber and prepares the actual DOM mutations.</li>
+<li><strong><code>commitRoot</code></strong>: The entry point to the
+commit phase where React actually writes the changes to the DOM and
+calls lifecycle methods or <code>useEffect</code> hooks.</li>
+</ul>
+<h2 id="accessing-the-devtools-global-hook">Accessing the DevTools
+Global Hook</h2>
+<p>React registers its internal renderer with the browser via a global
+object. You can hook into this interface to programmatically inspect the
+active fiber tree by typing the following in your console:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>__REACT_DEVTOOLS_GLOBAL_HOOK__</span></code></pre></div>
+<p>This object contains a <code>renderers</code> Map. By accessing the
+renderer, you can gain insight into the fiber root and track how React
+schedules tasks across different priorities.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Optimize Redux Middleware in React - react</title>
+    <meta name="description" content="Optimizing Redux middleware is crucial for maintaining a highly responsive user interface in React applications, as inefficient middleware can introduce latency in the state update cycle. This article explores actionable strategies to streamline your Red">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-optimize-redux-middleware-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Optimize Redux Middleware in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-optimize-redux-middleware-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Optimizing Redux middleware is crucial for maintaining a highly responsive user interface in React applications, as inefficient middleware can introduce latency in the state update cycle. This article explores actionable strategies to streamline your Red" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-optimize-redux-middleware-in-react">How to Optimize Redux
+Middleware in React</h1>
+<p>Optimizing Redux middleware is crucial for maintaining a highly
+responsive user interface in React applications, as inefficient
+middleware can introduce latency in the state update cycle. This article
+explores actionable strategies to streamline your Redux middleware,
+including minimizing action-filtering overhead, avoiding blocking
+synchronous operations, leveraging selector memoization, and batching
+state updates to prevent unnecessary UI re-renders.</p>
+<h2 id="1-implement-fast-action-filtering">1. Implement Fast Action
+Filtering</h2>
+<p>Every action dispatched in a Redux application passes through every
+configured middleware. If your middleware performs expensive checks or
+operations for actions it does not care about, it will slow down the
+entire dispatch pipeline.</p>
+<p>Always place a strict, early-exit type check at the very beginning of
+your middleware.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> optimizationMiddleware <span class="op">=</span> store <span class="kw">=&gt;</span> next <span class="kw">=&gt;</span> action <span class="kw">=&gt;</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Fast exit: immediately pass the action if it&#39;s not relevant</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (action<span class="op">.</span><span class="at">type</span> <span class="op">!==</span> <span class="st">&#39;HEAVY_PROCESS_TRIGGER&#39;</span>) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">next</span>(action)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Only execute complex logic for the targeted action</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> result <span class="op">=</span> <span class="fu">next</span>(action)<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Perform middleware logic here</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h2 id="2-avoid-synchronous-blocking-operations">2. Avoid Synchronous
+Blocking Operations</h2>
+<p>Redux middleware runs synchronously during the dispatch cycle.
+Performing heavy computation, synchronous file I/O, or complex data
+transformations directly inside the middleware blocks the main thread,
+causing visible lag in the React UI.</p>
+<ul>
+<li><strong>Offload to Web Workers:</strong> For heavy data processing,
+pass the payload to a Web Worker and dispatch a success action when the
+worker completes.</li>
+<li><strong>Use Asynchronous API Calls:</strong> Ensure all network
+requests or timer-based operations are handled asynchronously (e.g.,
+using <code>redux-thunk</code>, <code>redux-saga</code>, or
+<code>RTK Query</code>) so they do not block the dispatch chain.</li>
+</ul>
+<h2 id="3-limit-redux-store-reads-getstate">3. Limit Redux Store Reads
+(<code>getState</code>)</h2>
+<p>Calling <code>store.getState()</code> within middleware is a common
+pattern, but doing so excessively—especially inside loops or deep nested
+logic—can degrade performance.</p>
+<ul>
+<li>Call <code>store.getState()</code> only once at the beginning of the
+middleware logic if you need the current state.</li>
+<li>Store the result in a local variable rather than calling the method
+repeatedly.</li>
+<li>Avoid performing deep lookups on the state object inside the
+middleware; instead, use memoized selectors to extract only the
+necessary data slice.</li>
+</ul>
+<h2 id="4-batch-dispatched-actions">4. Batch Dispatched Actions</h2>
+<p>When middleware dispatches multiple actions in rapid succession, it
+can trigger multiple immediate re-renders in your React components.</p>
+<p>To optimize this:</p>
+<ul>
+<li>Consolidate multiple small actions into a single, comprehensive
+action containing a larger payload where possible.</li>
+<li>Use React's built-in batching behavior (automatic batching in React
+18+) or use Redux's <code>batch</code> utility if you are dispatching
+multiple independent actions that affect different parts of the UI.</li>
+</ul>
+<h2 id="5-leverage-production-only-middleware">5. Leverage
+Production-Only Middleware</h2>
+<p>Many middleware libraries used for logging, state tracking, and
+debugging (such as <code>redux-logger</code>) carry a heavy performance
+tax. Ensure these development tools are completely stripped out of your
+production build.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> middlewares <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NODE_ENV</span> <span class="op">===</span> <span class="st">&#39;development&#39;</span>) {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { createLogger } <span class="op">=</span> <span class="pp">require</span>(<span class="st">&#39;redux-logger&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  middlewares<span class="op">.</span><span class="fu">push</span>(<span class="fu">createLogger</span>())<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="6-prefer-redux-toolkit-rtk-listeners-for-light-tasks">6. Prefer
+Redux Toolkit (RTK) Listeners for Light Tasks</h2>
+<p>If you are using Redux Toolkit, consider using
+<code>createListenerMiddleware</code> instead of writing custom
+middleware or using heavy saga setups for simple side effects. The
+listener middleware is highly optimized under the hood, statically
+typed, and designed to execute asynchronously without blocking the
+standard dispatch flow.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

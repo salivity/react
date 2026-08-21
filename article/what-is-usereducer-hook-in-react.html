@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is useReducer Hook in React? - react</title>
+    <meta name="description" content="This article provides a comprehensive overview of the useReducer hook in React. You will learn what useReducer is, how it differs from the more common useState hook, and when you should use it. Finally, we will walk through the basic syntax and a practic">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-usereducer-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is useReducer Hook in React? - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-usereducer-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a comprehensive overview of the useReducer hook in React. You will learn what useReducer is, how it differs from the more common useState hook, and when you should use it. Finally, we will walk through the basic syntax and a practic" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-usereducer-hook-in-react">What is useReducer Hook in
+React?</h1>
+<p>This article provides a comprehensive overview of the
+<code>useReducer</code> hook in React. You will learn what
+<code>useReducer</code> is, how it differs from the more common
+<code>useState</code> hook, and when you should use it. Finally, we will
+walk through the basic syntax and a practical code example to help you
+implement it in your own applications.</p>
+<h2 id="understanding-usereducer">Understanding useReducer</h2>
+<p>The <code>useReducer</code> hook is a built-in React hook used for
+managing complex state logic in functional components. It is similar to
+the <code>useState</code> hook, but it is modeled after the reducer
+pattern found in Redux.</p>
+<p>Instead of updating the state directly, you dispatch "actions" that
+describe what happened. A dedicated "reducer" function then intercepts
+these actions and determines how the state should transition from its
+current value to the next value.</p>
+<h2 id="when-to-use-usereducer-vs-usestate">When to Use useReducer vs.
+useState</h2>
+<p>While <code>useState</code> is excellent for simple, independent
+state variables (like a boolean toggle or a text input), it can become
+messy when:</p>
+<ul>
+<li>Your state involves multiple sub-values or complex nested
+objects.</li>
+<li>The next state depends on the previous state.</li>
+<li>Different state variables depend on one another.</li>
+</ul>
+<p>In these scenarios, <code>useReducer</code> is the better choice. It
+centralizes state transitions, makes state updates predictable, and
+improves code readability by separating state logic from UI
+rendering.</p>
+<h2 id="the-syntax-of-usereducer">The Syntax of useReducer</h2>
+<p>The <code>useReducer</code> hook accepts two primary arguments and
+returns an array with two elements:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [state<span class="op">,</span> dispatch] <span class="op">=</span> <span class="fu">useReducer</span>(reducer<span class="op">,</span> initialState)<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong><code>state</code></strong>: The current state value.</li>
+<li><strong><code>dispatch</code></strong>: A function used to trigger
+state updates by sending an "action" object to the reducer.</li>
+<li><strong><code>reducer</code></strong>: A user-defined function that
+contains the state transition logic. It takes the current
+<code>state</code> and the <code>action</code> as arguments, and returns
+the new state.</li>
+<li><strong><code>initialState</code></strong>: The initial value of
+your state.</li>
+</ul>
+<h2 id="practical-example-a-simple-counter">Practical Example: A Simple
+Counter</h2>
+<p>Here is a step-by-step example of how to implement
+<code>useReducer</code> to manage a simple counter application.</p>
+<h3 id="step-1-define-the-reducer-function">Step 1: Define the Reducer
+Function</h3>
+<p>The reducer function contains a <code>switch</code> statement to
+handle different action types.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> initialState <span class="op">=</span> { <span class="dt">count</span><span class="op">:</span> <span class="dv">0</span> }<span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">reducer</span>(state<span class="op">,</span> action) {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> (action<span class="op">.</span><span class="at">type</span>) {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;increment&#39;</span><span class="op">:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> { <span class="dt">count</span><span class="op">:</span> state<span class="op">.</span><span class="at">count</span> <span class="op">+</span> <span class="dv">1</span> }<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;decrement&#39;</span><span class="op">:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> { <span class="dt">count</span><span class="op">:</span> state<span class="op">.</span><span class="at">count</span> <span class="op">-</span> <span class="dv">1</span> }<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;reset&#39;</span><span class="op">:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> { <span class="dt">count</span><span class="op">:</span> <span class="dv">0</span> }<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="vs">`Unhandled action type: </span><span class="sc">${</span>action<span class="op">.</span><span class="at">type</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="step-2-use-the-hook-in-a-component">Step 2: Use the Hook in a
+Component</h3>
+<p>Pass the <code>reducer</code> function and the
+<code>initialState</code> to the hook inside your component, and use the
+<code>dispatch</code> function inside your event handlers.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useReducer } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Counter</span>() {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [state<span class="op">,</span> dispatch] <span class="op">=</span> <span class="fu">useReducer</span>(reducer<span class="op">,</span> initialState)<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>p<span class="op">&gt;</span><span class="dt">Count</span><span class="op">:</span> {state<span class="op">.</span><span class="at">count</span>}<span class="op">&lt;/</span>p<span class="op">&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">dispatch</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;increment&#39;</span> })}<span class="op">&gt;</span>Increment<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">dispatch</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;decrement&#39;</span> })}<span class="op">&gt;</span>Decrement<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">dispatch</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;reset&#39;</span> })}<span class="op">&gt;</span>Reset<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> Counter<span class="op">;</span></span></code></pre></div>
+<p>In this example, clicking any button calls <code>dispatch</code> with
+an object containing a <code>type</code>. The <code>reducer</code>
+function receives this action, evaluates the <code>type</code> in the
+switch statement, and returns the updated state object, causing the
+component to re-render with the new count.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

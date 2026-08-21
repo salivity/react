@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid Redux in React - react</title>
+    <meta name="description" content="Redux has long been the industry standard for state management in React applications, but it is not a one-size-fits-all solution. This article explores the specific scenarios where you should avoid using Redux, highlighting how it can introduce unnecessa">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-redux-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid Redux in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-redux-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Redux has long been the industry standard for state management in React applications, but it is not a one-size-fits-all solution. This article explores the specific scenarios where you should avoid using Redux, highlighting how it can introduce unnecessa" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-redux-in-react">When to Avoid Redux in React</h1>
+<p>Redux has long been the industry standard for state management in
+React applications, but it is not a one-size-fits-all solution. This
+article explores the specific scenarios where you should avoid using
+Redux, highlighting how it can introduce unnecessary complexity,
+boilerplate code, and performance overhead, while pointing you toward
+simpler, modern alternatives that are better suited for your
+project.</p>
+<h2 id="1-simple-or-medium-sized-applications">1. Simple or Medium-Sized
+Applications</h2>
+<p>If your application consists of only a few views, simple forms, or
+basic user interactions, Redux is highly unnecessary. Setting up Redux
+requires creating actions, reducers, store configurations, and
+middleware. For smaller apps, this boilerplate code quickly outweighs
+the actual logic of the application. Instead, rely on React’s built-in
+<code>useState</code> and <code>useReducer</code> hooks to manage local
+component state efficiently.</p>
+<h2 id="2-prop-drilling-is-your-only-problem">2. Prop Drilling is Your
+Only Problem</h2>
+<p>Developers often reach for Redux simply to avoid passing props down
+multiple levels of the component tree (prop drilling). If global state
+sharing is your only challenge, React’s native Context API is a much
+better choice. Context allows you to share data like UI themes, user
+authentication status, or language preferences across the application
+without the overhead of an external state management library.</p>
+<h2 id="3-the-state-is-primarily-server-side-data">3. The State is
+Primarily Server-Side Data</h2>
+<p>If the majority of your global state consists of data fetched from an
+external API (such as user profiles, product lists, or transactional
+data), Redux is often the wrong tool. Managing asynchronous server state
+in Redux requires complex middleware like Redux Thunk or Saga. Dedicated
+data-fetching libraries like TanStack Query (React Query) or SWR are far
+superior for this. They handle caching, background updating, loading
+states, and error handling out of the box with minimal
+configuration.</p>
+<h2 id="4-rapid-prototyping-and-mvps">4. Rapid Prototyping and MVPs</h2>
+<p>When building a Minimum Viable Product (MVP) or a rapid prototype,
+speed of delivery is critical. The strict architecture and verbose
+nature of Redux can severely slow down your development velocity. During
+the early stages of a project, it is better to write flexible, local
+state that can be easily refactored later if the application scales.</p>
+<h2 id="5-better-lightweight-alternatives-exist">5. Better Lightweight
+Alternatives Exist</h2>
+<p>Even when you genuinely need global state management, Redux is no
+longer the only viable option. Modern libraries offer the same benefits
+as Redux but with a fraction of the boilerplate and a much gentler
+learning curve.</p>
+<ul>
+<li><strong>Zustand:</strong> A highly intuitive, hook-based state
+management library that requires almost zero boilerplate.</li>
+<li><strong>Jotai / Recoil:</strong> Atomic state management libraries
+that allow you to manage state in small, isolated pieces ("atoms"),
+which is ideal for highly interactive UIs.</li>
+</ul>
+<p>By evaluating the specific needs of your application before adopting
+Redux, you can save development time, keep your codebase clean, and
+ensure your application remains easy to maintain.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

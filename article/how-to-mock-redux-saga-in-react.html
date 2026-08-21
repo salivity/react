@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Mock Redux Saga in React - react</title>
+    <meta name="description" content="Testing React applications that use Redux Saga requires a reliable way to isolate side effects. This article provides a straightforward guide on how to mock Redux Saga in React using Jest and the industry-standard library redux-saga-test-plan. You will l">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-mock-redux-saga-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Mock Redux Saga in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-mock-redux-saga-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Testing React applications that use Redux Saga requires a reliable way to isolate side effects. This article provides a straightforward guide on how to mock Redux Saga in React using Jest and the industry-standard library redux-saga-test-plan. You will l" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-mock-redux-saga-in-react">How to Mock Redux Saga in
+React</h1>
+<p>Testing React applications that use Redux Saga requires a reliable
+way to isolate side effects. This article provides a straightforward
+guide on how to mock Redux Saga in React using Jest and the
+industry-standard library <code>redux-saga-test-plan</code>. You will
+learn how to test generator functions step-by-step, mock API calls using
+providers, and test integration behavior without running actual
+asynchronous network requests.</p>
+<hr />
+<h2
+id="method-1-step-by-step-generator-testing-no-extra-libraries">Method
+1: Step-by-Step Generator Testing (No Extra Libraries)</h2>
+<p>Because Redux Sagas are generator functions, you can test them
+without any external mocking libraries by manually iterating through the
+generator using <code>.next()</code>. This allows you to mock the return
+value of each yield effect.</p>
+<h3 id="the-saga">The Saga</h3>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { call<span class="op">,</span> put } <span class="im">from</span> <span class="st">&#39;redux-saga/effects&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> api <span class="im">from</span> <span class="st">&#39;./api&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span><span class="op">*</span> <span class="fu">fetchUserSaga</span>(action) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">try</span> {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> user <span class="op">=</span> <span class="kw">yield</span> <span class="fu">call</span>(api<span class="op">.</span><span class="at">fetchUser</span><span class="op">,</span> action<span class="op">.</span><span class="at">payload</span>)<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">yield</span> <span class="fu">put</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;FETCH_USER_SUCCESS&#39;</span><span class="op">,</span> <span class="dt">payload</span><span class="op">:</span> user })<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">catch</span> (error) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">yield</span> <span class="fu">put</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;FETCH_USER_FAILURE&#39;</span><span class="op">,</span> <span class="dt">message</span><span class="op">:</span> error<span class="op">.</span><span class="at">message</span> })<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="the-test">The Test</h3>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { call<span class="op">,</span> put } <span class="im">from</span> <span class="st">&#39;redux-saga/effects&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { fetchUserSaga } <span class="im">from</span> <span class="st">&#39;./sagas&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> api <span class="im">from</span> <span class="st">&#39;./api&#39;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="st">&#39;fetchUserSaga&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">it</span>(<span class="st">&#39;steps through the generator successfully&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> generator <span class="op">=</span> <span class="fu">fetchUserSaga</span>({ <span class="dt">payload</span><span class="op">:</span> <span class="dv">1</span> })<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 1. Mock the API call yield</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(generator<span class="op">.</span><span class="fu">next</span>()<span class="op">.</span><span class="at">value</span>)<span class="op">.</span><span class="fu">toEqual</span>(<span class="fu">call</span>(api<span class="op">.</span><span class="at">fetchUser</span><span class="op">,</span> <span class="dv">1</span>))<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 2. Pass fake user data into next() to simulate the API response</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> fakeUser <span class="op">=</span> { <span class="dt">id</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;John Doe&#39;</span> }<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(generator<span class="op">.</span><span class="fu">next</span>(fakeUser)<span class="op">.</span><span class="at">value</span>)<span class="op">.</span><span class="fu">toEqual</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">put</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;FETCH_USER_SUCCESS&#39;</span><span class="op">,</span> <span class="dt">payload</span><span class="op">:</span> fakeUser })</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 3. Ensure the generator is finished</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(generator<span class="op">.</span><span class="fu">next</span>()<span class="op">.</span><span class="at">done</span>)<span class="op">.</span><span class="fu">toBe</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<hr />
+<h2 id="method-2-asserting-with-redux-saga-test-plan-recommended">Method
+2: Asserting with Redux Saga Test Plan (Recommended)</h2>
+<p>Using the <code>redux-saga-test-plan</code> library is the most
+common and robust way to mock sagas. It lets you mock specific effects
+(like <code>call</code>) using "providers" without needing to step
+through every single line of the generator.</p>
+<h3 id="installation">Installation</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install <span class="at">--save-dev</span> redux-saga-test-plan</span></code></pre></div>
+<h3 id="mocking-api-calls-with-provide">Mocking API Calls with
+<code>provide</code></h3>
+<p>You can mock specific API calls inside the saga using matchers and
+providers. This is highly effective for testing complex sagas.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { expectSaga } <span class="im">from</span> <span class="st">&#39;redux-saga-test-plan&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="op">*</span> <span class="im">as</span> matchers <span class="im">from</span> <span class="st">&#39;redux-saga-test-plan/matchers&#39;</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { throwError } <span class="im">from</span> <span class="st">&#39;redux-saga-test-plan/providers&#39;</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { fetchUserSaga } <span class="im">from</span> <span class="st">&#39;./sagas&#39;</span><span class="op">;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> api <span class="im">from</span> <span class="st">&#39;./api&#39;</span><span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="st">&#39;fetchUserSaga with Test Plan&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">it</span>(<span class="st">&#39;mocks the API call and puts success action&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> fakeUser <span class="op">=</span> { <span class="dt">id</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;John Doe&#39;</span> }<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">expectSaga</span>(fetchUserSaga<span class="op">,</span> { <span class="dt">payload</span><span class="op">:</span> <span class="dv">1</span> })</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">provide</span>([</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Mock the &quot;call&quot; effect to return our fake user</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        [matchers<span class="op">.</span><span class="at">call</span><span class="op">.</span><span class="fu">fn</span>(api<span class="op">.</span><span class="at">fetchUser</span>)<span class="op">,</span> fakeUser]<span class="op">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      ])</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">put</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;FETCH_USER_SUCCESS&#39;</span><span class="op">,</span> <span class="dt">payload</span><span class="op">:</span> fakeUser })</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">run</span>()<span class="op">;</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">it</span>(<span class="st">&#39;handles errors by mocking a thrown error&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> error <span class="op">=</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">&#39;User not found&#39;</span>)<span class="op">;</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">expectSaga</span>(fetchUserSaga<span class="op">,</span> { <span class="dt">payload</span><span class="op">:</span> <span class="dv">1</span> })</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">provide</span>([</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Mock the &quot;call&quot; effect to throw an error</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        [matchers<span class="op">.</span><span class="at">call</span><span class="op">.</span><span class="fu">fn</span>(api<span class="op">.</span><span class="at">fetchUser</span>)<span class="op">,</span> <span class="fu">throwError</span>(error)]<span class="op">,</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>      ])</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">put</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;FETCH_USER_FAILURE&#39;</span><span class="op">,</span> <span class="dt">message</span><span class="op">:</span> <span class="st">&#39;User not found&#39;</span> })</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">run</span>()<span class="op">;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<hr />
+<h2 id="method-3-mocking-the-saga-middleware-in-component-tests">Method
+3: Mocking the Saga Middleware in Component Tests</h2>
+<p>When writing integration tests for React components (e.g., using
+React Testing Library), you may want to prevent sagas from firing
+completely, or mock their outputs to avoid actual network traffic during
+component rendering.</p>
+<p>You can mock the saga module directly using Jest:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Provider } <span class="im">from</span> <span class="st">&#39;react-redux&#39;</span><span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> configureStore <span class="im">from</span> <span class="st">&#39;redux-mock-store&#39;</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> MyComponent <span class="im">from</span> <span class="st">&#39;./MyComponent&#39;</span><span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> mockStore <span class="op">=</span> <span class="fu">configureStore</span>([])<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="st">&#39;MyComponent with Mocked Redux Store&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">it</span>(<span class="st">&#39;renders without triggering real saga side-effects&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> store <span class="op">=</span> <span class="fu">mockStore</span>({</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">user</span><span class="op">:</span> { <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;John Doe&#39;</span> }<span class="op">,</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Spy on store dispatch to see if the component triggers actions</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    store<span class="op">.</span><span class="at">dispatch</span> <span class="op">=</span> jest<span class="op">.</span><span class="fu">fn</span>()<span class="op">;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">render</span>(</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>Provider store<span class="op">=</span>{store}<span class="op">&gt;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>MyComponent <span class="op">/&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>Provider<span class="op">&gt;</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(<span class="bu">screen</span><span class="op">.</span><span class="fu">getByText</span>(<span class="st">&#39;John Doe&#39;</span>))<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

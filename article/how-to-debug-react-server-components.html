@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug React Server Components - react</title>
+    <meta name="description" content="React Server Components (RSCs) improve application performance by rendering UI on the server, but they also change how developers must debug their code. Since Server Components do not run in the browser, traditional client-side debugging tools like the C">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-react-server-components">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug React Server Components - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-react-server-components" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React Server Components (RSCs) improve application performance by rendering UI on the server, but they also change how developers must debug their code. Since Server Components do not run in the browser, traditional client-side debugging tools like the C" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-react-server-components">How to Debug React Server
+Components</h1>
+<p>React Server Components (RSCs) improve application performance by
+rendering UI on the server, but they also change how developers must
+debug their code. Since Server Components do not run in the browser,
+traditional client-side debugging tools like the Chrome Console or React
+Developer Tools cannot inspect them directly. This guide explains how to
+debug React Server Components using terminal logs, Node.js inspection
+tools, Visual Studio Code, and framework-specific error boundaries.</p>
+<h2 id="use-terminal-console-logs">Use Terminal Console Logs</h2>
+<p>Because React Server Components execute on the build server or edge
+runtime, any <code>console.log()</code> statements you place inside them
+will output to your terminal window rather than the browser's developer
+tools.</p>
+<p>To use this method:</p>
+<ol type="1">
+<li>Insert <code>console.log(variable)</code> inside your Server
+Component.</li>
+<li>Trigger the component rendering by reloading the page.</li>
+<li>Look at the terminal or command prompt where your local development
+server (such as Next.js) is running to view the output.</li>
+</ol>
+<h2 id="debug-with-vs-code">Debug with VS Code</h2>
+<p>Debugging Server Components in Visual Studio Code allows you to set
+breakpoints, pause execution, and inspect variables in real time.</p>
+<p>To set up VS Code debugging for a Next.js application:</p>
+<ol type="1">
+<li>Create a <code>.vscode/launch.json</code> file in the root of your
+project.</li>
+<li>Add the following configuration to target the Node.js server
+process:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;version&quot;</span><span class="fu">:</span> <span class="st">&quot;0.2.0&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;configurations&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;Next.js: Debug Server-side&quot;</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;node-terminal&quot;</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;request&quot;</span><span class="fu">:</span> <span class="st">&quot;launch&quot;</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;npm run dev&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<ol start="3" type="1">
+<li>Open your Server Component file and click to the left of the line
+numbers to set a breakpoint.</li>
+<li>Go to the <strong>Run and Debug</strong> view in VS Code
+(Ctrl+Shift+D or Cmd+Shift+D) and run <strong>Next.js: Debug
+Server-side</strong>.</li>
+<li>Navigate to the page in your browser. The code execution will pause
+at your breakpoint inside VS Code.</li>
+</ol>
+<h2 id="use-chrome-devtools-for-nodejs">Use Chrome DevTools for
+Node.js</h2>
+<p>You can inspect the Node.js process running your Server Components
+using the Google Chrome browser's native developer tools.</p>
+<ol type="1">
+<li>Start your development server with the Node inspect flag. For
+example, in a Next.js project, run:
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">NODE_OPTIONS</span><span class="op">=</span><span class="st">&#39;--inspect&#39;</span> <span class="ex">npm</span> run dev</span></code></pre></div></li>
+<li>Open Google Chrome and navigate to
+<code>chrome://inspect</code>.</li>
+<li>Under <strong>Remote Target</strong>, locate your Node.js
+application and click <strong>inspect</strong>.</li>
+<li>A dedicated Chrome DevTools window will open. You can now use the
+<strong>Sources</strong> tab to find your server-side files, set
+breakpoints, and step through the execution of your Server
+Components.</li>
+</ol>
+<h2 id="inspect-network-payloads">Inspect Network Payloads</h2>
+<p>React Server Components do not return standard HTML; instead, they
+stream a serialized JSON-like data structure to the client. Analyzing
+this payload helps you verify what data the server is sending.</p>
+<ol type="1">
+<li>Open your browser's <strong>Developer Tools</strong> (F12) and go to
+the <strong>Network</strong> tab.</li>
+<li>Reload the page or trigger a transition that loads a Server
+Component.</li>
+<li>Look for the document request or the fetch request representing the
+page change.</li>
+<li>Inspect the <strong>Response</strong> tab. You will see the RSC
+payload, which includes the component structure, props, and fallback
+states. If a Server Component is not rendering correctly, checking this
+payload will tell you if the server failed to send the correct
+data.</li>
+</ol>
+<h2 id="implement-error-boundaries">Implement Error Boundaries</h2>
+<p>When a React Server Component throws an error during rendering, React
+will attempt to handle it gracefully on the client.</p>
+<p>To capture and debug these errors:</p>
+<ul>
+<li><strong>Create an <code>error.js</code> file</strong>: Frameworks
+like Next.js allow you to place an <code>error.js</code> file in the
+route segment. This file acts as a React Error Boundary that
+automatically catches errors thrown in nested Server Components.</li>
+<li><strong>Inspect the Error Object</strong>: The <code>error</code>
+object passed to this component contains the error message. Note that in
+production, sensitive error details are omitted for security, but in
+development, the full stack trace of the server-side error will be
+visible in your console and on the screen overlay.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

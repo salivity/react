@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid MemoryRouter in React - react</title>
+    <meta name="description" content="In React applications, choosing the right router is crucial for both user experience and search engine optimization. While MemoryRouter is a powerful tool for testing and specific non-browser environments, using it in standard web applications can lead t">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-memoryrouter-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid MemoryRouter in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-memoryrouter-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In React applications, choosing the right router is crucial for both user experience and search engine optimization. While MemoryRouter is a powerful tool for testing and specific non-browser environments, using it in standard web applications can lead t" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-memoryrouter-in-react">When to Avoid MemoryRouter
+in React</h1>
+<p>In React applications, choosing the right router is crucial for both
+user experience and search engine optimization. While
+<code>MemoryRouter</code> is a powerful tool for testing and specific
+non-browser environments, using it in standard web applications can lead
+to significant drawbacks. This article explains what
+<code>MemoryRouter</code> is and highlights the specific scenarios where
+you should avoid using it in favor of alternative routing solutions like
+<code>BrowserRouter</code>.</p>
+<h2 id="what-is-memoryrouter">What is MemoryRouter?</h2>
+<p>In React Router, <code>MemoryRouter</code> stores the history of your
+navigation in memory (inside an array) rather than interacting with the
+browser's address bar. This means that as users navigate through your
+application, the URL in the address bar remains unchanged.</p>
+<p>While this behavior is perfect for environments where there is no
+address bar, it introduces severe limitations for traditional web
+applications.</p>
+<h2 id="1-standard-web-applications-saas-blogs-and-e-commerce">1.
+Standard Web Applications (SaaS, Blogs, and E-commerce)</h2>
+<p>You should avoid <code>MemoryRouter</code> for any public-facing
+website or standard web application. Because <code>MemoryRouter</code>
+does not update the browser's URL bar, it breaks fundamental web
+behaviors:</p>
+<ul>
+<li><strong>No Bookmarking:</strong> Users cannot bookmark a specific
+page or state within your application. Saving a bookmark will always
+take them back to the landing or default page.</li>
+<li><strong>No Link Sharing:</strong> Users cannot copy the URL from the
+address bar to share a specific product, article, or dashboard view with
+others.</li>
+<li><strong>Broken Browser History:</strong> The browser's native back
+and forward buttons will not work as expected because the browser
+history is not being updated.</li>
+</ul>
+<p>For standard web applications, you should use
+<code>BrowserRouter</code> (or the newer
+<code>createBrowserRouter</code> in React Router v6) to ensure the URL
+syncs with the user interface.</p>
+<h2 id="2-when-seo-is-a-priority">2. When SEO is a Priority</h2>
+<p>Search engine optimization (SEO) relies heavily on unique URLs.
+Search engine crawlers (like Googlebot) navigate your site by following
+links to different URLs to index individual pages.</p>
+<p>If you use <code>MemoryRouter</code>, your entire application lives
+under a single URL. Search engines will only index your home page,
+making it impossible for your inner pages to rank in search results. For
+SEO-friendly applications, use <code>BrowserRouter</code> alongside
+Server-Side Rendering (SSR) or Static Site Generation (SG).</p>
+<h2 id="3-server-side-rendering-ssr">3. Server-Side Rendering (SSR)</h2>
+<p>If you are rendering your React application on the server using
+frameworks like Next.js or a custom Express setup,
+<code>MemoryRouter</code> is generally not the right choice for handling
+server requests.</p>
+<p>During SSR, the server needs to know the exact URL path requested by
+the client to render the correct HTML matching that route. While
+<code>MemoryRouter</code> can be seeded with an initial entry,
+<code>StaticRouter</code> (or the routing mechanism provided by your SSR
+framework) is specifically designed to handle server-side request
+matching.</p>
+<h2 id="4-web-analytics-and-user-tracking">4. Web Analytics and User
+Tracking</h2>
+<p>Most web analytics tools (such as Google Analytics, Mixpanel, or
+Hotjar) track user behavior and page views by monitoring changes to the
+browser's URL.</p>
+<p>Because <code>MemoryRouter</code> does not change the browser's URL,
+these analytics tools will register your users' entire session as a
+single page view on the entry page. To track user journeys and page
+conversions accurately, you need a router that updates the address
+bar.</p>
+<hr />
+<h2 id="when-should-you-actually-use-memoryrouter">When Should You
+Actually Use MemoryRouter?</h2>
+<p>To understand when to avoid it, it helps to know where
+<code>MemoryRouter</code> actually shines:</p>
+<ul>
+<li><strong>Unit Testing:</strong> It is ideal for testing React
+components with tools like Jest and React Testing Library, as you can
+easily mock navigation without a real browser environment.</li>
+<li><strong>Hybrid and Desktop Apps:</strong> It is useful in
+environments without a standard browser address bar, such as React
+Native mobile apps or Electron desktop applications.</li>
+<li><strong>Embedded Widgets:</strong> If you are building a small React
+widget that lives inside a larger, non-React website, you may want to
+use <code>MemoryRouter</code> to avoid interfering with the host
+website's URL.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

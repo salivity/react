@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid Prop Drilling in React - react</title>
+    <meta name="description" content="Prop drilling is a common pattern in React where data is passed down through multiple levels of nested components to reach a deeply nested child. While harmless in small applications, it can quickly lead to maintenance nightmares, tight coupling, and per">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-prop-drilling-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid Prop Drilling in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-prop-drilling-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Prop drilling is a common pattern in React where data is passed down through multiple levels of nested components to reach a deeply nested child. While harmless in small applications, it can quickly lead to maintenance nightmares, tight coupling, and per" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-prop-drilling-in-react">When to Avoid Prop
+Drilling in React</h1>
+<p>Prop drilling is a common pattern in React where data is passed down
+through multiple levels of nested components to reach a deeply nested
+child. While harmless in small applications, it can quickly lead to
+maintenance nightmares, tight coupling, and performance issues as your
+codebase grows. This article explores the exact scenarios when you
+should stop drilling props and the best alternative state management
+solutions to use instead.</p>
+<h2 id="what-is-prop-drilling">What is Prop Drilling?</h2>
+<p>Prop drilling occurs when a parent component holds state that is
+needed by a deeply nested child component. To get the data to that
+child, the state must be passed as props through every intermediate
+component in the tree, even if those intermediate components have no use
+for the data themselves.</p>
+<h2 id="when-to-avoid-prop-drilling">When to Avoid Prop Drilling</h2>
+<p>While prop drilling is acceptable for simple parent-child
+relationships (usually one or two levels deep), you should actively
+avoid it in the following scenarios:</p>
+<h3 id="1-the-tree-is-more-than-three-levels-deep">1. The Tree is More
+Than Three Levels Deep</h3>
+<p>If you find yourself passing a prop through three or more
+intermediate components that only act as "pass-throughs," it is time to
+refactor. At this depth, tracking the flow of data becomes difficult,
+and any change to the structure of the component tree requires updating
+the prop declarations in multiple files.</p>
+<h3 id="2-intermediate-components-are-becoming-polluted">2. Intermediate
+Components Are Becoming Polluted</h3>
+<p>Components should ideally be reusable and focus on a single
+responsibility. When you force intermediate components to accept and
+forward props they do not use, you clutter their APIs. This makes the
+intermediate components harder to read, maintain, and reuse in other
+parts of the application.</p>
+<h3 id="3-you-need-to-pass-global-state">3. You Need to Pass Global
+State</h3>
+<p>Certain types of data are needed by many unrelated components
+scattered across your application. Examples include:</p>
+<ul>
+<li>User authentication status and profile details</li>
+<li>UI themes (dark/light mode)</li>
+<li>Language/localization preferences</li>
+<li>Shopping cart data</li>
+</ul>
+<p>Passing global data via prop drilling is highly inefficient and
+creates unnecessary dependencies across your entire component tree.</p>
+<h3 id="4-it-causes-unnecessary-re-renders">4. It Causes Unnecessary
+Re-renders</h3>
+<p>When a state variable changes, React re-renders the component holding
+that state and, by default, all of its children. If you are drilling
+state through a long chain of components, a state update can trigger a
+cascade of re-renders throughout the entire branch, potentially
+degrading your application's performance.</p>
+<h2 id="alternatives-to-prop-drilling">Alternatives to Prop
+Drilling</h2>
+<p>When you decide to avoid prop drilling, React offers several built-in
+and third-party solutions:</p>
+<h3 id="component-composition">Component Composition</h3>
+<p>Before reaching for state management libraries, consider changing how
+you structure your components. You can pass child components directly
+using the <code>children</code> prop. This allows the parent to control
+the state and pass it directly to the child, bypassing the intermediate
+layout components entirely.</p>
+<h3 id="react-context-api">React Context API</h3>
+<p>For global or semi-global state, the React Context API is the
+standard built-in solution. Context allows you to wrap a parent
+component in a <code>Provider</code> and consume the state directly in
+any nested child component using the <code>useContext</code> hook,
+completely skipping the intermediate components.</p>
+<h3 id="external-state-management-libraries">External State Management
+Libraries</h3>
+<p>For large-scale applications with complex, frequently changing state,
+external libraries provide more robust tools for state distribution and
+performance optimization. Popular choices include:</p>
+<ul>
+<li><strong>Zustand:</strong> A lightweight, fast, and intuitive state
+management library.</li>
+<li><strong>Redux Toolkit:</strong> The industry standard for large,
+enterprise-level applications requiring strict state control.</li>
+<li><strong>Recoil or Jotai:</strong> Atomic state management libraries
+that offer precise rendering control.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

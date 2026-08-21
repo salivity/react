@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug JSX in React - react</title>
+    <meta name="description" content="Debugging JSX in React can be challenging because it blends HTML-like syntax with JavaScript. This article provides a straightforward guide on how to identify and fix JSX errors using browser developer tools, React Developer Tools, inline console logs, a">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-jsx-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug JSX in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-jsx-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Debugging JSX in React can be challenging because it blends HTML-like syntax with JavaScript. This article provides a straightforward guide on how to identify and fix JSX errors using browser developer tools, React Developer Tools, inline console logs, a" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-jsx-in-react">How to Debug JSX in React</h1>
+<p>Debugging JSX in React can be challenging because it blends HTML-like
+syntax with JavaScript. This article provides a straightforward guide on
+how to identify and fix JSX errors using browser developer tools, React
+Developer Tools, inline console logs, and standard debugging
+practices.</p>
+<h2 id="1-fix-compile-time-syntax-errors">1. Fix Compile-Time Syntax
+Errors</h2>
+<p>Before JSX can run in the browser, a build tool (like Babel, Vite, or
+Webpack) must compile it into standard JavaScript. If you have syntax
+errors, your application will fail to compile. Common JSX syntax errors
+include:</p>
+<ul>
+<li><strong>Unclosed tags:</strong> Every JSX element must be explicitly
+closed (e.g., <code>&lt;br /&gt;</code> instead of
+<code>&lt;br&gt;</code>).</li>
+<li><strong>No enclosing parent tag:</strong> JSX must return a single
+root element. If you have multiple top-level elements, wrap them in a
+React Fragment (<code>&lt;&gt; ... &lt;/&gt;</code>).</li>
+<li><strong>Incorrect attribute names:</strong> JSX uses camelCase for
+attributes instead of standard HTML naming (e.g., <code>className</code>
+instead of <code>class</code>, and <code>htmlFor</code> instead of
+<code>for</code>).</li>
+</ul>
+<p>Check your terminal or the browser's error overlay for detailed
+messages pinpointing the exact line number of these compilation
+failures.</p>
+<h2 id="2-use-react-developer-tools">2. Use React Developer Tools</h2>
+<p>The React Developer Tools browser extension is essential for
+debugging JSX. Once installed:</p>
+<ol type="1">
+<li>Open your browser's Developer Tools and navigate to the
+<strong>Components</strong> tab.</li>
+<li>Select any component in the tree to inspect its rendered JSX
+structure.</li>
+<li>View and temporarily edit the current props and state in the
+right-hand panel to see how the UI reacts in real-time.</li>
+</ol>
+<h2 id="3-insert-console-logs-directly-inside-jsx">3. Insert Console
+Logs Directly Inside JSX</h2>
+<p>While you cannot write standard JavaScript statements inside JSX, you
+can execute expressions within curly braces <code>{}</code>. This allows
+you to log variables directly within your markup to verify their values
+during the render cycle:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> (</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;div&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;h1&gt;</span><span class="va">{</span>user<span class="op">.</span><span class="at">name</span><span class="va">}</span><span class="kw">&lt;/h1&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">{</span><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;Current user data:&#39;</span><span class="op">,</span> user)<span class="va">}</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span></code></pre></div>
+<h2 id="4-pause-execution-with-the-debugger">4. Pause Execution with the
+Debugger</h2>
+<p>To inspect your variables right before the JSX is rendered, place a
+<code>debugger</code> statement or set a browser breakpoint immediately
+before your component's <code>return</code> statement:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> MyComponent <span class="op">=</span> ({ data }) <span class="kw">=&gt;</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">debugger</span><span class="op">;</span> <span class="co">// The browser will pause execution here if DevTools is open</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return </span><span class="kw">&lt;div&gt;</span><span class="va">{</span>data<span class="op">.</span><span class="at">title</span><span class="va">}</span><span class="kw">&lt;/div&gt;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p>Once paused, you can step through the code and hover over variables
+in your source tool to inspect their current values.</p>
+<h2 id="5-prevent-runtime-null-and-undefined-errors">5. Prevent Runtime
+Null and Undefined Errors</h2>
+<p>A frequent cause of runtime JSX crashes is trying to access
+properties of <code>null</code> or <code>undefined</code> (e.g.,
+<code>Cannot read properties of undefined</code>). Use optional chaining
+(<code>?.</code>) or logical AND (<code>&amp;&amp;</code>) operators to
+prevent these crashes in your markup:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Safe rendering with optional chaining</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;p&gt;</span><span class="va">{</span>user<span class="op">?.</span><span class="at">profile</span><span class="op">?.</span><span class="at">bio</span><span class="va">}</span><span class="kw">&lt;/p&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Safe rendering with conditional evaluation</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>{items<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span> <span class="op">&amp;&amp; </span><span class="fu">&lt;ItemList</span> <span class="ot">items</span><span class="op">=</span><span class="va">{</span>items<span class="va">}</span> <span class="fu">/&gt;</span>}</span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

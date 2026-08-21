@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Debug React Concurrent Mode - react</title>
+    <meta name="description" content="React’s concurrent rendering features—such as transitions, deferred values, and suspense—improve user experience by keeping the UI responsive during heavy updates. However, because concurrent mode allows React to pause, yield, and discard renders,">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-debug-react-concurrent-mode">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Debug React Concurrent Mode - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-debug-react-concurrent-mode" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React’s concurrent rendering features—such as transitions, deferred values, and suspense—improve user experience by keeping the UI responsive during heavy updates. However, because concurrent mode allows React to pause, yield, and discard renders," />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-debug-react-concurrent-mode">How to Debug React
+Concurrent Mode</h1>
+<p>React’s concurrent rendering features—such as transitions, deferred
+values, and suspense—improve user experience by keeping the UI
+responsive during heavy updates. However, because concurrent mode allows
+React to pause, yield, and discard renders, traditional debugging
+methods like simple console logs can become confusing. This article
+outlines the essential tools and techniques required to debug Concurrent
+Mode in React, including utilizing Strict Mode, leveraging the React
+DevTools Profiler, and tracking transition states.</p>
+<h2 id="1-enable-strict-mode-to-find-side-effects">1. Enable Strict Mode
+to Find Side Effects</h2>
+<p>The most critical step in debugging concurrent features is wrapping
+your application in <code>&lt;React.StrictMode&gt;</code>. In concurrent
+React, components may render multiple times before the UI actually
+updates. If your render functions contain side effects (like mutating
+external variables or subscribing to data sources directly), concurrent
+rendering will cause bugs.</p>
+<p>Strict Mode helps you identify these issues by intentionally
+double-rendering components in development. If your component behaves
+differently during the second render, you have a side effect inside your
+render phase that must be moved to <code>useEffect</code> or handled
+statefully.</p>
+<h2 id="2-use-the-react-devtools-profiler">2. Use the React DevTools
+Profiler</h2>
+<p>The standard React Developer Tools extension is crucial for
+understanding how and when concurrent renders occur. The
+<strong>Profiler</strong> tab allows you to record performance and
+inspect the rendering timeline.</p>
+<ul>
+<li><strong>Identify Render Lanes:</strong> Concurrent Mode uses "Lanes"
+to prioritize updates (e.g., discrete user inputs have higher priority
+than transitions). The Profiler shows you which lane an update was
+rendered on.</li>
+<li><strong>Track Scheduled vs. Committed Work:</strong> You can see if
+a render was interrupted or discarded. If React starts rendering a
+low-priority transition but a high-priority click event occurs, React
+will discard the transition work and render the click first. The
+Profiler visualizes these suspended and yielded states.</li>
+<li><strong>Filter by Commit:</strong> Use the flamegraph and ranked
+chart to see exactly which components rendered during a specific commit
+and what triggered the render.</li>
+</ul>
+<h2 id="3-debug-transitions-with-ispending">3. Debug Transitions with
+<code>isPending</code></h2>
+<p>When using <code>useTransition</code>, React provides an
+<code>isPending</code> boolean. This boolean is your primary debugging
+tool for UI state synchronization.</p>
+<p>If your UI feels sluggish or elements are appearing out of order, log
+the state of <code>isPending</code> alongside your state updates. If
+<code>isPending</code> remains <code>true</code> longer than expected,
+it indicates that the transition-bound state update is taking too long
+to render, which may require you to optimize the child components or
+break the update into smaller chunks.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [isPending<span class="op">,</span> startTransition] <span class="op">=</span> <span class="fu">useTransition</span>()<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Debugging by logging the pending state transition</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&quot;Transition pending state changed:&quot;</span><span class="op">,</span> isPending)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [isPending])<span class="op">;</span></span></code></pre></div>
+<h2 id="4-inspect-fiber-nodes-via-the-browser-console">4. Inspect Fiber
+Nodes via the Browser Console</h2>
+<p>When you select a component in the React DevTools "Components" tab,
+you can reference it in your browser's developer console using the
+global variable <code>$r</code>.</p>
+<p>In Concurrent Mode, inspecting <code>$r</code> allows you to look at
+the internal Fiber node. Here, you can inspect the current queue of
+updates, look at the <code>memoizedState</code> versus the
+<code>pendingState</code>, and see the priority lanes assigned to the
+component's hooks. This is highly useful for verifying if a state update
+has been deferred or if it is currently scheduled for a future
+commit.</p>
+<h2 id="5-analyze-long-tasks-with-chrome-devtools-performance-tab">5.
+Analyze Long Tasks with Chrome DevTools Performance Tab</h2>
+<p>If Concurrent Mode is yielding frequently, it means your JS execution
+is blocking the main thread. To diagnose this:</p>
+<ol type="1">
+<li>Open Chrome DevTools and go to the <strong>Performance</strong>
+tab.</li>
+<li>Record a slice of user interaction that triggers a transition.</li>
+<li>Look for red flags indicating "Long Tasks" (tasks taking longer than
+50ms).</li>
+<li>Expand the flame chart to see if React's
+<code>workLoopConcurrent</code> is repeatedly yielding to the browser,
+and pinpoint the exact component function taking up the CPU time.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

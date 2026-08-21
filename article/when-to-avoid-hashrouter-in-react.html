@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid HashRouter in React - react</title>
+    <meta name="description" content="In React development, choosing the right routing mechanism is crucial for application performance, search engine visibility, and user experience. While HashRouter is a convenient, zero-configuration solution for hosting static files on platforms like Git">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-hashrouter-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid HashRouter in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-hashrouter-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In React development, choosing the right routing mechanism is crucial for application performance, search engine visibility, and user experience. While HashRouter is a convenient, zero-configuration solution for hosting static files on platforms like Git" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-hashrouter-in-react">When to Avoid HashRouter in
+React</h1>
+<p>In React development, choosing the right routing mechanism is crucial
+for application performance, search engine visibility, and user
+experience. While <code>HashRouter</code> is a convenient,
+zero-configuration solution for hosting static files on platforms like
+GitHub Pages, it comes with significant limitations. This article
+outlines the specific scenarios where you should avoid using
+<code>HashRouter</code> in your React applications, detailing its impact
+on SEO, analytics, aesthetics, and modern web standards.</p>
+<h2 id="1-when-seo-is-a-high-priority">1. When SEO is a High
+Priority</h2>
+<p>Search engine optimization (SEO) is one of the most critical reasons
+to avoid <code>HashRouter</code>. Search engine crawlers (like
+Googlebot) historically ignore the hash portion of a URL (everything
+after the <code>#</code>). If your React application relies on
+<code>HashRouter</code> for navigation, search engines may only index
+your homepage, leaving all other pages and their content invisible to
+search results. For blogs, e-commerce sites, or public-facing web
+applications, you should use <code>BrowserRouter</code> to ensure clean,
+indexable URLs.</p>
+<h2 id="2-when-implementing-server-side-rendering-ssr">2. When
+Implementing Server-Side Rendering (SSR)</h2>
+<p>If you plan to use Server-Side Rendering (SSR) with frameworks like
+Next.js or custom Express setups, <code>HashRouter</code> is completely
+incompatible. The HTTP protocol dictates that the fragment identifier
+(the hash and everything after it) is never sent to the server. Because
+the server cannot read the hash, it cannot render the requested page on
+the server side, defeating the purpose of SSR.</p>
+<h2 id="3-when-integrating-with-analytics-tools">3. When Integrating
+with Analytics Tools</h2>
+<p>Web analytics platforms like Google Analytics, Mixpanel, or Hotjar
+track user journeys by monitoring URL changes. Because
+<code>HashRouter</code> updates the URL via the hash fragment rather
+than a traditional path change, these tools often fail to register page
+views automatically. While you can configure custom event listeners to
+track hash changes manually, it adds unnecessary complexity to your
+codebase.</p>
+<h2 id="4-when-working-with-oauth-and-third-party-integrations">4. When
+Working with OAuth and Third-Party Integrations</h2>
+<p>Many external APIs, payment gateways (like Stripe), and
+authentication providers (like Auth0 or Okta) require a strict, clean
+redirect URI after a user completes an action. Many of these services do
+not support hash fragments in redirect URLs or will strip them out
+during the redirect process. This can break your authentication flows
+and user sessions if you rely on <code>HashRouter</code>.</p>
+<h2 id="5-when-professional-aesthetics-and-ux-matter">5. When
+Professional Aesthetics and UX Matter</h2>
+<p>From a user experience standpoint, URLs containing a hash symbol
+(e.g., <code>example.com/#/about</code>) look outdated and less
+professional than clean, modern URLs (e.g.,
+<code>example.com/about</code>). Standard URLs are also easier for users
+to read, remember, and share on social media platforms, which
+occasionally strip hash fragments when generating link previews.</p>
+<h2 id="what-to-use-instead">What to Use Instead</h2>
+<p>For almost all modern React web applications,
+<strong><code>BrowserRouter</code></strong> is the preferred choice. It
+utilizes the HTML5 History API to keep your UI in sync with the URL,
+delivering clean paths and full compatibility with SEO, SSR, and
+third-party tools. If you are hosting on a static provider that does not
+support fallback routing out of the box, it is generally better to
+configure the server (such as setting up a redirect rule on Netlify,
+Vercel, or AWS S3) rather than resorting to <code>HashRouter</code>.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

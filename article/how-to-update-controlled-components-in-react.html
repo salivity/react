@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Update Controlled Components in React - react</title>
+    <meta name="description" content="Controlled components are a fundamental pattern in React where form data is handled directly by the component's state rather than the DOM. This article provides a straightforward guide on how to update controlled components, covering the core steps of in">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-update-controlled-components-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Update Controlled Components in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-update-controlled-components-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Controlled components are a fundamental pattern in React where form data is handled directly by the component's state rather than the DOM. This article provides a straightforward guide on how to update controlled components, covering the core steps of in" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-update-controlled-components-in-react">How to Update
+Controlled Components in React</h1>
+<p>Controlled components are a fundamental pattern in React where form
+data is handled directly by the component's state rather than the DOM.
+This article provides a straightforward guide on how to update
+controlled components, covering the core steps of initializing state,
+binding values, and using event handlers to manage user input
+seamlessly.</p>
+<p>To update a controlled component in React, you must link the input's
+value to a state variable and update that state whenever the user
+interacts with the element. Here is the step-by-step process to achieve
+this.</p>
+<h3 id="1-initialize-the-state">1. Initialize the State</h3>
+<p>First, use the <code>useState</code> hook to create a state variable
+that will hold the current value of your form input.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [inputValue<span class="op">,</span> setInputValue] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&quot;&quot;</span>)<span class="op">;</span></span></code></pre></div>
+<h3 id="2-bind-state-to-the-input-value">2. Bind State to the Input
+Value</h3>
+<p>Assign the state variable to the <code>value</code> attribute of your
+form element (such as an <code>&lt;input&gt;</code>,
+<code>&lt;textarea&gt;</code>, or <code>&lt;select&gt;</code>). This
+ensures that React is the "single source of truth" for the input's
+displayed value.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;input</span> <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> <span class="ot">value</span><span class="op">=</span><span class="va">{</span>inputValue<span class="va">}</span> <span class="kw">/&gt;</span></span></code></pre></div>
+<h3 id="3-handle-the-change-event">3. Handle the Change Event</h3>
+<p>Create an event handler function that triggers whenever the user
+types or changes the value. This function captures the new value from
+the event object (<code>e.target.value</code>) and updates the state
+using the state updater function.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleChange <span class="op">=</span> (e) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setInputValue</span>(e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h3 id="4-connect-the-handler-to-the-input">4. Connect the Handler to
+the Input</h3>
+<p>Attach your event handler to the <code>onChange</code> attribute of
+the input element. This completes the data flow: user input triggers
+<code>onChange</code>, which updates the state, causing the component to
+re-render with the new value.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;input</span> <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> <span class="ot">value</span><span class="op">=</span><span class="va">{</span>inputValue<span class="va">}</span> <span class="ot">onChange</span><span class="op">=</span><span class="va">{</span>handleChange<span class="va">}</span> <span class="kw">/&gt;</span></span></code></pre></div>
+<h3 id="complete-code-example">Complete Code Example</h3>
+<p>Here is how these steps look when integrated into a functional React
+component:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">UsernameForm</span>() {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [username<span class="op">,</span> setUsername] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleInputChange <span class="op">=</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setUsername</span>(<span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;form&gt;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;label</span> <span class="ot">htmlFor</span><span class="op">=</span><span class="st">&quot;username&quot;</span><span class="kw">&gt;</span>Username: <span class="kw">&lt;/label&gt;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;input</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="ot">id</span><span class="op">=</span><span class="st">&quot;username&quot;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="ot">value</span><span class="op">=</span><span class="va">{</span>username<span class="va">}</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="ot">onChange</span><span class="op">=</span><span class="va">{</span>handleInputChange<span class="va">}</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="kw">/&gt;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;p&gt;</span>Current value: <span class="va">{</span>username<span class="va">}</span><span class="kw">&lt;/p&gt;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/form&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> UsernameForm<span class="op">;</span></span></code></pre></div>
+<h3 id="updating-multiple-controlled-components">Updating Multiple
+Controlled Components</h3>
+<p>If you have multiple inputs, you do not need a separate handler for
+each one. Instead, you can use a single object for your state and
+utilize the HTML <code>name</code> attribute to dynamically update the
+correct state key:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [formData<span class="op">,</span> setFormData] <span class="op">=</span> <span class="fu">useState</span>({ <span class="dt">firstName</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span> <span class="dt">lastName</span><span class="op">:</span> <span class="st">&quot;&quot;</span> })<span class="op">;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> handleFormChange <span class="op">=</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> { name<span class="op">,</span> value } <span class="op">=</span> <span class="bu">event</span><span class="op">.</span><span class="at">target</span><span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setFormData</span>((prevData) <span class="kw">=&gt;</span> ({</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>prevData<span class="op">,</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    [name]<span class="op">:</span> value<span class="op">,</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Usage in JSX:</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;input</span> <span class="ot">name</span><span class="op">=</span><span class="st">&quot;firstName&quot;</span> <span class="ot">value</span><span class="op">=</span><span class="va">{</span>formData<span class="op">.</span><span class="at">firstName</span><span class="va">}</span> <span class="ot">onChange</span><span class="op">=</span><span class="va">{</span>handleFormChange<span class="va">}</span> <span class="kw">/&gt;</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;input</span> <span class="ot">name</span><span class="op">=</span><span class="st">&quot;lastName&quot;</span> <span class="ot">value</span><span class="op">=</span><span class="va">{</span>formData<span class="op">.</span><span class="at">lastName</span><span class="va">}</span> <span class="ot">onChange</span><span class="op">=</span><span class="va">{</span>handleFormChange<span class="va">}</span> <span class="kw">/&gt;</span></span></code></pre></div>
+<p>This approach keeps your code clean, maintainable, and scalable as
+your forms grow in complexity.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

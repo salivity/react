@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use Prop Drilling in React - react</title>
+    <meta name="description" content="Prop drilling is often viewed as a pattern to avoid in React development, but it remains a fundamental and highly effective technique for state management in many scenarios. This article explores why developers should use prop drilling, highlighting its">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-prop-drilling-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use Prop Drilling in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-prop-drilling-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Prop drilling is often viewed as a pattern to avoid in React development, but it remains a fundamental and highly effective technique for state management in many scenarios. This article explores why developers should use prop drilling, highlighting its" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-prop-drilling-in-react">Why Use Prop Drilling in
+React</h1>
+<p>Prop drilling is often viewed as a pattern to avoid in React
+development, but it remains a fundamental and highly effective technique
+for state management in many scenarios. This article explores why
+developers should use prop drilling, highlighting its benefits in terms
+of simplicity, explicit data flow, ease of debugging, and performance
+optimization for small to medium-sized applications.</p>
+<h3 id="explicit-data-flow-and-predictability">Explicit Data Flow and
+Predictability</h3>
+<p>One of the core design philosophies of React is unidirectional data
+flow. Prop drilling aligns perfectly with this principle. When you pass
+props down through components, the data flow is explicit and easily
+traceable. Any developer looking at the code can immediately see where
+data originates, how it is modified, and where it is consumed. This
+direct lineage makes the application's behavior highly predictable
+compared to global state solutions where data can seem to appear out of
+nowhere.</p>
+<h3 id="zero-setup-and-boilerplate">Zero Setup and Boilerplate</h3>
+<p>Unlike state management libraries (such as Redux, Zustand, or Recoil)
+or even React’s built-in Context API, prop drilling requires absolutely
+no configuration, setup, or boilerplate code. There are no providers to
+wrap around your component tree, no custom hooks to write, and no
+external packages to install. You simply pass variables down as
+attributes, making it the fastest and most straightforward way to share
+data during early-stage development or in smaller applications.</p>
+<h3 id="better-component-reusability-and-testing">Better Component
+Reusability and Testing</h3>
+<p>Components that rely on prop drilling are generally "pure" or
+presentational components. Because they receive their data and event
+handlers directly via props rather than subscribing to a global store or
+context, they are highly decoupled from the rest of the application.
+This makes them incredibly easy to reuse in different parts of your
+codebase.</p>
+<p>Furthermore, testing these components is simple. You do not need to
+wrap your components in mock context providers or configure mock global
+stores in your test suites; you simply pass the required mock props
+directly into the component.</p>
+<h3 id="performance-control">Performance Control</h3>
+<p>While the React Context API is highly useful, it can trigger
+unnecessary re-renders across all consumer components whenever the
+context value changes, unless carefully optimized. Prop drilling gives
+you precise control over which components update. Only the components
+that explicitly receive the changed props will re-render, allowing you
+to optimize performance naturally without resorting to complex
+memoization techniques.</p>
+<h3 id="when-to-choose-prop-drilling">When to Choose Prop Drilling</h3>
+<p>Prop drilling is the ideal choice when:</p>
+<ul>
+<li>The component tree is shallow (typically 2 to 4 levels deep).</li>
+<li>You are prototyping or building a small-to-medium-sized
+feature.</li>
+<li>You want to keep your components highly reusable and independent of
+global state.</li>
+</ul>
+<p>While deep prop drilling can lead to maintenance challenges, keeping
+it as your default approach for shallow nesting ensures your React
+application remains simple, performant, and easy to maintain.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

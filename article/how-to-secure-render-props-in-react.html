@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Secure Render Props in React - react</title>
+    <meta name="description" content="This article explains how to secure the render props pattern in React applications to prevent common security vulnerabilities. We will explore the primary security risks associated with render props—such as dynamic content injection and Cross-Site Scri">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-secure-render-props-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Secure Render Props in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-secure-render-props-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains how to secure the render props pattern in React applications to prevent common security vulnerabilities. We will explore the primary security risks associated with render props—such as dynamic content injection and Cross-Site Scri" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-secure-render-props-in-react">How to Secure Render Props
+in React</h1>
+<p>This article explains how to secure the render props pattern in React
+applications to prevent common security vulnerabilities. We will explore
+the primary security risks associated with render props—such as dynamic
+content injection and Cross-Site Scripting (XSS)—and provide actionable
+developer strategies, including strict TypeScript typing, input
+sanitization, and the principle of least privilege, to ensure your
+components remain secure.</p>
+<h2 id="the-security-risks-of-render-props">The Security Risks of Render
+Props</h2>
+<p>The render props pattern is a powerful technique in React for sharing
+code between components using a prop whose value is a function. However,
+because this pattern dynamicizes what gets rendered, it introduces
+potential security vectors if not handled correctly.</p>
+<p>The primary risk is <strong>Cross-Site Scripting (XSS)</strong>. If a
+render prop accepts untrusted user input and passes it directly to the
+rendering function, malicious scripts can be executed in the user's
+browser. Another risk is <strong>Prop Injection</strong>, where
+malicious or unexpected data structures are passed into the render prop,
+causing application crashes or unintended state exposure.</p>
+<h2 id="1-implement-strict-typescript-typing">1. Implement Strict
+TypeScript Typing</h2>
+<p>The first line of defense is ensuring type safety. By defining strict
+types for the arguments passed to and returned by your render prop, you
+prevent the execution of arbitrary or malicious payloads.</p>
+<p>Avoid using the <code>any</code> type. Instead, explicitly define the
+shape of the data your render prop expects:</p>
+<pre class="tsx"><code>interface UserData {
+  id: string;
+  username: string;
+}
+
+interface SecureComponentProps {
+  render: (data: UserData) =&gt; React.ReactNode;
+}
+
+const SecureComponent = ({ render }: SecureComponentProps) =&gt; {
+  const safeData: UserData = { id: &quot;123&quot;, username: &quot;JaneDoe&quot; };
+  return &lt;&gt;{render(safeData)}&lt;/&gt;;
+};</code></pre>
+<p>Using explicit types ensures that developers cannot accidentally pass
+raw HTML strings or unvalidated objects into the rendering
+lifecycle.</p>
+<h2 id="2-sanitize-dynamic-content">2. Sanitize Dynamic Content</h2>
+<p>If your render prop must display user-generated content, you must
+sanitize the input before rendering it. React automatically escapes
+strings rendered in JSX, which protects against basic XSS. However, if
+you bypass this defense using properties like
+<code>dangerouslySetInnerHTML</code>, you must sanitize the data
+first.</p>
+<p>Use a trusted library like <code>dompurify</code> to clean any HTML
+content before passing it to the render prop:</p>
+<pre class="tsx"><code>import DOMPurify from &#39;dompurify&#39;;
+
+interface MarkupRendererProps {
+  dirtyHTML: string;
+  render: (cleanHTML: string) =&gt; React.ReactNode;
+}
+
+const MarkupRenderer = ({ dirtyHTML, render }: MarkupRendererProps) =&gt; {
+  const cleanHTML = DOMPurify.sanitize(dirtyHTML);
+  return &lt;&gt;{render(cleanHTML)}&lt;/&gt;;
+};</code></pre>
+<h2 id="3-apply-the-principle-of-least-privilege">3. Apply the Principle
+of Least Privilege</h2>
+<p>When designing components with render props, only expose the minimum
+amount of state and functionality required. Avoid passing entire state
+objects or sensitive internal methods to the render prop function.</p>
+<p>Instead of passing a full database record or user session object,
+extract and pass only the specific fields needed for rendering:</p>
+<pre class="tsx"><code>// Unsecure: Exposes sensitive session tokens
+render(sessionData); 
+
+// Secure: Exposes only the necessary rendering details
+render({ displayName: sessionData.displayName });</code></pre>
+<h2 id="4-validate-input-arguments">4. Validate Input Arguments</h2>
+<p>If the render prop receives data from an external API or URL
+parameters, validate the schema of the data before invoking the render
+prop function. You can use schema validation libraries like Zod to parse
+and validate the data at runtime.</p>
+<pre class="tsx"><code>import { z } from &#39;zod&#39;;
+
+const UserSchema = z.object({
+  username: z.string().min(3).max(20),
+  avatarUrl: z.string().url(),
+});
+
+const SafeDataLoader = ({ render }) =&gt; {
+  const rawData = fetchUserData(); // Dynamic external data
+  
+  const result = UserSchema.safeParse(rawData);
+  
+  if (!result.success) {
+    return &lt;ErrorComponent error=&quot;Invalid data structure&quot; /&gt;;
+  }
+
+  return &lt;&gt;{render(result.data)}&lt;/&gt;;
+};</code></pre>
+<p>This prevents malformed payloads or malicious objects from breaching
+your component's rendering logic.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

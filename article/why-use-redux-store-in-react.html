@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Use Redux Store in React - react</title>
+    <meta name="description" content="This article explores why developers use the Redux Store in React applications, highlighting how it simplifies state management, improves application predictability, and enhances debugging. You will learn the core benefits of Redux, including centralized">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-use-redux-store-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Use Redux Store in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-use-redux-store-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explores why developers use the Redux Store in React applications, highlighting how it simplifies state management, improves application predictability, and enhances debugging. You will learn the core benefits of Redux, including centralized" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-use-redux-store-in-react">Why Use Redux Store in React</h1>
+<p>This article explores why developers use the Redux Store in React
+applications, highlighting how it simplifies state management, improves
+application predictability, and enhances debugging. You will learn the
+core benefits of Redux, including centralized state management, easier
+debugging with DevTools, and when it is the right choice for your
+project.</p>
+<hr />
+<h2 id="centralized-state-management">Centralized State Management</h2>
+<p>In a standard React application, state is often passed down through
+multiple layers of components via props—a process known as "prop
+drilling." As an application grows, managing state this way becomes
+chaotic and difficult to maintain.</p>
+<p>Redux solves this by providing a <strong>single source of
+truth</strong>: a global store that holds the state for the entire
+application. Any component can access the state directly from the store
+or dispatch actions to update it, eliminating the need to pass props
+through unrelated intermediate components.</p>
+<h2 id="predictable-state-updates">Predictable State Updates</h2>
+<p>Redux enforces a strict, unidirectional data flow. State is read-only
+and can only be modified by dispatching <strong>actions</strong> (plain
+JavaScript objects describing what happened). These actions are then
+processed by <strong>reducers</strong> (pure functions that take the
+current state and an action, and return a new state).</p>
+<p>Because reducers are pure functions, they produce the exact same
+output for a given input. This makes state transitions highly
+predictable and easy to test.</p>
+<h2 id="powerful-debugging-tools">Powerful Debugging Tools</h2>
+<p>One of the biggest advantages of using Redux is access to
+<strong>Redux DevTools</strong>. This browser extension provides
+advanced debugging capabilities that are difficult to replicate in plain
+React:</p>
+<ul>
+<li><strong>Time-Travel Debugging:</strong> Developers can step backward
+and forward through state changes to see exactly how the UI responded to
+each action.</li>
+<li><strong>State Diffing:</strong> View the exact changes made to the
+state after a specific action was triggered.</li>
+<li><strong>Action Logging:</strong> See a real-time log of every action
+dispatched in the application, along with its payload.</li>
+</ul>
+<h2 id="middleware-support">Middleware Support</h2>
+<p>Redux supports middleware, which acts as a bridge between dispatching
+an action and the moment it reaches the reducer. Middleware allows
+developers to handle asynchronous side effects, such as API requests,
+logging, and routing. Popular middleware options like <strong>Redux
+Thunk</strong> and <strong>Redux Toolkit's RTK Query</strong> simplify
+data fetching and caching.</p>
+<h2 id="when-should-you-use-redux">When Should You Use Redux?</h2>
+<p>While Redux is highly beneficial, it is not necessary for every React
+project. You should consider using Redux if your application meets the
+following criteria:</p>
+<ul>
+<li><strong>Large and Complex State:</strong> Multiple components in
+different parts of the UI need to share and update the same state.</li>
+<li><strong>Frequent State Changes:</strong> The application state
+updates rapidly in response to user interactions or server events.</li>
+<li><strong>Collaborative Codebases:</strong> Large teams need a
+standardized way to manage state and enforce coding patterns.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

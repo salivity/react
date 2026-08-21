@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Securing React Query in React Applications - react</title>
+    <meta name="description" content="React Query (TanStack Query) is an industry-standard library for managing, caching, and syncing server state in React applications. While it simplifies data fetching, keeping your application secure requires specific configurations to protect sensitive d">
+    <link rel="canonical" href="https://salivity.github.io/react/article/securing-react-query-in-react-applications">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Securing React Query in React Applications - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/securing-react-query-in-react-applications" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React Query (TanStack Query) is an industry-standard library for managing, caching, and syncing server state in React applications. While it simplifies data fetching, keeping your application secure requires specific configurations to protect sensitive d" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="securing-react-query-in-react-applications">Securing React Query
+in React Applications</h1>
+<p>React Query (TanStack Query) is an industry-standard library for
+managing, caching, and syncing server state in React applications. While
+it simplifies data fetching, keeping your application secure requires
+specific configurations to protect sensitive data and prevent
+unauthorized access. This article covers the essential strategies to
+secure React Query, including authenticating API requests, clearing
+cached data on logout, disabling devtools in production, and protecting
+local state storage.</p>
+<h3 id="1-authenticating-api-requests-securing-query-functions">1.
+Authenticating API Requests Securing Query Functions</h3>
+<p>React Query does not handle network requests directly; it relies on
+fetchers like <code>axios</code> or the fetch API. To secure your
+queries, you must ensure that all network requests securely transmit
+authentication tokens (like JWTs).</p>
+<p>Using Axios interceptors is the most effective way to attach
+authorization headers globally:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> axios <span class="im">from</span> <span class="st">&#39;axios&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> api <span class="op">=</span> axios<span class="op">.</span><span class="fu">create</span>({</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">baseURL</span><span class="op">:</span> <span class="st">&#39;https://api.example.com&#39;</span><span class="op">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>api<span class="op">.</span><span class="at">interceptors</span><span class="op">.</span><span class="at">request</span><span class="op">.</span><span class="fu">use</span>((config) <span class="kw">=&gt;</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> token <span class="op">=</span> localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">&#39;authToken&#39;</span>)<span class="op">;</span> <span class="co">// Or secure cookie storage</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (token) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    config<span class="op">.</span><span class="at">headers</span><span class="op">.</span><span class="at">Authorization</span> <span class="op">=</span> <span class="vs">`Bearer </span><span class="sc">${</span>token<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> config<span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>When defining your <code>queryFn</code>, always use the authenticated
+client:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { data } <span class="op">=</span> <span class="fu">useQuery</span>({</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">queryKey</span><span class="op">:</span> [<span class="st">&#39;userData&#39;</span>]<span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">queryFn</span><span class="op">:</span> () <span class="kw">=&gt;</span> api<span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;/user&#39;</span>)<span class="op">.</span><span class="fu">then</span>(res <span class="kw">=&gt;</span> res<span class="op">.</span><span class="at">data</span>)<span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="2-clearing-query-cache-on-user-logout">2. Clearing Query Cache
+on User Logout</h3>
+<p>React Query caches fetched data in memory. If a user logs out and
+another user logs in on the same browser session, the new user might
+temporarily see the previous user's sensitive data before a refetch
+occurs.</p>
+<p>To prevent this, clear the query cache immediately when a user logs
+out:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useQueryClient } <span class="im">from</span> <span class="st">&#39;@tanstack/react-query&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> useLogout <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> queryClient <span class="op">=</span> <span class="fu">useQueryClient</span>()<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> logout <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 1. Remove auth tokens from storage</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    localStorage<span class="op">.</span><span class="fu">removeItem</span>(<span class="st">&#39;authToken&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// 2. Clear all cached queries in React Query</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    queryClient<span class="op">.</span><span class="fu">clear</span>()<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> logout<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p>Using <code>queryClient.clear()</code> destroys all cached data,
+ensuring zero leakage of stale, authenticated data.</p>
+<h3 id="3-disabling-react-query-devtools-in-production">3. Disabling
+React Query DevTools in Production</h3>
+<p>The React Query DevTools are excellent for debugging, but they expose
+your entire cache, query keys, and variables to anyone inspecting your
+application.</p>
+<p>Ensure that DevTools are excluded from your production bundle:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { ReactQueryDevtools } <span class="im">from</span> <span class="st">&#39;@tanstack/react-query-devtools&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">App</span>() {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>QueryClientProvider client<span class="op">=</span>{queryClient}<span class="op">&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>YourAppComponents <span class="op">/&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      {<span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NODE_ENV</span> <span class="op">===</span> <span class="st">&#39;development&#39;</span> <span class="op">&amp;&amp;</span> (</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>ReactQueryDevtools initialIsOpen<span class="op">=</span>{<span class="kw">false</span>} <span class="op">/&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>      )}</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>QueryClientProvider<span class="op">&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>This prevents external users from accessing sensitive state payloads
+in a live environment.</p>
+<h3 id="4-securing-persisted-query-cache">4. Securing Persisted Query
+Cache</h3>
+<p>If you use plug-ins like <code>persistQueryClient</code> to persist
+cache state across browser reloads (using <code>localStorage</code> or
+<code>IndexedDB</code>), you risk exposing sensitive data to Cross-Site
+Scripting (XSS) attacks.</p>
+<p>To mitigate this risk:</p>
+<ul>
+<li><strong>Avoid persisting sensitive endpoints:</strong> Exclude
+sensitive queries (like billing details or user profiles) from
+persistence using the <code>dehydrateOptions</code> filter.</li>
+<li><strong>Encrypt persisted data:</strong> If you must persist
+sensitive data, encrypt the storage payload before writing it to
+<code>localStorage</code>.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> persister <span class="op">=</span> <span class="fu">createSyncStoragePersister</span>({</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">storage</span><span class="op">:</span> <span class="bu">window</span><span class="op">.</span><span class="at">localStorage</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">serialize</span><span class="op">:</span> (data) <span class="kw">=&gt;</span> <span class="fu">encryptData</span>(<span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(data))<span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">deserialize</span><span class="op">:</span> (data) <span class="kw">=&gt;</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(<span class="fu">decryptData</span>(data))<span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="5-sanitizing-query-keys-to-prevent-injection">5. Sanitizing
+Query Keys to Prevent Injection</h3>
+<p>Query keys are serialized internally to track dependencies. If
+user-generated input is directly injected into a query key, ensure it is
+sanitized to avoid potential injection vulnerabilities or unexpected
+cache collisions.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Avoid directly using unvalidated user input as keys without sanitization</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> { data } <span class="op">=</span> <span class="fu">useQuery</span>({</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">queryKey</span><span class="op">:</span> [<span class="st">&#39;search&#39;</span><span class="op">,</span> <span class="fu">sanitizeInput</span>(userInput)]<span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">queryFn</span><span class="op">:</span> () <span class="kw">=&gt;</span> <span class="fu">fetchResults</span>(userInput)<span class="op">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

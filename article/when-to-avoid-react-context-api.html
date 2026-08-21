@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid React Context API - react</title>
+    <meta name="description" content="The React Context API is a powerful built-in feature designed to solve the problem of prop drilling by sharing state across a component tree. However, it is not a one-size-fits-all state management tool. While it works perfectly for low-frequency updates">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-react-context-api">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid React Context API - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-react-context-api" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The React Context API is a powerful built-in feature designed to solve the problem of prop drilling by sharing state across a component tree. However, it is not a one-size-fits-all state management tool. While it works perfectly for low-frequency updates" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-react-context-api">When to Avoid React Context
+API</h1>
+<p>The React Context API is a powerful built-in feature designed to
+solve the problem of prop drilling by sharing state across a component
+tree. However, it is not a one-size-fits-all state management tool.
+While it works perfectly for low-frequency updates like themes or user
+authentication, using it incorrectly can lead to severe performance
+bottlenecks and maintainability issues. This article outlines the
+specific scenarios where you should avoid using the Context API and what
+alternatives you should consider instead.</p>
+<h2 id="1-high-frequency-state-updates">1. High-Frequency State
+Updates</h2>
+<p>The most common mistake when using the Context API is utilizing it
+for state that changes rapidly, such as text inputs, mouse coordinates,
+real-time data feeds, or game loops.</p>
+<p>Every time a Context value changes, all components that consume that
+Context are forced to re-render. React does not have a built-in
+mechanism in Context to bail out of re-renders for components that only
+care about a portion of the context state. If you put high-frequency
+state into Context, your entire application interface can become
+sluggish and unresponsive.</p>
+<p><strong>Alternative:</strong> Use local component state for isolated
+interactive elements, or leverage dedicated state management libraries
+like Zustand, Redux, or Recoil. These libraries use selectors to ensure
+components only re-render when the specific slice of data they subscribe
+to actually changes.</p>
+<h2 id="2-highly-reusable-components">2. Highly Reusable Components</h2>
+<p>If you are building a generic, reusable component—such as a custom
+dropdown, button, or modal library—you should avoid relying on
+Context.</p>
+<p>When a component consumes a Context, it becomes implicitly coupled to
+its provider. If a developer tries to use your component elsewhere in
+the application without wrapping it in the required provider, the
+component will fail. This destroys the self-contained nature of reusable
+UI components.</p>
+<p><strong>Alternative:</strong> Stick to standard React props for
+configuration and state. If the component structure is deeply nested,
+consider using component composition (passing components as children or
+props) to avoid prop drilling without introducing Context.</p>
+<h2 id="3-complex-global-state-management">3. Complex Global State
+Management</h2>
+<p>While Context is excellent for simple global values, it quickly
+becomes unmanageable when used as the primary state store for a large
+enterprise application.</p>
+<p>As your state grows, you will find yourself nesting multiple Context
+providers (often referred to as "provider soup" or "wrapper hell"). This
+makes the React component tree difficult to read, debug, and maintain.
+Furthermore, Context lacks built-in tools for side effects, asynchronous
+actions, and developer tools (like time-travel debugging) that make
+managing complex state easier.</p>
+<p><strong>Alternative:</strong> Use robust, dedicated state management
+solutions like Redux Toolkit, MobX, or Zustand, which are built
+specifically to handle complex actions, middleware, and large-scale
+state trees.</p>
+<h2 id="4-when-prop-drilling-is-shallow">4. When Prop Drilling is
+Shallow</h2>
+<p>Developers often turn to the Context API the moment they need to pass
+a prop down more than one level. This is often premature
+optimization.</p>
+<p>Setting up Context requires boilerplate: creating the context,
+defining a provider, wrapping components, and consuming the hook. If you
+are only passing props down two or three levels, the overhead of setting
+up and maintaining Context outweighs the minor inconvenience of prop
+drilling. Prop drilling also makes data flow explicit and easier to
+trace during debugging.</p>
+<p><strong>Alternative:</strong> Keep using props for shallow
+hierarchies. If the nesting gets slightly deep, refactor your components
+to use composition so intermediate components do not need to know about
+the data passing through them.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Update CSR in React - react</title>
+    <meta name="description" content="In Client-Side Rendering (CSR) with React, updating the user interface efficiently relies on managing component state and utilizing React's rendering lifecycle. This article explains how to trigger and handle updates in a React CSR application, focusing">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-update-csr-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Update CSR in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-update-csr-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In Client-Side Rendering (CSR) with React, updating the user interface efficiently relies on managing component state and utilizing React's rendering lifecycle. This article explains how to trigger and handle updates in a React CSR application, focusing" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-update-csr-in-react">How to Update CSR in React</h1>
+<p>In Client-Side Rendering (CSR) with React, updating the user
+interface efficiently relies on managing component state and utilizing
+React's rendering lifecycle. This article explains how to trigger and
+handle updates in a React CSR application, focusing on state management,
+asynchronous data fetching, and performance optimization techniques to
+ensure a seamless user experience.</p>
+<h2 id="triggering-updates-with-state-and-props">Triggering Updates with
+State and Props</h2>
+<p>In a React CSR application, the browser downloads a minimal HTML file
+and a JavaScript bundle that builds the DOM dynamically. To update what
+the user sees, you must trigger a re-render by changing either a
+component's <strong>state</strong> or its <strong>props</strong>.</p>
+<h3 id="1-using-the-usestate-hook">1. Using the <code>useState</code>
+Hook</h3>
+<p>The most common way to update the UI is by updating local component
+state. When the state setter function is called, React schedules a
+re-render of that component and its children.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Counter</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [count<span class="op">,</span> setCount] <span class="op">=</span> <span class="fu">useState</span>(<span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">setCount</span>(count <span class="op">+</span> <span class="dv">1</span>)}<span class="op">&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Count</span><span class="op">:</span> {count}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="2-managing-complex-state-with-usereducer">2. Managing Complex
+State with <code>useReducer</code></h3>
+<p>For complex state transitions, <code>useReducer</code> provides a
+more structured way to update the client-side state.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useReducer } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> initialState <span class="op">=</span> { <span class="dt">count</span><span class="op">:</span> <span class="dv">0</span> }<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">reducer</span>(state<span class="op">,</span> action) {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span> (action<span class="op">.</span><span class="at">type</span>) {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="st">&#39;increment&#39;</span><span class="op">:</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> { <span class="dt">count</span><span class="op">:</span> state<span class="op">.</span><span class="at">count</span> <span class="op">+</span> <span class="dv">1</span> }<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> state<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">Counter</span>() {</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [state<span class="op">,</span> dispatch] <span class="op">=</span> <span class="fu">useReducer</span>(reducer<span class="op">,</span> initialState)<span class="op">;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>button onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">dispatch</span>({ <span class="dt">type</span><span class="op">:</span> <span class="st">&#39;increment&#39;</span> })}<span class="op">&gt;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Count</span><span class="op">:</span> {state<span class="op">.</span><span class="at">count</span>}</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="updating-csr-with-server-data">Updating CSR with Server
+Data</h2>
+<p>In CSR, initial page loads often show a loading spinner while the
+application fetches data from an API. To update the view once the data
+arrives, combine <code>useEffect</code> with state variables.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">UserProfile</span>({ userId }) {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [user<span class="op">,</span> setUser] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [loading<span class="op">,</span> setLoading] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setLoading</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fetch</span>(<span class="vs">`https://api.example.com/users/</span><span class="sc">${</span>userId<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">then</span>((res) <span class="kw">=&gt;</span> res<span class="op">.</span><span class="fu">json</span>())</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">then</span>((data) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setUser</span>(data)<span class="op">;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setLoading</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [userId])<span class="op">;</span> <span class="co">// Runs again whenever userId changes</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (loading) <span class="cf">return</span> <span class="op">&lt;</span>p<span class="op">&gt;</span>Loading<span class="op">...&lt;/</span>p<span class="op">&gt;;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>h1<span class="op">&gt;</span>{user<span class="op">.</span><span class="at">name</span>}<span class="op">&lt;/</span>h1<span class="op">&gt;;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="global-state-updates">Global State Updates</h2>
+<p>When multiple components across different branches of the DOM tree
+need to update simultaneously, local state is insufficient. You can
+manage global CSR updates using:</p>
+<ul>
+<li><strong>React Context API:</strong> Ideal for low-frequency updates
+like UI themes or user authentication status.</li>
+<li><strong>State Management Libraries:</strong> Solutions like Redux
+Toolkit, Zustand, or Recoil are optimized for high-frequency data
+updates across large applications.</li>
+</ul>
+<h2 id="optimizing-csr-update-performance">Optimizing CSR Update
+Performance</h2>
+<p>Frequent DOM updates can cause UI lag. Implement these practices to
+keep your client-side updates performant:</p>
+<ul>
+<li><strong>Use Key Props in Lists:</strong> Always provide a unique
+<code>key</code> prop to list items so React's reconciliation algorithm
+can identify which items changed, were added, or were removed.</li>
+<li><strong>Memoization:</strong> Wrap expensive calculations in
+<code>useMemo</code> and callback functions in <code>useCallback</code>
+to prevent unnecessary recalculations on every render.</li>
+<li><strong>React.memo:</strong> Prevent functional child components
+from re-rendering if their props have not changed.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

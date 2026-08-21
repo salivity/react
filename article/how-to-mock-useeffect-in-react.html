@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Mock useEffect in React - react</title>
+    <meta name="description" content="Mocking the useEffect hook in React is a common task when unit testing components that perform side effects, such as API calls or event subscriptions. This article explains how to effectively handle useEffect during testing using Jest and React Testing L">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-mock-useeffect-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Mock useEffect in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-mock-useeffect-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Mocking the useEffect hook in React is a common task when unit testing components that perform side effects, such as API calls or event subscriptions. This article explains how to effectively handle useEffect during testing using Jest and React Testing L" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-mock-useeffect-in-react">How to Mock useEffect in
+React</h1>
+<p>Mocking the <code>useEffect</code> hook in React is a common task
+when unit testing components that perform side effects, such as API
+calls or event subscriptions. This article explains how to effectively
+handle <code>useEffect</code> during testing using Jest and React
+Testing Library. You will learn why mocking the hook directly is usually
+discouraged, how to mock the external dependencies called inside the
+hook instead, and how to spy on <code>useEffect</code> when absolutely
+necessary.</p>
+<hr />
+<h3 id="the-recommended-approach-mocking-the-dependency">The Recommended
+Approach: Mocking the Dependency</h3>
+<p>In most cases, you should not mock the <code>useEffect</code> hook
+itself. <code>useEffect</code> is an implementation detail of your
+component. Instead, you should mock the external modules, API clients,
+or functions that are called <em>inside</em> the <code>useEffect</code>
+hook.</p>
+<p>For example, if your component fetches data inside
+<code>useEffect</code>:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { fetchUserData } <span class="im">from</span> <span class="st">&#39;./api&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">UserProfile</span>({ userId }) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [user<span class="op">,</span> setUser] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fetchUserData</span>(userId)<span class="op">.</span><span class="fu">then</span>(data <span class="kw">=&gt;</span> <span class="fu">setUser</span>(data))<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [userId])<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>user) <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;</span>Loading<span class="op">...&lt;/</span>div<span class="op">&gt;;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="op">&lt;</span>div<span class="op">&gt;</span>{user<span class="op">.</span><span class="at">name</span>}<span class="op">&lt;/</span>div<span class="op">&gt;;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>To test this component, mock the <code>fetchUserData</code> function
+using Jest:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span><span class="op">,</span> waitFor } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { UserProfile } <span class="im">from</span> <span class="st">&#39;./UserProfile&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { fetchUserData } <span class="im">from</span> <span class="st">&#39;./api&#39;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">// Mock the API module</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>jest<span class="op">.</span><span class="fu">mock</span>(<span class="st">&#39;./api&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span>(<span class="st">&#39;renders user data after fetching&#39;</span><span class="op">,</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Define mock behavior</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  fetchUserData<span class="op">.</span><span class="fu">mockResolvedValueOnce</span>({ <span class="dt">name</span><span class="op">:</span> <span class="st">&#39;John Doe&#39;</span> })<span class="op">;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">render</span>(<span class="op">&lt;</span>UserProfile userId<span class="op">=</span><span class="st">&quot;123&quot;</span> <span class="op">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Verify loading state</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect</span>(<span class="bu">screen</span><span class="op">.</span><span class="fu">getByText</span>(<span class="st">&#39;Loading...&#39;</span>))<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Wait for the useEffect side effect to resolve and update the DOM</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> <span class="fu">waitFor</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(<span class="bu">screen</span><span class="op">.</span><span class="fu">getByText</span>(<span class="st">&#39;John Doe&#39;</span>))<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<hr />
+<h3 id="mocking-useeffect-directly-spyon-approach">Mocking useEffect
+Directly (SpyOn Approach)</h3>
+<p>If you have a specific edge case where you must prevent
+<code>useEffect</code> from running entirely, or you need to assert that
+it was called, you can mock the hook using <code>jest.spyOn</code>.</p>
+<p>Here is how to spy on and mock the implementation of
+<code>useEffect</code>:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { MyComponent } <span class="im">from</span> <span class="st">&#39;./MyComponent&#39;</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">test</span>(<span class="st">&#39;should spy on useEffect&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> useEffectSpy <span class="op">=</span> jest<span class="op">.</span><span class="fu">spyOn</span>(React<span class="op">,</span> <span class="st">&#39;useEffect&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Optionally mock the implementation to do nothing</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  useEffectSpy<span class="op">.</span><span class="fu">mockImplementation</span>((f) <span class="kw">=&gt;</span> <span class="fu">f</span>())<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">render</span>(<span class="op">&lt;</span>MyComponent <span class="op">/&gt;</span>)<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect</span>(useEffectSpy)<span class="op">.</span><span class="fu">toHaveBeenCalled</span>()<span class="op">;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Restore the original implementation after the test</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  useEffectSpy<span class="op">.</span><span class="fu">mockRestore</span>()<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Note that mocking <code>useEffect</code> to execute synchronously (as
+done with <code>(f) =&gt; f()</code>) can alter the standard React
+lifecycle and lead to unexpected rendering behavior. Use this approach
+sparingly.</p>
+<hr />
+<h3 id="summary-of-best-practices">Summary of Best Practices</h3>
+<ol type="1">
+<li><strong>Avoid Mocking the Hook:</strong> Test the outcome of the
+side effect (e.g., changes in the DOM) rather than the execution of
+<code>useEffect</code> itself.</li>
+<li><strong>Mock External APIs:</strong> Use <code>jest.mock()</code> to
+mock network requests, timers, or third-party libraries invoked inside
+the hook.</li>
+<li><strong>Use act() or waitFor:</strong> Ensure your tests wrap state
+updates caused by asynchronous side effects using utilities from React
+Testing Library to prevent "not wrapped in act(...)" warnings.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

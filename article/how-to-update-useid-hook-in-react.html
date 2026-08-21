@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Update useId Hook in React - react</title>
+    <meta name="description" content="The useId hook in React is designed to generate stable, unique identifiers primarily used for accessibility attributes. Because these IDs must remain consistent between server-side rendering (SSR) and client-side hydration, the value returned by useId is">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-update-useid-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Update useId Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-update-useid-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The useId hook in React is designed to generate stable, unique identifiers primarily used for accessibility attributes. Because these IDs must remain consistent between server-side rendering (SSR) and client-side hydration, the value returned by useId is" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-update-useid-hook-in-react">How to Update useId Hook in
+React</h1>
+<p>The <code>useId</code> hook in React is designed to generate stable,
+unique identifiers primarily used for accessibility attributes. Because
+these IDs must remain consistent between server-side rendering (SSR) and
+client-side hydration, the value returned by <code>useId</code> is
+immutable and cannot be directly updated. This article explains why
+<code>useId</code> values are static and details the standard
+workarounds for generating dynamic, updated IDs in your React
+components.</p>
+<h2 id="why-you-cannot-directly-update-useid">Why You Cannot Directly
+Update useId</h2>
+<p>The <code>useId</code> hook does not accept any arguments and does
+not return a setter function like <code>useState</code> does. It returns
+a single, stable string:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> id <span class="op">=</span> <span class="fu">useId</span>()<span class="op">;</span></span></code></pre></div>
+<p>React guarantees that this ID will remain the same across renders. If
+React allowed you to directly update or regenerate this ID
+mid-lifecycle, it would break the HTML hydration process, leading to
+mismatch errors between the server-rendered markup and the
+client-rendered virtual DOM.</p>
+<hr />
+<h2 id="how-to-create-dynamic-ids-using-useid">How to Create Dynamic IDs
+Using useId</h2>
+<p>If you need to change or update an ID based on component state,
+props, or user interaction, you should not try to change the hook
+itself. Instead, you can combine the stable base ID with dynamic
+values.</p>
+<h3 id="1-appending-dynamic-suffixes">1. Appending Dynamic Suffixes</h3>
+<p>You can use the stable base ID returned by <code>useId</code> and
+append dynamic strings or state variables to it. This is highly useful
+for forms or compound components.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useId<span class="op">,</span> useState } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">DynamicForm</span>() {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> baseId <span class="op">=</span> <span class="fu">useId</span>()<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [status<span class="op">,</span> setStatus] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;pending&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// The ID updates implicitly when the status state changes</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputId <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>baseId<span class="sc">}</span><span class="vs">-</span><span class="sc">${</span>status<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;label</span> <span class="ot">htmlFor</span><span class="op">=</span><span class="va">{</span>inputId<span class="va">}</span><span class="kw">&gt;</span>Submission Status:<span class="kw">&lt;/label&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;input</span> <span class="ot">id</span><span class="op">=</span><span class="va">{</span>inputId<span class="va">}</span> <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> <span class="ot">readOnly</span> <span class="ot">value</span><span class="op">=</span><span class="va">{</span>status<span class="va">}</span> <span class="kw">/&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> <span class="fu">setStatus</span>(<span class="st">&#39;completed&#39;</span>)<span class="va">}</span><span class="kw">&gt;</span>Complete<span class="kw">&lt;/button&gt;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="2-generating-ids-for-dynamic-lists">2. Generating IDs for
+Dynamic Lists</h3>
+<p>You cannot call <code>useId</code> inside a loop or conditional
+statement because of the Rules of Hooks. To generate unique, dynamic IDs
+for a list of items, generate one base ID and append the item's index or
+unique key.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useId } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ItemList</span>({ items }) {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> baseId <span class="op">=</span> <span class="fu">useId</span>()<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;ul&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span>items<span class="op">.</span><span class="fu">map</span>((item<span class="op">,</span> index) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> itemId <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>baseId<span class="sc">}</span><span class="vs">-item-</span><span class="sc">${</span>index<span class="sc">}</span><span class="vs">`</span><span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>          <span class="kw">&lt;li</span> <span class="ot">key</span><span class="op">=</span><span class="va">{</span>item<span class="op">.</span><span class="at">id</span><span class="va">}</span> <span class="ot">id</span><span class="op">=</span><span class="va">{</span>itemId<span class="va">}</span><span class="kw">&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>            <span class="va">{</span>item<span class="op">.</span><span class="at">name</span><span class="va">}</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>          <span class="kw">&lt;/li&gt;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        )<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      })<span class="va">}</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/ul&gt;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h2 id="alternative-using-state-for-fully-mutable-ids">Alternative:
+Using State for Fully Mutable IDs</h2>
+<p>If your application requires an ID that must change completely upon a
+user action (and does not rely on SSR matching), you should bypass
+<code>useId</code> and use standard state management instead.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">MutableIdComponent</span>() {</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Generate a random dynamic ID that can be updated</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [customId<span class="op">,</span> setCustomId] <span class="op">=</span> <span class="fu">useState</span>(() <span class="kw">=&gt;</span> <span class="vs">`id-</span><span class="sc">${</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>()<span class="op">.</span><span class="fu">toString</span>(<span class="dv">36</span>)<span class="op">.</span><span class="fu">substr</span>(<span class="dv">2</span><span class="op">,</span> <span class="dv">9</span>)<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> regenerateId <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setCustomId</span>(<span class="vs">`id-</span><span class="sc">${</span><span class="bu">Math</span><span class="op">.</span><span class="fu">random</span>()<span class="op">.</span><span class="fu">toString</span>(<span class="dv">36</span>)<span class="op">.</span><span class="fu">substr</span>(<span class="dv">2</span><span class="op">,</span> <span class="dv">9</span>)<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;p&gt;</span>Current Mutable ID: <span class="va">{</span>customId<span class="va">}</span><span class="kw">&lt;/p&gt;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>regenerateId<span class="va">}</span><span class="kw">&gt;</span>Generate New ID<span class="kw">&lt;/button&gt;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>By understanding that <code>useId</code> is meant for static,
+hydration-safe identifiers, you can easily handle dynamic ID
+requirements by appending stateful suffixes or switching to standard
+state hooks when absolute mutability is required.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

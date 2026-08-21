@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Use useDeferredValue Hook in React - react</title>
+    <meta name="description" content="This article provides a practical guide on how to implement the useDeferredValue hook in React to optimize application performance. You will learn what the hook does, when to use it over traditional debouncing, and how to implement it step-by-step with a">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-use-usedeferredvalue-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Use useDeferredValue Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-use-usedeferredvalue-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a practical guide on how to implement the useDeferredValue hook in React to optimize application performance. You will learn what the hook does, when to use it over traditional debouncing, and how to implement it step-by-step with a" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-use-usedeferredvalue-hook-in-react">How to Use
+useDeferredValue Hook in React</h1>
+<p>This article provides a practical guide on how to implement the
+<code>useDeferredValue</code> hook in React to optimize application
+performance. You will learn what the hook does, when to use it over
+traditional debouncing, and how to implement it step-by-step with a
+clear code example to keep your user interface responsive during heavy
+rendering tasks.</p>
+<h2 id="what-is-usedeferredvalue">What is useDeferredValue?</h2>
+<p>The <code>useDeferredValue</code> hook is a built-in React hook
+introduced in React 18. It allows you to defer updating a non-urgent
+part of your UI, keeping the main interaction (like typing in an input
+field) smooth and responsive.</p>
+<p>Instead of blocking the user interface while rendering a slow
+component, React will render the urgent update first (the input value)
+and then render the deferred value in the background.</p>
+<h2 id="when-should-you-use-it">When Should You Use It?</h2>
+<p>You should use <code>useDeferredValue</code> when:</p>
+<ul>
+<li>You have a CPU-intensive rendering task (such as filtering a large
+list) that slows down the user interface.</li>
+<li>You want to avoid showing a loading spinner and instead prefer to
+keep showing the old UI until the new UI is ready.</li>
+<li>You cannot optimize the slow component further, and throttling or
+debouncing is not the ideal user experience.</li>
+</ul>
+<h2 id="step-by-step-implementation">Step-by-Step Implementation</h2>
+<p>To implement <code>useDeferredValue</code>, pass the state variable
+you want to defer into the hook. Then, use the returned deferred value
+in your expensive rendering logic.</p>
+<h3 id="1-import-the-hook">1. Import the Hook</h3>
+<p>First, import <code>useDeferredValue</code> and <code>useState</code>
+from React.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState<span class="op">,</span> useDeferredValue<span class="op">,</span> useMemo } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span></code></pre></div>
+<h3 id="2-set-up-your-state-and-deferred-value">2. Set Up Your State and
+Deferred Value</h3>
+<p>Create your primary state (e.g., search query) and pass it to
+<code>useDeferredValue</code>.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [query<span class="op">,</span> setQuery] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> deferredQuery <span class="op">=</span> <span class="fu">useDeferredValue</span>(query)<span class="op">;</span></span></code></pre></div>
+<h3 id="3-pass-the-deferred-value-to-the-slow-component">3. Pass the
+Deferred Value to the Slow Component</h3>
+<p>Use the <code>deferredQuery</code> for your heavy computational task
+or pass it down to the list component. To prevent unnecessary re-renders
+of the slow component while typing, wrap the slow component in
+<code>React.memo</code> or wrap the rendering logic in
+<code>useMemo</code>.</p>
+<p>Here is a complete, working example:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState<span class="op">,</span> useDeferredValue<span class="op">,</span> useMemo<span class="op">,</span> memo } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// An expensive component that slows down rendering</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> SlowList <span class="op">=</span> <span class="fu">memo</span>(({ query }) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> items <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">250</span><span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    items<span class="op">.</span><span class="fu">push</span>(<span class="kw">&lt;div</span> <span class="ot">key</span><span class="op">=</span><span class="va">{</span>i<span class="va">}</span><span class="kw">&gt;</span>Result <span class="va">{</span>i<span class="va">}</span> for &quot;<span class="va">{</span>query<span class="va">}</span>&quot;<span class="kw">&lt;/div&gt;</span>)<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return </span><span class="kw">&lt;div&gt;</span><span class="va">{</span>items<span class="va">}</span><span class="kw">&lt;/div&gt;</span><span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="fu">SearchApp</span>() {</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [query<span class="op">,</span> setQuery] <span class="op">=</span> <span class="fu">useState</span>(<span class="st">&#39;&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Defer the query update</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> deferredQuery <span class="op">=</span> <span class="fu">useDeferredValue</span>(query)<span class="op">;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleChange <span class="op">=</span> (e) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setQuery</span>(e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div</span> <span class="ot">style</span><span class="op">=</span><span class="va">{</span>{ <span class="dt">padding</span><span class="op">:</span> <span class="st">&#39;20px&#39;</span> }<span class="va">}</span><span class="kw">&gt;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;input</span> </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="ot">type</span><span class="op">=</span><span class="st">&quot;text&quot;</span> </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="ot">value</span><span class="op">=</span><span class="va">{</span>query<span class="va">}</span> </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="ot">onChange</span><span class="op">=</span><span class="va">{</span>handleChange<span class="va">}</span> </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="ot">placeholder</span><span class="op">=</span><span class="st">&quot;Type to search...&quot;</span> </span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>      <span class="kw">/&gt;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>      <span class="va">{</span><span class="co">/* </span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">        The input updates instantly, while the SlowList </span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">        waits for the deferredQuery to update in the background.</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">      */</span><span class="va">}</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">&lt;SlowList</span> <span class="ot">query</span><span class="op">=</span><span class="va">{</span>deferredQuery<span class="va">}</span> <span class="fu">/&gt;</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="key-considerations">Key Considerations</h2>
+<ul>
+<li><strong>No Fixed Delay:</strong> Unlike debouncing,
+<code>useDeferredValue</code> does not have a fixed delay (like 300ms).
+React attempts the deferred render immediately after the urgent render
+is complete. On faster devices, the deferral is barely noticeable; on
+slower devices, it adapts to keep the UI responsive.</li>
+<li><strong>Must Be Combined with Memoization:</strong> For
+<code>useDeferredValue</code> to work effectively, you must memoize the
+component receiving the deferred value (using <code>React.memo</code> or
+<code>useMemo</code>). If you do not, the child component will still
+re-render on every keystroke anyway, defeating the purpose of the
+hook.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

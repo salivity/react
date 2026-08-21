@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid React Event Pooling - react</title>
+    <meta name="description" content="This article explains when and why you should avoid event pooling in React, focusing on the challenges of accessing event properties asynchronously. It covers how React's legacy event system reused event objects, the common bugs this caused in asynchrono">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-react-event-pooling">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid React Event Pooling - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-react-event-pooling" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains when and why you should avoid event pooling in React, focusing on the challenges of accessing event properties asynchronously. It covers how React's legacy event system reused event objects, the common bugs this caused in asynchrono" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-react-event-pooling">When to Avoid React Event
+Pooling</h1>
+<p>This article explains when and why you should avoid event pooling in
+React, focusing on the challenges of accessing event properties
+asynchronously. It covers how React's legacy event system reused event
+objects, the common bugs this caused in asynchronous code, how to bypass
+it using <code>e.persist()</code>, and how React 17 ultimately
+eliminated event pooling altogether.</p>
+<h2 id="understanding-react-event-pooling">Understanding React Event
+Pooling</h2>
+<p>In React 16 and earlier, React used a technique called <strong>event
+pooling</strong> to improve performance. Instead of creating a new event
+object for every single user interaction, React created a single pool of
+<code>SyntheticEvent</code> objects.</p>
+<p>When an event was triggered, React would grab an event object from
+the pool, populate its properties (like <code>target</code> and
+<code>type</code>), run your event handler, and then immediately clear
+(nullify) all properties so the object could be reused for the next
+event.</p>
+<h2 id="when-to-avoid-event-pooling-react-16-and-earlier">When to Avoid
+Event Pooling (React 16 and Earlier)</h2>
+<p>You must avoid relying on the default event pooling behavior whenever
+you need to access event properties inside an <strong>asynchronous
+callback</strong>.</p>
+<p>Because React nullifies the event object immediately after the
+synchronous event handler finishes executing, any asynchronous code will
+attempt to read properties from a cleared event object. This results in
+console errors or <code>null</code>/<code>undefined</code> values.</p>
+<p>Specifically, you must bypass event pooling in the following
+scenarios:</p>
+<h3 id="1-inside-settimeout-or-setinterval">1. Inside
+<code>setTimeout</code> or <code>setInterval</code></h3>
+<p>If you attempt to read an event property inside a timer delay, the
+pool will have already reclaimed the event object.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This will fail in React 16 and below</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">handleChange</span>(e) {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span> <span class="co">// Error: Cannot read property &#39;value&#39; of null</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> <span class="dv">1000</span>)<span class="op">;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="2-inside-promises-and-asyncawait-blocks">2. Inside Promises and
+Async/Await Blocks</h3>
+<p>If you fetch data or resolve a promise and then try to use the event
+object, the properties will be gone.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This will fail in React 16 and below</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">handleClick</span>(e) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fetch</span>(<span class="st">&#39;/api/log&#39;</span>)<span class="op">.</span><span class="fu">then</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">id</span>)<span class="op">;</span> <span class="co">// e.target is null</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="3-inside-state-updater-functions">3. Inside State Updater
+Functions</h3>
+<p>React state updates can be batched and executed asynchronously. If
+you try to pass the event directly into a functional state updater, the
+event properties will be cleared before the state update runs.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// This will fail in React 16 and below</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">handleInputChange</span>(e) {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setUserData</span>(prev <span class="kw">=&gt;</span> ({</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>prev<span class="op">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">name</span><span class="op">:</span> e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span> <span class="co">// e.target is null</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  }))<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h2 id="how-to-avoid-the-pitfalls-of-event-pooling">How to Avoid the
+Pitfalls of Event Pooling</h2>
+<p>If you are working on a legacy React codebase (React 16 or older),
+you have two options to prevent event pooling from breaking your
+code.</p>
+<h3 id="solution-1-use-epersist">Solution 1: Use
+<code>e.persist()</code></h3>
+<p>Calling <code>event.persist()</code> on the synthetic event removes
+it from the pool. This allows the event object to retain its values,
+making it safe to use in asynchronous callbacks.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">handleChange</span>(e) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  e<span class="op">.</span><span class="fu">persist</span>()<span class="op">;</span> <span class="co">// Tells React not to release this event back to the pool</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span>)<span class="op">;</span> <span class="co">// Works perfectly</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> <span class="dv">1000</span>)<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="solution-2-cache-the-value-synchronously">Solution 2: Cache the
+Value Synchronously</h3>
+<p>Instead of persisting the entire event object, extract and store the
+specific properties you need in a local variable before entering the
+asynchronous context. This is often the cleanest and most performant
+solution.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">handleChange</span>(e) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> inputValue <span class="op">=</span> e<span class="op">.</span><span class="at">target</span><span class="op">.</span><span class="at">value</span><span class="op">;</span> <span class="co">// Cache the value synchronously</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(inputValue)<span class="op">;</span> <span class="co">// Works perfectly without e.persist()</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> <span class="dv">1000</span>)<span class="op">;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h2 id="modern-react-why-event-pooling-is-no-longer-an-issue">Modern
+React: Why Event Pooling is No Longer an Issue</h2>
+<p>If you are using <strong>React 17 or newer</strong>, you do not need
+to worry about event pooling.</p>
+<p>The React team realized that the performance benefits of event
+pooling on modern browsers were negligible, while the confusion and bugs
+it caused for developers were significant. Consequently, <strong>event
+pooling was completely removed in React 17</strong>.</p>
+<p>In modern React apps, <code>e.persist()</code> is still available but
+does absolutely nothing, and event objects can be accessed
+asynchronously without any extra code.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

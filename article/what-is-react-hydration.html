@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is React Hydration - react</title>
+    <meta name="description" content="React hydration is a crucial process in web development that bridges the gap between fast initial page loads and full interactivity. This article explains what React hydration is, how the process works under the hood, why it is essential for modern web a">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-react-hydration">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is React Hydration - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-react-hydration" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React hydration is a crucial process in web development that bridges the gap between fast initial page loads and full interactivity. This article explains what React hydration is, how the process works under the hood, why it is essential for modern web a" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-react-hydration">What is React Hydration</h1>
+<p>React hydration is a crucial process in web development that bridges
+the gap between fast initial page loads and full interactivity. This
+article explains what React hydration is, how the process works under
+the hood, why it is essential for modern web applications, and how to
+address common issues like hydration mismatches.</p>
+<h2 id="understanding-react-hydration">Understanding React
+Hydration</h2>
+<p>To understand hydration, you first need to understand Server-Side
+Rendering (SSR) or Static Site Generation (SSG). In a traditional
+client-side rendered React app, the browser receives an empty HTML file
+and a large JavaScript bundle. The browser must download and execute
+this JavaScript before the user can see anything on the screen.</p>
+<p>With SSR (using frameworks like Next.js or Remix), the server
+executes the React code beforehand, generates a fully formed HTML
+document, and sends it to the browser. The user sees the content almost
+instantly. However, this HTML is static; clicking buttons or interacting
+with forms will not work yet because the JavaScript interactivity has
+not been attached.</p>
+<p><strong>Hydration</strong> is the process where React runs on the
+client side, reads the pre-rendered HTML sent by the server, and
+attaches event listeners to the HTML elements to make them interactive.
+It "waters" the dry, static HTML with the "moisture" of dynamic
+JavaScript.</p>
+<h2 id="how-the-hydration-process-works">How the Hydration Process
+Works</h2>
+<p>The hydration process follows a specific sequence of steps:</p>
+<ol type="1">
+<li><strong>Server Rendering:</strong> The server renders the React
+component tree into a static HTML string and sends it to the browser
+alongside the JavaScript bundle.</li>
+<li><strong>First Contentful Paint (FCP):</strong> The browser parses
+and displays the HTML immediately. The user can read the text and see
+the layout, but cannot interact with it yet.</li>
+<li><strong>Loading JavaScript:</strong> The browser downloads and
+parses the client-side React code.</li>
+<li><strong>Hydration:</strong> React walks through the DOM tree.
+Instead of creating new DOM nodes from scratch, React matches the
+existing HTML nodes with the Virtual DOM and binds event handlers (like
+<code>onClick</code> or <code>onChange</code>) to them.</li>
+<li><strong>Interactive Page:</strong> Once completed, the website is
+fully interactive.</li>
+</ol>
+<h2 id="why-hydration-is-important">Why Hydration is Important</h2>
+<p>Hydration provides the best of both worlds: the speed of static HTML
+and the power of a dynamic JavaScript application.</p>
+<ul>
+<li><strong>Better User Experience:</strong> Users see content much
+faster because they do not have to wait for JavaScript to load before
+seeing the page.</li>
+<li><strong>Improved SEO:</strong> Search engine crawlers can easily
+read the pre-rendered HTML, which is critical for search engine
+optimization.</li>
+<li><strong>Preserved State:</strong> Hydration allows React to take
+over the existing DOM without destroying and rebuilding it, ensuring a
+seamless transition.</li>
+</ul>
+<h2 id="common-hydration-challenges-hydration-mismatch">Common Hydration
+Challenges: Hydration Mismatch</h2>
+<p>The most common issue with hydration is a <strong>hydration mismatch
+error</strong>. This occurs when the HTML rendered on the server does
+not exactly match the HTML that React generates during the initial
+client-side render.</p>
+<h3 id="why-mismatches-happen">Why Mismatches Happen</h3>
+<p>Mismatches typically happen when your code relies on data that
+changes depending on where it is executed. Examples include:</p>
+<ul>
+<li>Using browser-only APIs like <code>window</code>,
+<code>document</code>, or <code>localStorage</code> during the initial
+render.</li>
+<li>Using dynamic data like current dates (<code>new Date()</code>) or
+random numbers (<code>Math.random()</code>), which will produce
+different values on the server and the client.</li>
+<li>Invalid HTML structures, such as putting a <code>&lt;div&gt;</code>
+inside a <code>&lt;p&gt;</code> tag, which browsers automatically
+correct, causing a mismatch with React's Virtual DOM.</li>
+</ul>
+<h3 id="how-to-fix-mismatches">How to Fix Mismatches</h3>
+<p>To prevent hydration errors, ensure that the initial render is
+identical on both the server and the client. You can use the
+<code>useEffect</code> hook to run client-only code, as
+<code>useEffect</code> only runs after the component has successfully
+hydrated in the browser:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">MyComponent</span>() {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [isClient<span class="op">,</span> setIsClient] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setIsClient</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      {isClient <span class="op">?</span> <span class="st">&quot;Rendered on the client&quot;</span> <span class="op">:</span> <span class="st">&quot;Rendered on the server&quot;</span>}</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

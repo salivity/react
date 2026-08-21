@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Implement Lazy Loading in React - react</title>
+    <meta name="description" content="Lazy loading is a powerful optimization technique in React that improves application performance by loading components only when they are actually needed. This article provides a straightforward, step-by-step guide on how to implement lazy loading in Rea">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-implement-lazy-loading-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Implement Lazy Loading in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-implement-lazy-loading-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Lazy loading is a powerful optimization technique in React that improves application performance by loading components only when they are actually needed. This article provides a straightforward, step-by-step guide on how to implement lazy loading in Rea" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-implement-lazy-loading-in-react">How to Implement Lazy
+Loading in React</h1>
+<p>Lazy loading is a powerful optimization technique in React that
+improves application performance by loading components only when they
+are actually needed. This article provides a straightforward,
+step-by-step guide on how to implement lazy loading in React using
+<code>React.lazy</code> and <code>Suspense</code>, along with practical
+code examples for both individual components and route-based code
+splitting.</p>
+<h2 id="understanding-reactlazy-and-suspense">Understanding React.lazy
+and Suspense</h2>
+<p>React provides built-in support for lazy loading through
+<code>React.lazy()</code> and the <code>Suspense</code> component.</p>
+<ul>
+<li><strong><code>React.lazy()</code></strong>: A function that lets you
+render a dynamic import as a regular component. It automatically bundles
+the component into a separate chunk during build time.</li>
+<li><strong><code>Suspense</code></strong>: A wrapper component that
+allows you to show a fallback UI (like a loading spinner or text) while
+the lazy-loaded component is being fetched.</li>
+</ul>
+<h2 id="implementing-component-level-lazy-loading">Implementing
+Component-Level Lazy Loading</h2>
+<p>To lazy load a component, you replace your standard static import
+with a dynamic import wrapped inside <code>React.lazy()</code>. You must
+then render that component inside a <code>&lt;Suspense&gt;</code>
+block.</p>
+<p>Here is a basic example:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { Suspense } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Dynamically import the heavy component</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> HeavyComponent <span class="op">=</span> React<span class="op">.</span><span class="fu">lazy</span>(() <span class="kw">=&gt;</span> <span class="im">import</span>(<span class="st">&#39;./HeavyComponent&#39;</span>))<span class="op">;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">App</span>() {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>h1<span class="op">&gt;</span>My React Application<span class="op">&lt;/</span>h1<span class="op">&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      {<span class="co">/* Wrap the lazy component in Suspense and provide a fallback */</span>}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>Suspense fallback<span class="op">=</span>{<span class="op">&lt;</span>div<span class="op">&gt;</span>Loading component<span class="op">...&lt;/</span>div<span class="op">&gt;</span>}<span class="op">&gt;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>HeavyComponent <span class="op">/&gt;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>Suspense<span class="op">&gt;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> App<span class="op">;</span></span></code></pre></div>
+<p>In this setup, <code>HeavyComponent</code> will not be loaded when
+the user first visits the page. Instead, the browser will fetch its
+bundle only when <code>App</code> renders, displaying the "Loading
+component..." message in the meantime.</p>
+<h2 id="implementing-route-based-lazy-loading">Implementing Route-Based
+Lazy Loading</h2>
+<p>One of the best places to use lazy loading is at the router level.
+This ensures that users only download the code for the specific page
+they are currently visiting, greatly reducing the initial loading time
+of your website.</p>
+<p>Here is how you can implement route-based lazy loading using React
+Router:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> React<span class="op">,</span> { Suspense } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { BrowserRouter <span class="im">as</span> Router<span class="op">,</span> Routes<span class="op">,</span> Route<span class="op">,</span> Link } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Lazy load the page components</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> Home <span class="op">=</span> React<span class="op">.</span><span class="fu">lazy</span>(() <span class="kw">=&gt;</span> <span class="im">import</span>(<span class="st">&#39;./pages/Home&#39;</span>))<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> About <span class="op">=</span> React<span class="op">.</span><span class="fu">lazy</span>(() <span class="kw">=&gt;</span> <span class="im">import</span>(<span class="st">&#39;./pages/About&#39;</span>))<span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> Contact <span class="op">=</span> React<span class="op">.</span><span class="fu">lazy</span>(() <span class="kw">=&gt;</span> <span class="im">import</span>(<span class="st">&#39;./pages/Contact&#39;</span>))<span class="op">;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">App</span>() {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>Router<span class="op">&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>nav<span class="op">&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Link to<span class="op">=</span><span class="st">&quot;/&quot;</span><span class="op">&gt;</span>Home<span class="op">&lt;/</span>Link<span class="op">&gt;</span> <span class="op">|</span> </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Link to<span class="op">=</span><span class="st">&quot;/about&quot;</span><span class="op">&gt;</span>About<span class="op">&lt;/</span>Link<span class="op">&gt;</span> <span class="op">|</span> </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Link to<span class="op">=</span><span class="st">&quot;/contact&quot;</span><span class="op">&gt;</span>Contact<span class="op">&lt;/</span>Link<span class="op">&gt;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>nav<span class="op">&gt;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      {<span class="co">/* Wrap all routes in Suspense to handle loading transitions */</span>}</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>Suspense fallback<span class="op">=</span>{<span class="op">&lt;</span>div<span class="op">&gt;</span>Loading page<span class="op">...&lt;/</span>div<span class="op">&gt;</span>}<span class="op">&gt;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Routes<span class="op">&gt;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Home <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/about&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>About <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/contact&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Contact <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span>Routes<span class="op">&gt;</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>Suspense<span class="op">&gt;</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>Router<span class="op">&gt;</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> App<span class="op">;</span></span></code></pre></div>
+<h2 id="key-considerations">Key Considerations</h2>
+<p>To ensure a smooth user experience when implementing lazy loading,
+keep the following best practices in mind:</p>
+<ol type="1">
+<li><strong>Default Exports Only</strong>: <code>React.lazy</code>
+currently only supports default exports. If the component you want to
+import uses named exports, you must re-export it as a default export in
+an intermediary file.</li>
+<li><strong>Error Boundaries</strong>: If a lazy-loaded component fails
+to load (due to a network error, for example), your app might crash.
+Wrap your <code>&lt;Suspense&gt;</code> components in an Error Boundary
+to handle these failures gracefully.</li>
+<li><strong>Selective Loading</strong>: Do not lazy load every
+component. Focus on large third-party libraries, complex components
+(like charts or rich text editors), and page-level routes.</li>
+</ol></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

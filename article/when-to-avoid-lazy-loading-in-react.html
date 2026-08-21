@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid Lazy Loading in React - react</title>
+    <meta name="description" content="While lazy loading is a powerful technique to optimize React application performance by splitting code and reducing initial bundle sizes, it is not a silver bullet. Implementing it in the wrong scenarios can degrade user experience, introduce latency, an">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-lazy-loading-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid Lazy Loading in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-lazy-loading-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="While lazy loading is a powerful technique to optimize React application performance by splitting code and reducing initial bundle sizes, it is not a silver bullet. Implementing it in the wrong scenarios can degrade user experience, introduce latency, an" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-lazy-loading-in-react">When to Avoid Lazy Loading
+in React</h1>
+<p>While lazy loading is a powerful technique to optimize React
+application performance by splitting code and reducing initial bundle
+sizes, it is not a silver bullet. Implementing it in the wrong scenarios
+can degrade user experience, introduce latency, and hurt your search
+engine rankings. This article outlines the specific situations where you
+should avoid lazy loading in React and opt for eager loading
+instead.</p>
+<h2 id="1-above-the-fold-content">1. Above-the-Fold Content</h2>
+<p>Any component that appears on the screen immediately when the page
+loads—known as "above-the-fold" content—should never be lazy loaded.
+This includes hero sections, main navigation bars, and header
+images.</p>
+<p>Lazy loading these components forces the browser to download the main
+bundle, render the shell, and then make a separate network request to
+fetch the lazy-loaded chunk. This causes a noticeable delay, triggers
+layout shifts, and severely damages your <strong>Largest Contentful
+Paint (LCP)</strong> metric, which is a critical Google Core Web
+Vital.</p>
+<h2 id="2-small-components-and-utilities">2. Small Components and
+Utilities</h2>
+<p>Code splitting introduces overhead. Every lazy-loaded chunk requires
+an additional HTTP request and browser compilation time.</p>
+<p>If a component or utility function is only a few kilobytes, lazy
+loading it is counterproductive. The network overhead of requesting a
+tiny separate JS file is far greater than the negligible benefit of
+saving a few bytes in the main bundle. As a rule of thumb, only lazy
+load substantial routes or heavy third-party libraries (like charting
+engines or rich text editors).</p>
+<h2 id="3-critical-user-flows-and-conversions">3. Critical User Flows
+and Conversions</h2>
+<p>You should avoid lazy loading elements that are vital to user
+conversion or core application functionality. For example, checkout
+buttons, payment forms, or login modals should be loaded eagerly.</p>
+<p>If a user is ready to purchase and clicks a "Buy Now" button, any
+delay caused by fetching a lazy-loaded chunk can lead to frustration and
+cart abandonment. If the user's internet connection drops or stutters at
+that exact moment, the component will fail to load entirely.</p>
+<h2 id="4-standard-server-side-rendering-ssr">4. Standard Server-Side
+Rendering (SSR)</h2>
+<p>If you are using standard Server-Side Rendering (SSR) without
+specialized frameworks like Next.js, standard React lazy loading
+(<code>React.lazy</code> and <code>Suspense</code>) will fail.</p>
+<p><code>React.lazy</code> is designed for client-side rendering. Trying
+to use it on a traditional SSR setup will result in errors or hydration
+mismatches because the server cannot resolve the dynamic imports
+synchronously during the initial HTML generation. For SSR, you must use
+alternative solutions like <code>@loadable/component</code> or
+framework-specific dynamic imports.</p>
+<h2 id="5-components-requiring-instant-interaction">5. Components
+Requiring Instant Interaction</h2>
+<p>Interactive elements that users expect to respond immediately—such as
+dropdown menus, tooltips, or tabs—should not be lazy loaded.</p>
+<p>When a user hovers over a tooltip or clicks a tab, they expect an
+instantaneous transition. If React has to pause to fetch the component
+chunk from a server, the interface will feel sluggish and unresponsive,
+leading to a poor user experience.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

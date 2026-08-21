@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid Forwarding Refs in React - react</title>
+    <meta name="description" content="React's forwardRef API is a powerful tool that allows components to take a ref they receive and pass it further down to a child component. While useful for accessing DOM nodes in reusable leaf components like buttons or inputs, forwarding refs is often o">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-forwarding-refs-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid Forwarding Refs in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-forwarding-refs-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's forwardRef API is a powerful tool that allows components to take a ref they receive and pass it further down to a child component. While useful for accessing DOM nodes in reusable leaf components like buttons or inputs, forwarding refs is often o" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-forwarding-refs-in-react">When to Avoid Forwarding
+Refs in React</h1>
+<p>React's <code>forwardRef</code> API is a powerful tool that allows
+components to take a <code>ref</code> they receive and pass it further
+down to a child component. While useful for accessing DOM nodes in
+reusable leaf components like buttons or inputs, forwarding refs is
+often overused. This article explains when you should avoid using
+<code>forwardRef</code> in React and outlines better alternative
+patterns to maintain clean, declarative, and maintainable codebases.</p>
+<h2 id="1-when-it-breaks-component-encapsulation">1. When It Breaks
+Component Encapsulation</h2>
+<p>Encapsulation is a core principle of component-based architecture.
+When you forward a ref to a child component's internal DOM node, you
+expose that component's internal structure to its parent.</p>
+<p>If the parent component relies on the specific DOM structure of the
+child (such as expecting a <code>&lt;div&gt;</code> instead of a
+<code>&lt;span&gt;</code>), any future refactoring of the child
+component can silently break the parent. Avoid forwarding refs when you
+want to keep the internal implementation details of a component
+private.</p>
+<h2 id="2-when-props-and-state-can-achieve-the-same-goal">2. When Props
+and State Can Achieve the Same Goal</h2>
+<p>React is designed around a declarative, unidirectional data flow.
+Developers often reach for refs to imperatively trigger actions—such as
+playing a video, opening a modal, or resetting a form—when these can be
+easily managed using declarative props and state.</p>
+<ul>
+<li><strong>Avoid:</strong> Forwarding a ref to call
+<code>ref.current.openModal()</code> from a parent component.</li>
+<li><strong>Better Approach:</strong> Pass an <code>isOpen</code>
+boolean prop to the child component and let the child react to changes
+in that prop.</li>
+</ul>
+<h2 id="3-when-creating-simple-wrapper-components">3. When Creating
+Simple Wrapper Components</h2>
+<p>If you are writing a high-level wrapper component (such as a Layout,
+Card, or Sidebar) that merely groups other elements, forwarding refs is
+usually unnecessary.</p>
+<p>Unless the parent component specifically needs to measure the layout
+dimensions or track the scroll position of that wrapper, adding
+<code>forwardRef</code> introduces unnecessary boilerplate and
+complexity. Keep your components simple until a concrete requirement for
+DOM access arises.</p>
+<h2 id="4-when-exposing-custom-methods-via-useimperativehandle">4. When
+Exposing Custom Methods via <code>useImperativeHandle</code></h2>
+<p>While React allows you to pair <code>forwardRef</code> with
+<code>useImperativeHandle</code> to customize the ref instance value
+exposed to parent components, this should be a last resort.</p>
+<p>Abusing this pattern turns React components into imperative objects
+reminiscent of jQuery or class-based programming. If you find yourself
+exposing multiple custom methods through a ref to control a child
+component, it is a strong signal that your application state should be
+lifted up to the parent component instead.</p>
+<h2 id="5-when-a-callback-prop-is-cleaner">5. When a Callback Prop is
+Cleaner</h2>
+<p>Sometimes a parent component only needs access to a DOM node at the
+moment it mounts (for example, to initialize a third-party non-React
+library). Instead of forwarding a ref all the way down, you can pass a
+simple callback function as a prop.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Instead of forwarding a ref, use a callback prop</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ChildComponent</span>({ onElementMount }) {</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return </span><span class="kw">&lt;div</span> <span class="ot">ref</span><span class="op">=</span><span class="va">{</span>onElementMount<span class="va">}</span> <span class="kw">/&gt;</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>This approach avoids the complexity of <code>React.forwardRef</code>
+and keeps the data flow explicit and easy to trace.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

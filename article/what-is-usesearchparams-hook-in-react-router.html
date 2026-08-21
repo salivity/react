@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is useSearchParams Hook in React Router - react</title>
+    <meta name="description" content="The useSearchParams hook is a built-in feature of React Router (version 6 and above) used to read and modify the query string in a utility URL. This article explains what the useSearchParams hook is, how it works under the hood, and provides practical ex">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-usesearchparams-hook-in-react-router">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is useSearchParams Hook in React Router - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-usesearchparams-hook-in-react-router" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The useSearchParams hook is a built-in feature of React Router (version 6 and above) used to read and modify the query string in a utility URL. This article explains what the useSearchParams hook is, how it works under the hood, and provides practical ex" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-usesearchparams-hook-in-react-router">What is
+useSearchParams Hook in React Router</h1>
+<p>The <code>useSearchParams</code> hook is a built-in feature of React
+Router (version 6 and above) used to read and modify the query string in
+a utility URL. This article explains what the
+<code>useSearchParams</code> hook is, how it works under the hood, and
+provides practical examples of how to read and update query parameters
+in a React application.</p>
+<h2 id="understanding-usesearchparams">Understanding
+useSearchParams</h2>
+<p>The <code>useSearchParams</code> hook is used to manage query
+parameters (the portion of the URL after the <code>?</code> character,
+such as <code>?search=react&amp;sort=asc</code>). It mimics the behavior
+of React's standard <code>useState</code> hook but persists the state
+directly in the URL instead of the component's memory.</p>
+<p>When you call <code>useSearchParams</code>, it returns an array
+containing two elements:</p>
+<ol type="1">
+<li><strong>An instance of <code>URLSearchParams</code></strong>: A
+read-only object representing the current query parameters.</li>
+<li><strong>An updater function</strong>: A function used to
+programmatically update the query parameters in the URL.</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> [searchParams<span class="op">,</span> setSearchParams] <span class="op">=</span> <span class="fu">useSearchParams</span>()<span class="op">;</span></span></code></pre></div>
+<h2 id="reading-query-parameters">Reading Query Parameters</h2>
+<p>To read the value of a specific query parameter, you use the
+<code>.get()</code> method provided by the <code>URLSearchParams</code>
+object.</p>
+<p>For example, if your application URL is
+<code>https://example.com/products?category=shoes&amp;sort=price</code>,
+you can extract these values using the following code:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useSearchParams } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ProductList</span>() {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [searchParams] <span class="op">=</span> <span class="fu">useSearchParams</span>()<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> category <span class="op">=</span> searchParams<span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;category&#39;</span>)<span class="op">;</span> <span class="co">// Returns &quot;shoes&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> sort <span class="op">=</span> searchParams<span class="op">.</span><span class="fu">get</span>(<span class="st">&#39;sort&#39;</span>)<span class="op">;</span>         <span class="co">// Returns &quot;price&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;p&gt;</span>Category: <span class="va">{</span>category<span class="va">}</span><span class="kw">&lt;/p&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;p&gt;</span>Sorted by: <span class="va">{</span>sort<span class="va">}</span><span class="kw">&lt;/p&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>If a query parameter does not exist in the URL, the
+<code>.get()</code> method will return <code>null</code>.</p>
+<h2 id="updating-query-parameters">Updating Query Parameters</h2>
+<p>To update the query parameters in the URL, you call the updater
+function returned by the hook. This function accepts an object or a new
+<code>URLSearchParams</code> instance representing the new query
+parameters.</p>
+<p>When called, the updater function modifies the URL search string and
+triggers a component re-render.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useSearchParams } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">FilterComponent</span>() {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [searchParams<span class="op">,</span> setSearchParams] <span class="op">=</span> <span class="fu">useSearchParams</span>()<span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleFilterChange <span class="op">=</span> (newCategory) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">// This updates the URL to: ?category=newCategoryValue</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setSearchParams</span>({ <span class="dt">category</span><span class="op">:</span> newCategory })<span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;div&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> <span class="fu">handleFilterChange</span>(<span class="st">&#39;electronics&#39;</span>)<span class="va">}</span><span class="kw">&gt;</span>Electronics<span class="kw">&lt;/button&gt;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="kw">&lt;button</span> <span class="ot">onClick</span><span class="op">=</span><span class="va">{</span>() <span class="kw">=&gt;</span> <span class="fu">handleFilterChange</span>(<span class="st">&#39;clothing&#39;</span>)<span class="va">}</span><span class="kw">&gt;</span>Clothing<span class="kw">&lt;/button&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/div&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="preserving-existing-parameters">Preserving Existing
+Parameters</h2>
+<p>By default, passing an object to the updater function overrides the
+entire query string. If you want to update one parameter while
+preserving others, you must copy the existing parameters first.</p>
+<p>You can achieve this by using the <code>URLSearchParams</code>
+constructor or by iterating over the existing parameters:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> updateSortParam <span class="op">=</span> (newSortValue) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> currentParams <span class="op">=</span> <span class="bu">Object</span><span class="op">.</span><span class="fu">fromEntries</span>([<span class="op">...</span>searchParams])<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setSearchParams</span>({</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">...</span>currentParams<span class="op">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">sort</span><span class="op">:</span> newSortValue</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h2 id="common-use-cases">Common Use Cases</h2>
+<p>The <code>useSearchParams</code> hook is widely used in web
+applications for features that benefit from URL-driven state, such
+as:</p>
+<ul>
+<li><strong>Search bars</strong>: Storing the search term in the URL so
+users can bookmark or share search results.</li>
+<li><strong>Pagination</strong>: Keeping track of the current page
+number (e.g., <code>?page=3</code>).</li>
+<li><strong>Filters and Sorting</strong>: Persisting user selections on
+e-commerce product catalog pages.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

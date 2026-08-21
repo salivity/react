@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Secure useParams Hook in React - react</title>
+    <meta name="description" content="In React applications, the useParams hook from React Router is widely used to retrieve dynamic parameters from the URL. However, because URL parameters are user-controlled inputs, they present significant security and stability risks, such as Cross-Site">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-secure-useparams-hook-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Secure useParams Hook in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-secure-useparams-hook-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In React applications, the useParams hook from React Router is widely used to retrieve dynamic parameters from the URL. However, because URL parameters are user-controlled inputs, they present significant security and stability risks, such as Cross-Site" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-secure-useparams-hook-in-react">How to Secure useParams
+Hook in React</h1>
+<p>In React applications, the <code>useParams</code> hook from React
+Router is widely used to retrieve dynamic parameters from the URL.
+However, because URL parameters are user-controlled inputs, they present
+significant security and stability risks, such as Cross-Site Scripting
+(XSS), SQL injection via backend API calls, and runtime application
+crashes. This article demonstrates how to secure the
+<code>useParams</code> hook by implementing strict type safety, schema
+validation, and sanitization.</p>
+<h2 id="the-risks-of-unsecured-url-parameters">The Risks of Unsecured
+URL Parameters</h2>
+<p>The <code>useParams</code> hook returns an object of key/value pairs
+of URL parameters, where every value is implicitly a <code>string</code>
+or <code>undefined</code>. Relying on these values without validation
+introduces several vulnerabilities:</p>
+<ul>
+<li><strong>Type Mismatches:</strong> Assuming a parameter is a number
+(like an ID) when a user has entered random text, leading to database
+query failures or frontend crashes.</li>
+<li><strong>XSS Attacks:</strong> If the parameter is directly rendered
+into the DOM using properties like <code>dangerouslySetInnerHTML</code>,
+malicious scripts can be executed.</li>
+<li><strong>Insecure Direct Object References (IDOR):</strong> Accessing
+resources directly via URL IDs without verifying if the current user has
+permission to view them.</li>
+</ul>
+<p>To mitigate these risks, follow these three steps to secure your
+route parameters.</p>
+<hr />
+<h2 id="step-1-use-schema-validation-with-zod">Step 1: Use Schema
+Validation with Zod</h2>
+<p>The most robust way to secure <code>useParams</code> is by validating
+the parameters against a schema as soon as they are retrieved. Using a
+validation library like <strong>Zod</strong> ensures that the data
+matches the expected type and format before your component uses it.</p>
+<p>Here is how to implement schema validation:</p>
+<pre class="tsx"><code>import { useParams, Navigate } from &#39;react-router-dom&#39;;
+import { z } from &#39;zod&#39;;
+
+// Define a strict schema for your URL parameters
+const ProductParamsSchema = z.object({
+  productId: z
+    .string()
+    .regex(/^\d+$/, &quot;Product ID must be a numeric string&quot;)
+    .transform((val) =&gt; parseInt(val, 10)),
+});
+
+export function ProductDetails() {
+  const params = useParams();
+
+  // Safely parse the parameters
+  const validation = ProductParamsSchema.safeParse(params);
+
+  // If validation fails, handle the error safely (e.g., redirect to a 404 page)
+  if (!validation.success) {
+    return &lt;Navigate to=&quot;/404&quot; replace /&gt;;
+  }
+
+  // Retrieve the safely typed and parsed parameter
+  const { productId } = validation.data;
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Product Details&lt;/h1&gt;
+      &lt;p&gt;Viewing product ID: {productId}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+<p>By using <code>safeParse</code>, the application avoids throwing
+runtime errors and allows you to gracefully redirect users or display a
+clean error state if the URL is tampered with.</p>
+<hr />
+<h2 id="step-2-sanitize-input-before-api-calls">Step 2: Sanitize Input
+Before API Calls</h2>
+<p>If you pass URL parameters directly to a backend API, they must be
+sanitized to prevent injection attacks. Even if your backend has its own
+validation, sanitizing on the frontend acts as a vital layer of
+defense-in-depth.</p>
+<p>Avoid direct string interpolation in API requests:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// BAD: Vulnerable to path traversal and injection</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fetch</span>(<span class="vs">`/api/products/</span><span class="sc">${</span>params<span class="op">.</span><span class="at">id</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span> </span></code></pre></div>
+<p>Instead, ensure the parameter matches your expected pattern and use
+URL encoding if the parameter contains special characters:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// GOOD: Validated and safely encoded</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> safeId <span class="op">=</span> <span class="pp">encodeURIComponent</span>(<span class="bu">String</span>(productId))<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fetch</span>(<span class="vs">`/api/products/</span><span class="sc">${</span>safeId<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span></code></pre></div>
+<hr />
+<h2 id="step-3-implement-strict-typescript-types">Step 3: Implement
+Strict TypeScript Types</h2>
+<p>If you are using TypeScript, do not cast <code>useParams</code> using
+<code>as</code>. Forcing a type with <code>as MyParams</code> bypasses
+TypeScript’s safety guarantees because the runtime URL value can still
+be anything.</p>
+<p>Instead, use TypeScript to enforce optionality and handle the
+<code>undefined</code> state explicitly:</p>
+<pre class="tsx"><code>import { useParams } from &#39;react-router-dom&#39;;
+
+interface RouteParams {
+  userId?: string;
+}
+
+export function UserProfile() {
+  // TypeScript enforces that userId might be undefined
+  const { userId } = useParams&lt;keyof RouteParams&gt;() as RouteParams;
+
+  if (!userId) {
+    return &lt;p&gt;Error: User ID is required.&lt;/p&gt;;
+  }
+
+  return &lt;p&gt;User ID: {userId}&lt;/p&gt;;
+}</code></pre>
+<hr />
+<h2 id="step-4-authorize-the-resolved-parameter">Step 4: Authorize the
+Resolved Parameter</h2>
+<p>Security does not stop at validation. Once you have verified that the
+parameter is of the correct type (e.g., an integer ID), you must
+authorize the user's access to that specific resource.</p>
+<p>Always verify on the client (and enforce on the server) that the
+authenticated user has permission to access the resource represented by
+the validated parameter:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">async</span> <span class="kw">function</span> <span class="fu">fetchUserData</span>() {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="vs">`/api/users/</span><span class="sc">${</span>userId<span class="sc">}</span><span class="vs">`</span><span class="op">,</span> {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">headers</span><span class="op">:</span> { <span class="dt">Authorization</span><span class="op">:</span> <span class="vs">`Bearer </span><span class="sc">${</span>userToken<span class="sc">}</span><span class="vs">`</span> }</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    })<span class="op">;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (response<span class="op">.</span><span class="at">status</span> <span class="op">===</span> <span class="dv">403</span>) {</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Handle unauthorized access attempt</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">triggerSecurityLog</span>()<span class="op">;</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">showAccessDenied</span>()<span class="op">;</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fetchUserData</span>()<span class="op">;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>}<span class="op">,</span> [userId<span class="op">,</span> userToken])<span class="op">;</span></span></code></pre></div></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

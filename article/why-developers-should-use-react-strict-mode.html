@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Developers Should Use React Strict Mode - react</title>
+    <meta name="description" content="React Strict Mode is a development-only tool that helps developers write high-quality, future-proof code by identifying potential problems in an application. This article explores the primary reasons why developers should enable Strict Mode, detailing ho">
+    <link rel="canonical" href="https://salivity.github.io/react/article/why-developers-should-use-react-strict-mode">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Developers Should Use React Strict Mode - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/why-developers-should-use-react-strict-mode" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React Strict Mode is a development-only tool that helps developers write high-quality, future-proof code by identifying potential problems in an application. This article explores the primary reasons why developers should enable Strict Mode, detailing ho" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="why-developers-should-use-react-strict-mode">Why Developers
+Should Use React Strict Mode</h1>
+<p>React Strict Mode is a development-only tool that helps developers
+write high-quality, future-proof code by identifying potential problems
+in an application. This article explores the primary reasons why
+developers should enable Strict Mode, detailing how it catches
+unintended side effects, warns against deprecated APIs, prevents memory
+leaks, and prepares codebases for future React updates.</p>
+<h3 id="identifying-unintended-side-effects">Identifying Unintended Side
+Effects</h3>
+<p>In development, React Strict Mode intentionally mounts, unmounts, and
+remounts components, and double-invokes certain functions like
+constructors, render methods, and state updaters. This behavior helps
+developers detect unexpected side effects in the render phase. Because
+React expects components to be pure functions of their props and state,
+any side effects during rendering can cause bugs. If a component
+produces different results on a second render, Strict Mode highlights
+this inconsistency early in the development cycle.</p>
+<h3 id="detecting-legacy-and-deprecated-apis">Detecting Legacy and
+Deprecated APIs</h3>
+<p>As the React ecosystem evolves, older APIs and lifecycle methods are
+gradually phased out. Strict Mode proactively flags the usage of unsafe
+lifecycle methods (such as <code>componentWillMount</code>), legacy
+string refs, and deprecated context APIs. By surface-level warnings in
+the browser console, Strict Mode prevents developers from relying on
+outdated patterns and guides them toward modern, supported
+alternatives.</p>
+<h3 id="ensuring-proper-cleanup-and-preventing-memory-leaks">Ensuring
+Proper Cleanup and Preventing Memory Leaks</h3>
+<p>By running effects twice (mounting, unmounting, and mounting again)
+during development, Strict Mode forces developers to write reliable
+cleanup functions within hooks like <code>useEffect</code>. If an effect
+sets up a subscription, a WebSocket connection, or a timer without a
+proper cleanup return function, the double-invocation will quickly
+expose memory leaks, duplicate event listeners, and stale data bugs that
+would otherwise be hard to debug in production.</p>
+<h3 id="preparing-for-future-react-features">Preparing for Future React
+Features</h3>
+<p>React’s long-term roadmap relies heavily on concurrent rendering,
+which allows the UI to be interrupted and rendered in the background.
+For these features to work seamlessly, components must adhere strictly
+to React's core design principles. Enforcing Strict Mode ensures that
+your current application is fully compatible with upcoming React
+releases, drastically reducing the technical debt and friction
+associated with future framework upgrades.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

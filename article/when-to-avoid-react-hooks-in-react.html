@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid React Hooks in React - react</title>
+    <meta name="description" content="React Hooks have transformed how developers manage state and side effects in functional components. However, despite their versatility, there are specific scenarios where using hooks can lead to bugs, performance issues, or overly complex code. This arti">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-react-hooks-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid React Hooks in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-react-hooks-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React Hooks have transformed how developers manage state and side effects in functional components. However, despite their versatility, there are specific scenarios where using hooks can lead to bugs, performance issues, or overly complex code. This arti" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-react-hooks-in-react">When to Avoid React Hooks in
+React</h1>
+<p>React Hooks have transformed how developers manage state and side
+effects in functional components. However, despite their versatility,
+there are specific scenarios where using hooks can lead to bugs,
+performance issues, or overly complex code. This article outlines the
+key situations where you should avoid using React Hooks, helping you
+write cleaner and more maintainable React applications.</p>
+<h3 id="1-inside-class-components">1. Inside Class Components</h3>
+<p>React Hooks are designed exclusively for functional components and
+custom hooks. You cannot use hooks like <code>useState</code> or
+<code>useEffect</code> inside a class component. If you are working
+within a legacy class-based codebase, you must either refactor the
+component into a functional one to use hooks or stick to traditional
+class lifecycle methods like <code>componentDidMount</code> and
+<code>this.setState</code>.</p>
+<h3 id="2-inside-loops-conditions-or-nested-functions">2. Inside Loops,
+Conditions, or Nested Functions</h3>
+<p>React relies on the order in which hooks are called to correctly
+associate state with the corresponding component. Breaking this order
+violates the "Rules of Hooks." You should avoid calling hooks
+inside:</p>
+<ul>
+<li><strong>If/Else statements:</strong> If a hook is skipped during a
+conditional render, React’s internal call order is disrupted, causing
+runtime errors.</li>
+<li><strong>Loops:</strong> Declaring hooks inside <code>for</code> or
+<code>while</code> loops will dynamically change the number of hook
+calls between renders.</li>
+<li><strong>Nested functions:</strong> Hooks must be called at the top
+level of your component.</li>
+</ul>
+<h3 id="3-in-regular-javascript-functions">3. In Regular JavaScript
+Functions</h3>
+<p>You should avoid using hooks inside standard JavaScript helper
+functions. Hooks must only be called from React functional components or
+from custom hooks (functions that start with the prefix "use").
+Attempting to use a hook in a plain utility function will result in a
+compilation error.</p>
+<h3 id="4-for-simple-stateless-components">4. For Simple, Stateless
+Components</h3>
+<p>If a component only receives props and renders UI without needing to
+manage its own state or lifecycle, you should avoid adding hooks.
+Introducing unnecessary state with <code>useState</code> or managing
+trivial side effects with <code>useEffect</code> adds boilerplate and
+CPU overhead. Keep presentational components lightweight and pure.</p>
+<h3 id="5-overusing-usememo-and-usecallback-for-cheap-operations">5.
+Overusing <code>useMemo</code> and <code>useCallback</code> for Cheap
+Operations</h3>
+<p>While <code>useMemo</code> and <code>useCallback</code> are hooks
+used for performance optimization, using them indiscriminately can
+actually degrade performance. Every hook comes with an optimization
+cost. Avoid using these hooks for basic calculations or small callback
+functions, as the overhead of dependency array comparison often
+outweighs the rendering benefits.</p>
+<h3 id="6-when-third-party-state-management-is-better-suited">6. When
+Third-Party State Management is Better Suited</h3>
+<p>For massive, deeply nested applications, relying solely on local
+state hooks (<code>useState</code>, <code>useReducer</code>) or
+prop-drilling can make the codebase difficult to manage. If you find
+yourself passing state down multiple levels or syncronizing highly
+complex global state, avoid relying entirely on hooks. Instead, look to
+robust state management libraries like Redux, Zustand, or MobX.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

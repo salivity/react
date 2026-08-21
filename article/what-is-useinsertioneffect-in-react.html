@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is useInsertionEffect in React? - react</title>
+    <meta name="description" content="This article provides a comprehensive guide to React's useInsertionEffect hook, detailing its purpose, timing, and specific use cases. You will discover why this React 18 hook was introduced to solve performance issues in CSS-in-JS libraries, how it diff">
+    <link rel="canonical" href="https://salivity.github.io/react/article/what-is-useinsertioneffect-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is useInsertionEffect in React? - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/what-is-useinsertioneffect-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a comprehensive guide to React's useInsertionEffect hook, detailing its purpose, timing, and specific use cases. You will discover why this React 18 hook was introduced to solve performance issues in CSS-in-JS libraries, how it diff" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="what-is-useinsertioneffect-in-react">What is useInsertionEffect
+in React?</h1>
+<p>This article provides a comprehensive guide to React's
+<code>useInsertionEffect</code> hook, detailing its purpose, timing, and
+specific use cases. You will discover why this React 18 hook was
+introduced to solve performance issues in CSS-in-JS libraries, how it
+differs from <code>useEffect</code> and <code>useLayoutEffect</code>,
+and how to implement it correctly in your applications.</p>
+<h2 id="understanding-useinsertioneffect">Understanding
+useInsertionEffect</h2>
+<p><code>useInsertionEffect</code> is a specialized React hook
+introduced in React 18. It has the same signature as
+<code>useEffect</code>, but it fires synchronously <em>before</em> any
+DOM mutations take place. This means it executes before React calculates
+the layout of the page and before the browser paints the pixels to the
+screen.</p>
+<p>Because it runs so early in the rendering lifecycle, it provides a
+safe window to insert global DOM nodes like <code>&lt;style&gt;</code>
+tags or SVG definitions before the rest of the layout is calculated.</p>
+<h2 id="the-problem-it-solves">The Problem It Solves</h2>
+<p>Before React 18, CSS-in-JS libraries (such as styled-components or
+Emotion) typically injected <code>&lt;style&gt;</code> tags into the
+document during the rendering phase or inside
+<code>useLayoutEffect</code>. This approach caused two major performance
+bottlenecks:</p>
+<ol type="1">
+<li><strong>Layout Thrashing:</strong> If style rules are inserted or
+modified while React is running layout effects, the browser is forced to
+recalculate style rules and layouts repeatedly.</li>
+<li><strong>Reflows:</strong> Modifying active styles during layout
+calculation degrades rendering performance, especially in large
+application trees.</li>
+</ol>
+<p><code>useInsertionEffect</code> solves this by guaranteeing that
+styles are injected into the DOM <em>before</em> any layout effects run.
+By the time React and the browser calculate the physical layout of the
+elements, the required styles are already present, preventing costly
+style recalculations.</p>
+<h2 id="syntax-and-usage">Syntax and Usage</h2>
+<p>The syntax for <code>useInsertionEffect</code> is identical to
+<code>useEffect</code>. It accepts a callback function and an optional
+dependency array.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useInsertionEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">useDynamicTheme</span>(themeColor) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useInsertionEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Create and insert a style tag into the document head</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> styleTag <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">createElement</span>(<span class="st">&#39;style&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    styleTag<span class="op">.</span><span class="at">textContent</span> <span class="op">=</span> <span class="vs">`</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="vs">      .dynamic-box {</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="vs">        background-color: </span><span class="sc">${</span>themeColor<span class="sc">}</span><span class="vs">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="vs">      }</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="vs">    `</span><span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">document</span><span class="op">.</span><span class="at">head</span><span class="op">.</span><span class="fu">appendChild</span>(styleTag)<span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Cleanup: remove the style tag when the component unmounts or color changes</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="bu">document</span><span class="op">.</span><span class="at">head</span><span class="op">.</span><span class="fu">removeChild</span>(styleTag)<span class="op">;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    }<span class="op">;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [themeColor])<span class="op">;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="guidelines-for-using-useinsertioneffect">Guidelines for Using
+useInsertionEffect</h2>
+<p>To maintain application performance and avoid bugs, follow these
+rules when working with <code>useInsertionEffect</code>:</p>
+<ul>
+<li><strong>Use it exclusively for CSS-in-JS libraries:</strong> The
+React team explicitly states that this hook is meant solely for library
+authors who need to inject styles dynamically.</li>
+<li><strong>Do not use it for app-level side effects:</strong> If you
+need to fetch data, trigger animations, or handle event listeners, use
+<code>useEffect</code> or <code>useLayoutEffect</code>.</li>
+<li><strong>Avoid accessing Refs:</strong> Refs are not yet attached or
+updated when <code>useInsertionEffect</code> runs, meaning you cannot
+access DOM nodes via refs inside this hook.</li>
+<li><strong>Avoid updating state:</strong> You cannot trigger state
+updates from within <code>useInsertionEffect</code>.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

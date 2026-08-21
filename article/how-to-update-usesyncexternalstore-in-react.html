@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Update useSyncExternalStore in React - react</title>
+    <meta name="description" content="React's useSyncExternalStore hook is a built-in API designed to subscribe to external data sources while maintaining compatibility with concurrent rendering features. This article provides a straightforward guide on how to update and trigger re-renders u">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-update-usesyncexternalstore-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Update useSyncExternalStore in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-update-usesyncexternalstore-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's useSyncExternalStore hook is a built-in API designed to subscribe to external data sources while maintaining compatibility with concurrent rendering features. This article provides a straightforward guide on how to update and trigger re-renders u" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-update-usesyncexternalstore-in-react">How to Update
+useSyncExternalStore in React</h1>
+<p>React's <code>useSyncExternalStore</code> hook is a built-in API
+designed to subscribe to external data sources while maintaining
+compatibility with concurrent rendering features. This article provides
+a straightforward guide on how to update and trigger re-renders using
+<code>useSyncExternalStore</code> in your React applications. You will
+learn how to structure an external store, implement the required
+subscriber mechanism, update the store's state correctly, and avoid
+common rendering pitfalls.</p>
+<hr />
+<h2 id="understanding-usesyncexternalstore">Understanding
+useSyncExternalStore</h2>
+<p>To update a store used with <code>useSyncExternalStore</code>, you
+must first understand its signature:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> state <span class="op">=</span> <span class="fu">useSyncExternalStore</span>(subscribe<span class="op">,</span> getSnapshot<span class="op">,</span> getServerSnapshot<span class="op">?</span>)<span class="op">;</span></span></code></pre></div>
+<ul>
+<li><strong><code>subscribe</code></strong>: A function that registers a
+callback with the external store. React calls this function when the
+component mounts, expecting it to return a cleanup function to
+unsubscribe.</li>
+<li><strong><code>getSnapshot</code></strong>: A function that returns
+the current value of the store. React calls this on every render and
+whenever the store notifies React of an update.</li>
+<li><strong><code>getServerSnapshot</code></strong>: An optional
+function that returns the snapshot used during server-side rendering
+(SSR).</li>
+</ul>
+<p>The fundamental rule of <code>useSyncExternalStore</code> is that
+<strong>React only updates the component when the value returned by
+<code>getSnapshot</code> changes (compared using
+<code>Object.is</code>)</strong>.</p>
+<hr />
+<h2 id="step-by-step-guide-to-updating-the-store">Step-by-Step Guide to
+Updating the Store</h2>
+<p>To update the store and trigger a component re-render, you must
+notify React of the change and provide a new snapshot value. Here is how
+to implement this process step-by-step.</p>
+<h3 id="step-1-create-the-external-store">Step 1: Create the External
+Store</h3>
+<p>Create an external store that holds the state, manages a set of
+active subscribers, and contains an update method.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// externalStore.js</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> currentState <span class="op">=</span> { <span class="dt">count</span><span class="op">:</span> <span class="dv">0</span> }<span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> listeners <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>()<span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> counterStore <span class="op">=</span> {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1. Subscribe method</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subscribe</span>(listener) {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    listeners<span class="op">.</span><span class="fu">add</span>(listener)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Return unsubscribe function</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> () <span class="kw">=&gt;</span> listeners<span class="op">.</span><span class="fu">delete</span>(listener)<span class="op">;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 2. Get Snapshot method</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">getSnapshot</span>() {</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> currentState<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 3. Update method</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setCount</span>(nextCount) {</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Immutably update the state</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    currentState <span class="op">=</span> { <span class="dt">count</span><span class="op">:</span> nextCount }<span class="op">;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Notify all registered listeners that the store changed</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    listeners<span class="op">.</span><span class="fu">forEach</span>((listener) <span class="kw">=&gt;</span> <span class="fu">listener</span>())<span class="op">;</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<h3 id="step-2-consume-the-store-in-a-react-component">Step 2: Consume
+the Store in a React Component</h3>
+<p>Pass the <code>subscribe</code> and <code>getSnapshot</code> methods
+from your external store into the <code>useSyncExternalStore</code>
+hook.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// CounterComponent.jsx</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useSyncExternalStore } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { counterStore } <span class="im">from</span> <span class="st">&#39;./externalStore&#39;</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">function</span> <span class="fu">CounterComponent</span>() {</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// React subscribes to changes and retrieves the current snapshot</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> state <span class="op">=</span> <span class="fu">useSyncExternalStore</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    counterStore<span class="op">.</span><span class="at">subscribe</span><span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    counterStore<span class="op">.</span><span class="at">getSnapshot</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> increment <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Trigger the update function in the external store</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    counterStore<span class="op">.</span><span class="fu">setCount</span>(state<span class="op">.</span><span class="at">count</span> <span class="op">+</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div<span class="op">&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>p<span class="op">&gt;</span><span class="dt">Count</span><span class="op">:</span> {state<span class="op">.</span><span class="at">count</span>}<span class="op">&lt;/</span>p<span class="op">&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>button onClick<span class="op">=</span>{increment}<span class="op">&gt;</span>Increment<span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h2 id="the-core-rule-immutability">The Core Rule: Immutability</h2>
+<p>When updating your external store, you must <strong>treat the state
+as immutable</strong>.</p>
+<p>Because React uses <code>Object.is</code> to compare the previous
+snapshot with the new snapshot, mutating an object or array in place
+will fail to trigger a re-render.</p>
+<h3 id="correct-immutably-updating">Correct (Immutably updating):</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Returns a new object reference, triggering a re-render</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>currentState <span class="op">=</span> { <span class="op">...</span>currentState<span class="op">,</span> <span class="dt">value</span><span class="op">:</span> newValue }<span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>listeners<span class="op">.</span><span class="fu">forEach</span>(l <span class="kw">=&gt;</span> <span class="fu">l</span>())<span class="op">;</span></span></code></pre></div>
+<h3 id="incorrect-mutating-in-place">Incorrect (Mutating in place):</h3>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// React sees the same object reference and will NOT re-render</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>currentState<span class="op">.</span><span class="at">value</span> <span class="op">=</span> newValue<span class="op">;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>listeners<span class="op">.</span><span class="fu">forEach</span>(l <span class="kw">=&gt;</span> <span class="fu">l</span>())<span class="op">;</span></span></code></pre></div>
+<p>If your store holds primitive values (like a <code>string</code> or
+<code>number</code>), you can update the value directly because
+primitives are compared by value, not by reference. However, for objects
+and arrays, always return a new copy during updates.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

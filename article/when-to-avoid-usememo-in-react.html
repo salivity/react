@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When to Avoid useMemo in React - react</title>
+    <meta name="description" content="The useMemo Hook is a powerful tool in React designed to optimize performance by caching the results of expensive calculations between renders. However, misusing it can actually degrade your application's performance and clutter your codebase with unnece">
+    <link rel="canonical" href="https://salivity.github.io/react/article/when-to-avoid-usememo-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="When to Avoid useMemo in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/when-to-avoid-usememo-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The useMemo Hook is a powerful tool in React designed to optimize performance by caching the results of expensive calculations between renders. However, misusing it can actually degrade your application's performance and clutter your codebase with unnece" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="when-to-avoid-usememo-in-react">When to Avoid useMemo in
+React</h1>
+<p>The <code>useMemo</code> Hook is a powerful tool in React designed to
+optimize performance by caching the results of expensive calculations
+between renders. However, misusing it can actually degrade your
+application's performance and clutter your codebase with unnecessary
+complexity. This article explains the hidden costs of
+<code>useMemo</code> and outlines the specific scenarios where you
+should avoid using it.</p>
+<h2 id="the-hidden-cost-of-usememo">The Hidden Cost of useMemo</h2>
+<p>Many developers assume that wrapping every calculation in
+<code>useMemo</code> is a safe way to ensure performance. In reality,
+<code>useMemo</code> is not free. Every time a component renders, React
+must perform two operations for a memoized value:</p>
+<ol type="1">
+<li>Compare the dependencies in the dependency array to their previous
+values.</li>
+<li>Store the memoized value and the dependency array in memory.</li>
+</ol>
+<p>If the overhead of these checks and memory allocations is greater
+than the cost of recalculating the value, <code>useMemo</code> will
+actually make your application slower.</p>
+<h2 id="1-cheap-and-simple-calculations">1. Cheap and Simple
+Calculations</h2>
+<p>You should avoid <code>useMemo</code> for basic JavaScript
+operations. Sorting a small array, filtering a list of dozens of items,
+or performing basic arithmetic are incredibly fast operations for modern
+JavaScript engines.</p>
+<p>For example, do not do this:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> doubleCount <span class="op">=</span> <span class="fu">useMemo</span>(() <span class="kw">=&gt;</span> count <span class="op">*</span> <span class="dv">2</span><span class="op">,</span> [count])<span class="op">;</span></span></code></pre></div>
+<p>The overhead of the dependency check outweighs the microsecond it
+takes to multiply a number. Only use <code>useMemo</code> for truly
+expensive computations, such as processing large datasets or executing
+complex algorithms.</p>
+<h2 id="2-when-dependencies-change-on-every-render">2. When Dependencies
+Change on Every Render</h2>
+<p>If the dependencies in your <code>useMemo</code> hook change on
+almost every render, the calculation will run almost every time anyway.
+In this scenario, you are paying the performance cost of the dependency
+check and memory storage, but still executing the function on every
+render.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Avoid this if &#39;user&#39; object changes on every parent render</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> userInfo <span class="op">=</span> <span class="fu">useMemo</span>(() <span class="kw">=&gt;</span> <span class="fu">formatUser</span>(user)<span class="op">,</span> [user])<span class="op">;</span></span></code></pre></div>
+<p>If <code>user</code> is a new object reference on every render, this
+memoization provides zero benefits.</p>
+<h2 id="3-when-the-value-is-a-simple-reference">3. When the Value is a
+Simple Reference</h2>
+<p>If you are trying to prevent a child component from re-rendering by
+memoizing an object or array passed as a prop, <code>useMemo</code> will
+only work if the child component is actually wrapped in
+<code>React.memo</code>. If the child component is not memoized, it will
+re-render anyway when the parent renders, making the
+<code>useMemo</code> in the parent useless.</p>
+<h2 id="4-when-the-value-can-be-moved-outside-the-component">4. When the
+Value Can Be Moved Outside the Component</h2>
+<p>If a variable or calculation does not depend on props or state, it
+does not need to be inside the component at all. Instead of memoizing
+it, move it outside of the component scope. This completely avoids
+recalculation on renders without any React overhead.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Avoid this:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">MyComponent</span>() {</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> options <span class="op">=</span> <span class="fu">useMemo</span>(() <span class="kw">=&gt;</span> [<span class="st">&#39;Active&#39;</span><span class="op">,</span> <span class="st">&#39;Inactive&#39;</span><span class="op">,</span> <span class="st">&#39;Pending&#39;</span>]<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">// Do this instead:</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> OPTIONS <span class="op">=</span> [<span class="st">&#39;Active&#39;</span><span class="op">,</span> <span class="st">&#39;Inactive&#39;</span><span class="op">,</span> <span class="st">&#39;Pending&#39;</span>]<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">MyComponent</span>() {</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Access OPTIONS directly here</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="5-premature-optimization">5. Premature Optimization</h2>
+<p>As a general rule, do not use <code>useMemo</code> until you have
+identified a measurable performance bottleneck. Standard React renders
+are highly optimized. Writing readable, simple code first, and then
+profiling your application to apply <code>useMemo</code> where slow
+renders actually occur, is the best approach to React development.</p></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

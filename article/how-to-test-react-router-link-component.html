@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Test React Router Link Component - react</title>
+    <meta name="description" content="Testing the Link component in React, typically provided by libraries like React Router, ensures that application navigation functions correctly and links point to the correct destinations. This guide demonstrates how to test a React Link component using">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-test-react-router-link-component">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Test React Router Link Component - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-test-react-router-link-component" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Testing the Link component in React, typically provided by libraries like React Router, ensures that application navigation functions correctly and links point to the correct destinations. This guide demonstrates how to test a React Link component using" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-test-react-router-link-component">How to Test React
+Router Link Component</h1>
+<p>Testing the <code>Link</code> component in React, typically provided
+by libraries like React Router, ensures that application navigation
+functions correctly and links point to the correct destinations. This
+guide demonstrates how to test a React <code>Link</code> component using
+Jest and React Testing Library. You will learn how to wrap your
+component in a routing context, simulate user clicks, and verify that
+navigation occurs successfully.</p>
+<h2 id="the-challenge-with-testing-link-components">The Challenge with
+Testing Link Components</h2>
+<p>The React Router <code>Link</code> component cannot be rendered in
+isolation during a test. If you attempt to render it without a router
+context, React Router will throw an error:
+<code>useHref() may be used only in the context of a &lt;Router&gt; component</code>.</p>
+<p>To solve this, you must wrap the component under test inside a router
+provider designed for testing, such as <code>MemoryRouter</code>.</p>
+<h2 id="step-by-step-testing-guide">Step-by-Step Testing Guide</h2>
+<h3 id="1-the-component-under-test">1. The Component under Test</h3>
+<p>Consider a simple navigation component that contains a
+<code>Link</code> pointing to an "About" page:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode jsx"><code class="sourceCode javascriptreact"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Navigation.jsx</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Link } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="fu">Navigation</span>() {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;nav&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">&lt;Link</span> <span class="ot">to</span><span class="op">=</span><span class="st">&quot;/about&quot;</span><span class="fu">&gt;</span>About Us<span class="fu">&lt;/Link&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">&lt;/nav&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h3 id="2-set-up-the-test-with-memoryrouter">2. Set Up the Test with
+MemoryRouter</h3>
+<p><code>MemoryRouter</code> is a router implementation that stores its
+location history in memory. This makes it ideal for testing environments
+like Jest/JSDOM where there is no real browser address bar.</p>
+<p>Here is how to write the test to verify that the link rendered
+correctly and has the proper <code>href</code> attribute:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Navigation.test.jsx</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { MemoryRouter } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Navigation <span class="im">from</span> <span class="st">&#39;./Navigation&#39;</span><span class="op">;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="st">&#39;Navigation Component&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test</span>(<span class="st">&#39;renders the link with the correct href&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">render</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>MemoryRouter<span class="op">&gt;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Navigation <span class="op">/&gt;</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>MemoryRouter<span class="op">&gt;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> linkElement <span class="op">=</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">getByRole</span>(<span class="st">&#39;link&#39;</span><span class="op">,</span> { <span class="dt">name</span><span class="op">:</span> <span class="ss">/about us/i</span> })<span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(linkElement)<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(linkElement)<span class="op">.</span><span class="fu">toHaveAttribute</span>(<span class="st">&#39;href&#39;</span><span class="op">,</span> <span class="st">&#39;/about&#39;</span>)<span class="op">;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="3-testing-navigation-behavior-simulating-clicks">3. Testing
+Navigation Behavior (Simulating Clicks)</h3>
+<p>To verify that clicking the link actually navigates the user to the
+correct page, you can set up routes inside your test wrapper using
+<code>Routes</code> and <code>Route</code>.</p>
+<p>Use <code>@testing-library/user-event</code> to simulate the user
+click realistically.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Navigation.test.jsx</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { render<span class="op">,</span> <span class="bu">screen</span> } <span class="im">from</span> <span class="st">&#39;@testing-library/react&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> userEvent <span class="im">from</span> <span class="st">&#39;@testing-library/user-event&#39;</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { MemoryRouter<span class="op">,</span> Routes<span class="op">,</span> Route } <span class="im">from</span> <span class="st">&#39;react-router-dom&#39;</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Navigation <span class="im">from</span> <span class="st">&#39;./Navigation&#39;</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(<span class="st">&#39;Navigation Click Behavior&#39;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test</span>(<span class="st">&#39;navigates to the about page on link click&#39;</span><span class="op">,</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">render</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>MemoryRouter initialEntries<span class="op">=</span>{[<span class="st">&#39;/&#39;</span>]}<span class="op">&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>Routes<span class="op">&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>Navigation <span class="op">/&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;</span>Route path<span class="op">=</span><span class="st">&quot;/about&quot;</span> element<span class="op">=</span>{<span class="op">&lt;</span>div<span class="op">&gt;</span>About Page Content<span class="op">&lt;/</span>div<span class="op">&gt;</span>} <span class="op">/&gt;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span>Routes<span class="op">&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>MemoryRouter<span class="op">&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    )<span class="op">;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> linkElement <span class="op">=</span> <span class="bu">screen</span><span class="op">.</span><span class="fu">getByRole</span>(<span class="st">&#39;link&#39;</span><span class="op">,</span> { <span class="dt">name</span><span class="op">:</span> <span class="ss">/about us/i</span> })<span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Simulate clicking the link</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">await</span> userEvent<span class="op">.</span><span class="fu">click</span>(linkElement)<span class="op">;</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">// Verify the UI updated to show the new route&#39;s content</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect</span>(<span class="bu">screen</span><span class="op">.</span><span class="fu">getByText</span>(<span class="st">&#39;About Page Content&#39;</span>))<span class="op">.</span><span class="fu">toBeInTheDocument</span>()<span class="op">;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h2 id="summary-of-best-practices">Summary of Best Practices</h2>
+<ul>
+<li><strong>Use MemoryRouter:</strong> Always wrap your components in
+<code>MemoryRouter</code> to provide the necessary routing context
+without relying on a browser environment.</li>
+<li><strong>Assert on Attributes:</strong> Use
+<code>toHaveAttribute('href', '/destination')</code> to quickly check if
+the link points to the correct location.</li>
+<li><strong>Test the Outcome:</strong> For critical user flows, render
+target routes within <code>Routes</code> and use
+<code>userEvent.click()</code> to confirm that clicking the link renders
+the expected page content.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R4Y4YXFHZS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag(){
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-R4Y4YXFHZS');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Secure Fiber Architecture in React - react</title>
+    <meta name="description" content="React's Fiber architecture is the core reconciliation engine responsible for managing component updates, scheduling, and concurrent rendering. While Fiber enhances performance and user experience, it also introduces specific security considerations regar">
+    <link rel="canonical" href="https://salivity.github.io/react/article/how-to-secure-fiber-architecture-in-react">
+    <link rel="icon" href="/react/favicon.ico">
+    <link rel="stylesheet" href="/react/css/style.css">
+    <link media="print" rel="stylesheet" href="/react/css/print.css">
+    <script src="/react/js/fuse.min.js"></script>
+    <script src="/react/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Secure Fiber Architecture in React - react" />
+    <meta property="og:url" content="https://salivity.github.io/react/article/how-to-secure-fiber-architecture-in-react" />
+    <meta property="og:image:url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/react/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="React's Fiber architecture is the core reconciliation engine responsible for managing component updates, scheduling, and concurrent rendering. While Fiber enhances performance and user experience, it also introduces specific security considerations regar" />
+    <link rel="manifest" href="/react/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/react/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>react</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="https://github.com/salivity" title="Github" aria-label="Go To Github Profile Page"><svg class="svg-icon" focusable="false" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"></path></svg></a></li>
+                <li><a href="/react/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <article><h1 id="how-to-secure-fiber-architecture-in-react">How to Secure Fiber
+Architecture in React</h1>
+<p>React's Fiber architecture is the core reconciliation engine
+responsible for managing component updates, scheduling, and concurrent
+rendering. While Fiber enhances performance and user experience, it also
+introduces specific security considerations regarding internal state
+exposure, Cross-Site Scripting (XSS), and concurrent rendering race
+conditions. Securely managing Fiber involves protecting internal DOM
+properties from malicious scripts, enforcing pure rendering patterns,
+sanitizing dynamic inputs, and configuring robust Content Security
+Policies (CSP) to prevent attackers from traversing the Fiber tree.</p>
+<h2 id="understanding-the-security-risks-of-react-fiber">Understanding
+the Security Risks of React Fiber</h2>
+<p>React Fiber operates by building a tree of "Fiber nodes" that
+correspond to the DOM tree. Each Fiber node contains metadata about
+component state, props, and pointers to child and sibling nodes. If an
+attacker successfully executes a Cross-Site Scripting (XSS) attack, they
+can access these Fiber nodes directly from the DOM, allowing them to
+extract sensitive data, manipulate the UI, or bypass application
+logic.</p>
+<h3 id="1-exposure-of-internal-fiber-properties">1. Exposure of Internal
+Fiber Properties</h3>
+<p>React attaches internal properties to DOM elements to link them to
+their respective Fiber nodes. These properties typically start with
+prefix keys like <code>__reactFiber$</code> and
+<code>__reactProps$</code>.</p>
+<p>If an attacker injects a malicious script, they can query a DOM
+element and access its internal Fiber node:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> domNode <span class="op">=</span> <span class="bu">document</span><span class="op">.</span><span class="fu">querySelector</span>(<span class="st">&#39;#sensitive-input&#39;</span>)<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> fiberNode <span class="op">=</span> domNode[<span class="bu">Object</span><span class="op">.</span><span class="fu">keys</span>(domNode)<span class="op">.</span><span class="fu">find</span>(key <span class="kw">=&gt;</span> key<span class="op">.</span><span class="fu">startsWith</span>(<span class="st">&#39;__reactFiber$&#39;</span>))]<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(fiberNode<span class="op">.</span><span class="at">memoizedProps</span>)<span class="op">;</span> <span class="co">// Accesses component props and potentially sensitive state</span></span></code></pre></div>
+<p>Through this mechanism, attackers can read state variables, API
+tokens, or user credentials passed as props.</p>
+<h3 id="2-side-effects-during-concurrent-rendering">2. Side Effects
+during Concurrent Rendering</h3>
+<p>React Fiber allows rendering to be paused, aborted, or split across
+multiple frames (Concurrent Mode). If your render functions contain side
+effects (such as fetching data, modifying global variables, or writing
+to the DOM), a paused or aborted render cycle can leave your application
+in an inconsistent, insecure state. This can lead to security-sensitive
+race conditions or unauthorized state transitions.</p>
+<hr />
+<h2 id="best-practices-to-secure-react-fiber">Best Practices to Secure
+React Fiber</h2>
+<p>Securing React Fiber requires a defense-in-depth approach that
+combines strict input sanitization, secure coding practices, and runtime
+environment hardening.</p>
+<h3 id="1-eliminate-xss-as-the-primary-defense">1. Eliminate XSS as the
+Primary Defense</h3>
+<p>Because an attacker must be able to execute JavaScript on your page
+to traverse the Fiber tree, preventing XSS is your strongest
+defense.</p>
+<ul>
+<li><strong>Sanitize Dynamic Content:</strong> Avoid using
+<code>dangerouslySetInnerHTML</code>. If you must render raw HTML,
+sanitize the input using a robust library like DOMPurify.</li>
+<li><strong>Context-Aware Escaping:</strong> Ensure that user-provided
+data rendered in attributes or text nodes is properly escaped by React's
+default rendering mechanism.</li>
+</ul>
+<h3 id="2-implement-a-strict-content-security-policy-csp">2. Implement a
+Strict Content Security Policy (CSP)</h3>
+<p>A strong CSP prevents malicious scripts from running in the first
+place, blocking access to React's internal DOM properties.</p>
+<ul>
+<li>Disable <code>unsafe-inline</code> scripts.</li>
+<li>Use cryptographically secure nonces or hashes for authorized
+scripts.</li>
+<li>Restrict the domains from which scripts can be loaded.</li>
+</ul>
+<pre class="http"><code>Content-Security-Policy: default-src &#39;self&#39;; script-src &#39;self&#39; &#39;nonce-random2024&#39;;</code></pre>
+<h3 id="3-ensure-render-functions-are-pure">3. Ensure Render Functions
+are Pure</h3>
+<p>To prevent security anomalies during concurrent rendering
+(time-slicing), ensure all render methods, functional components, and
+hooks are pure.</p>
+<ul>
+<li><strong>No Side Effects in Render:</strong> Do not mutate global
+state, perform network requests, or modify the DOM inside the main body
+of a component or during the render phase.</li>
+<li><strong>Use Side-Effect Hooks Correctly:</strong> Place all side
+effects inside <code>useEffect</code>, <code>useLayoutEffect</code>, or
+event handlers, which run safely after the Fiber reconciliation process
+has completed.</li>
+</ul>
+<h3 id="4-protect-sensitive-data-in-component-props">4. Protect
+Sensitive Data in Component Props</h3>
+<p>Avoid passing highly sensitive information (like raw passwords,
+authorization headers, or private keys) directly through the component
+tree as props or storing them in React state.</p>
+<ul>
+<li>Keep sensitive tokens in secure, HTTP-only cookies where client-side
+JavaScript (and thus Fiber node traversal) cannot access them.</li>
+<li>Use minimal state representations. Instead of storing a full user
+profile object in state, store only the user ID and fetch details as
+needed or keep them scoped to secure network layers.</li>
+</ul>
+<h3 id="5-prevent-prototype-pollution">5. Prevent Prototype
+Pollution</h3>
+<p>If an attacker can pollute the <code>Object.prototype</code>, they
+may be able to manipulate how React Fiber processes updates or schedules
+renders.</p>
+<ul>
+<li>Validate and sanitize all JSON payloads before parsing.</li>
+<li>Use <code>Object.create(null)</code> for plain key-value maps to
+prevent prototype inheritance.</li>
+<li>Freeze critical global objects using <code>Object.freeze()</code>
+where appropriate.</li>
+</ul></article>
+        <div id=comments-container></div>
+
+        <script>
+            const utterancesScript = document.createElement('script');
+            
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/react'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            utterancesScript.setAttribute('theme', localStorage.getItem('theme') === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="/react/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/react/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>
